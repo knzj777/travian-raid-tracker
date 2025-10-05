@@ -45,11 +45,19 @@ export default function RaidDiffCalculator() {
   // Automatically read clipboard and update
   const handlePaste = async () => {
     try {
-      const clipboardText = await navigator.clipboard.readText();
-      setInput(clipboardText);
-
-      const newData = parseData(clipboardText);
-
+      let textToParse = input.trim();
+  
+      // Only read from clipboard if input is empty
+      if (!textToParse) {
+        textToParse = await navigator.clipboard.readText();
+        if (!textToParse.trim()) {
+          alert("Input box is empty and clipboard has no text!");
+          return;
+        }
+      }
+  
+      const newData = parseData(textToParse);
+  
       if (players.length === 0) {
         const initialized = newData.map((p) => ({
           ...p,
@@ -64,7 +72,7 @@ export default function RaidDiffCalculator() {
           const lastHour = old ? old.resources : "Missing data";
           const diff = old ? p.resources - old.resources : "Missing data";
           const previousRank = old ? players.indexOf(old) + 1 : null;
-
+  
           return {
             ...p,
             lastHour,
@@ -72,17 +80,18 @@ export default function RaidDiffCalculator() {
             previousRank,
           };
         });
-
+  
         const sorted = updated.sort((a, b) => b.resources - a.resources);
         setPlayers(sorted);
       }
-
+  
       setInput(""); // optional: clear input after update
     } catch (err) {
-      console.error("Failed to read clipboard: ", err);
-      alert("Unable to access clipboard. Please paste manually.");
+      console.error("Failed to read clipboard or process input: ", err);
+      alert("Unable to access clipboard or process input.");
     }
   };
+  
 
   const handleReset = () => {
     if (window.confirm("Clear all saved data?")) {
@@ -196,47 +205,42 @@ export default function RaidDiffCalculator() {
               </tr>
             </thead>
             <tbody>
-              {players.map((p, i) => {
-                let arrow = null;
-                if (p.previousRank !== null) {
-                  if (p.previousRank > i + 1) arrow = "⬆️";
-                  else if (p.previousRank < i + 1) arrow = "⬇️";
-                }
+            {players.map((p, i) => {
+  let arrow = null;
+  if (p.previousRank !== null) {
+    if (p.previousRank > i + 1) arrow = "up";
+    else if (p.previousRank < i + 1) arrow = "down";
+  }
 
-                return (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>
-                      {arrow && (
-                        <span
-                          style={{
-                            marginRight: "4px",
-                            color: arrow === "⬆️" ? "#27ae60" : "#e74c3c",
-                          }}
-                        >
-                          {arrow}
-                        </span>
-                      )}
-                      {p.player}
-                    </td>
-                    <td>{p.resources?.toLocaleString()}</td>
-                    <td>
-                      {typeof p.lastHour === "number"
-                        ? p.lastHour.toLocaleString()
-                        : p.lastHour}
-                    </td>
-                    <td
-                      className={
-                        typeof p.diff === "string" ? "waiting" : "positive"
-                      }
-                    >
-                      {typeof p.diff === "string"
-                        ? p.diff
-                        : p.diff.toLocaleString()}
-                    </td>
-                  </tr>
-                );
-              })}
+  return (
+    <tr key={i}>
+      <td>{i + 1}</td>
+      <td>
+        {arrow && (
+          <span className={`arrow ${arrow}`}>
+            {arrow === "up" ? "↑" : "↓"}
+          </span>
+        )}
+        {p.player}
+      </td>
+      <td>{p.resources?.toLocaleString()}</td>
+      <td>
+        {typeof p.lastHour === "number"
+          ? p.lastHour.toLocaleString()
+          : p.lastHour}
+      </td>
+      <td
+        className={
+          typeof p.diff === "string" ? "waiting" : "positive"
+        }
+      >
+        {typeof p.diff === "string"
+          ? p.diff
+          : p.diff.toLocaleString()}
+      </td>
+    </tr>
+  );
+})}
             </tbody>
           </table>
         )}
