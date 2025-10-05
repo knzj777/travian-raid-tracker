@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./RaidTracker.css"; 
 import hunsImage from "./images/huns.jpg"; 
+import logoImage from "./images/logo.png";
+
 
 export default function RaidDiffCalculator() {
   const [input, setInput] = useState("");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState([]); 
   const [darkMode, setDarkMode] = useState(true);
   const [raidTime, setRaidTime] = useState("00:30");
 
@@ -151,10 +153,11 @@ export default function RaidDiffCalculator() {
     >
       <div className="content">
         <div className="header">
-          <div className="header-title">
-            <img src="/logo.png" alt="Logo" className="logo" />
-            <h2>Travian Raid Tracker</h2>
-          </div>
+        <div className="header-title">
+        <img src={logoImage} alt="Logo" className="logo" />
+        <h2>Travian Raid Tracker</h2>
+</div>
+
           <button
             className="mode-toggle"
             onClick={() => setDarkMode(!darkMode)}
