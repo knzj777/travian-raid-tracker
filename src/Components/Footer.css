@@ -1,0 +1,44 @@
+.footer-container {
+    position: relative; 
+    z-index: 2;
+    text-align: center;
+  }
+  
+  .howto-btn {
+    display: inline-block;
+    text-decoration: underline;
+    color: inherit; 
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.75;
+    line-height: 1.4;
+    padding: 15px;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    color: inherit;
+  }
+  
+  .footer strong {
+    color: var(--button-bg);
+  }
+  
+  .footer .heart {
+    display: inline-block;
+    color: var(--heart-color);
+    animation: heartbeat 1.2s infinite;
+  }
+  
+  @keyframes heartbeat {
+    0%,40%,80%,100% { transform: scale(1); }
+    20%,60% { transform: scale(1.3); }
+  }
+  

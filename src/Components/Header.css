@@ -1,0 +1,58 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    padding: 10px 20px 0;
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .header-title .logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+      
+  
+  .mode-toggle {
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #fff;
+    background-color: transparent;
+    color: #fff; 
+    text-decoration: none;
+    z-index: 3;
+    transition: all 0.2s ease;
+  }
+  
+  .light .mode-toggle {
+    border: 1px solid #000; 
+    color: #000;
+  }
+  
+  .mode-toggle:hover {
+    opacity: 0.8;
+  }
+  
+  

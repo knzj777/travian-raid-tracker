@@ -1,6 +1,16 @@
-import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RaidDiffCalculator from "./RaidDiffCalculator";
+import HowToUse from "./Pages/HowToUse";
 
-export default function App() {
-  return <RaidDiffCalculator />;
+function App() {
+  return (
+    <Router basename="/travian-raid-tracker">
+      <Routes>
+        <Route path="/" element={<RaidDiffCalculator />} />
+        <Route path="/how-to-use" element={<HowToUse />} />
+      </Routes>
+    </Router>
+  );
 }
+
+export default App;

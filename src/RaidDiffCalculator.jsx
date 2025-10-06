@@ -1,27 +1,33 @@
 import React, { useState, useEffect } from "react";
-import "./RaidTracker.css"; 
-import hunsImage from "./images/huns.jpg"; 
-import logoImage from "./images/logo.png";
-
+import Header from "./Components/Header";
+import Footer from "./Components/Footer";
+import "./RaidTracker.css";
+import hunsImage from "./images/huns.jpg";
 
 export default function RaidDiffCalculator() {
   const [input, setInput] = useState("");
-  const [players, setPlayers] = useState([]); 
+  const [players, setPlayers] = useState([]);
   const [darkMode, setDarkMode] = useState(true);
   const [raidTime, setRaidTime] = useState("00:30");
 
-  const todayDate = new Date().toLocaleDateString();
+  const todayDate = new Date()
+    .toLocaleDateString("hr-HR")
+    .replace(/\//g, ".")
+    .replace(/\.$/, "");
 
-  // Load saved data
+  // Load saved data and theme/time
   useEffect(() => {
     const saved = localStorage.getItem("raidData");
     if (saved) setPlayers(JSON.parse(saved));
 
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) setDarkMode(savedTheme === "dark");
+
+    const savedTime = localStorage.getItem("raidTime");
+    if (savedTime) setRaidTime(savedTime);
   }, []);
 
-  // Save data
+  // Save data/theme/time
   useEffect(() => {
     localStorage.setItem("raidData", JSON.stringify(players));
   }, [players]);
@@ -29,6 +35,10 @@ export default function RaidDiffCalculator() {
   useEffect(() => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  useEffect(() => {
+    localStorage.setItem("raidTime", raidTime);
+  }, [raidTime]);
 
   // Parse pasted data
   const parseData = (text) => {
@@ -44,12 +54,11 @@ export default function RaidDiffCalculator() {
     });
   };
 
-  // Automatically read clipboard and update
+  // Paste or clipboard
   const handlePaste = async () => {
     try {
       let textToParse = input.trim();
-  
-      // Only read from clipboard if input is empty
+
       if (!textToParse) {
         textToParse = await navigator.clipboard.readText();
         if (!textToParse.trim()) {
@@ -57,43 +66,45 @@ export default function RaidDiffCalculator() {
           return;
         }
       }
-  
+
       const newData = parseData(textToParse);
-  
+
       if (players.length === 0) {
         const initialized = newData.map((p) => ({
           ...p,
           lastHour: "Missing data",
           diff: "Next hour data needed",
           previousRank: null,
+          isNew: true,
         }));
         setPlayers(initialized);
       } else {
         const updated = newData.map((p) => {
           const old = players.find((x) => x.player === p.player);
           const lastHour = old ? old.resources : "Missing data";
-          const diff = old ? p.resources - old.resources : "Missing data";
+          const diff = old ? p.resources - old.resources : "Next hour data needed";
           const previousRank = old ? players.indexOf(old) + 1 : null;
-  
+          const isNew = !old;
+
           return {
             ...p,
             lastHour,
-            diff: diff === "Missing data" ? "Missing data" : diff,
+            diff,
             previousRank,
+            isNew,
           };
         });
-  
+
         const sorted = updated.sort((a, b) => b.resources - a.resources);
         setPlayers(sorted);
       }
-  
-      setInput(""); // optional: clear input after update
+
+      setInput(""); // clear input
     } catch (err) {
       console.error("Failed to read clipboard or process input: ", err);
       alert("Unable to access clipboard or process input.");
     }
   };
-  
 
   const handleReset = () => {
     if (window.confirm("Clear all saved data?")) {
@@ -102,6 +113,7 @@ export default function RaidDiffCalculator() {
     }
   };
 
+  // Time selector
   const incrementHour = () => {
     const [hours, minutes] = raidTime.split(":").map(Number);
     const newHours = (hours + 1) % 24;
@@ -111,7 +123,7 @@ export default function RaidDiffCalculator() {
         .padStart(2, "0")}`
     );
   };
-  
+
   const decrementHour = () => {
     const [hours, minutes] = raidTime.split(":").map(Number);
     const newHours = (hours - 1 + 24) % 24;
@@ -121,7 +133,7 @@ export default function RaidDiffCalculator() {
         .padStart(2, "0")}`
     );
   };
-  
+
   const handleTimeChange = (e) => {
     const val = e.target.value;
     if (/^[0-9:]*$/.test(val)) {
@@ -149,23 +161,14 @@ export default function RaidDiffCalculator() {
         backgroundImage: `url(${hunsImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <div className="content">
-        <div className="header">
-        <div className="header-title">
-        <img src={logoImage} alt="Logo" className="logo" />
-        <h2>Travian Raid Tracker</h2>
-</div>
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
 
-          <button
-            className="mode-toggle"
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </button>
-        </div>
-
+      <div className="content" style={{ flex: "1" }}>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -208,54 +211,51 @@ export default function RaidDiffCalculator() {
               </tr>
             </thead>
             <tbody>
-            {players.map((p, i) => {
-  let arrow = null;
-  if (p.previousRank !== null) {
-    if (p.previousRank > i + 1) arrow = "up";
-    else if (p.previousRank < i + 1) arrow = "down";
-  }
+              {players.map((p, i) => {
+                let arrow = null;
+                if (!p.isNew && p.previousRank !== null) {
+                  if (p.previousRank > i + 1) arrow = "up";
+                  else if (p.previousRank < i + 1) arrow = "down";
+                }
 
-  return (
-    <tr key={i}>
-      <td>{i + 1}</td>
-      <td>
-        {arrow && (
-          <span className={`arrow ${arrow}`}>
-            {arrow === "up" ? "↑" : "↓"}
-          </span>
-        )}
-        {p.player}
-      </td>
-      <td>{p.resources?.toLocaleString()}</td>
-      <td>
-        {typeof p.lastHour === "number"
-          ? p.lastHour.toLocaleString()
-          : p.lastHour}
-      </td>
-      <td
-        className={
-          typeof p.diff === "string" ? "waiting" : "positive"
-        }
-      >
-        {typeof p.diff === "string"
-          ? p.diff
-          : p.diff.toLocaleString()}
-      </td>
-    </tr>
-  );
-})}
+                return (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>
+                      {p.isNew && (
+                        <span className="arrow new">New</span>
+                      )}
+                      {arrow && (
+                        <span className={`arrow ${arrow}`}>
+                          {arrow === "up" ? "↑" : "↓"}
+                        </span>
+                      )}
+                      {p.player}
+                    </td>
+                    <td>{p.resources?.toLocaleString()}</td>
+                    <td>
+                      {typeof p.lastHour === "number"
+                        ? p.lastHour.toLocaleString()
+                        : p.lastHour}
+                    </td>
+                    <td
+                      className={
+                        typeof p.diff === "string" ? "waiting" : "positive"
+                      }
+                    >
+                      {typeof p.diff === "string"
+                        ? p.diff
+                        : p.diff.toLocaleString()}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
       </div>
 
-      <footer className="footer">
-        Made with love by <strong>Fico</strong> for Akrep to make his
-        miserable life a bit more bearable, he just loves numbers which I will
-        provide for him. Remember, hard work always pays off, so you better
-        never quit on your dreams on becoming the top 10 raider.{" "}
-        <span className="heart">❤️</span>
-      </footer>
+      <Footer />
     </div>
   );
 }

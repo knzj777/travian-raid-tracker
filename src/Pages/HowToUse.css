@@ -1,0 +1,177 @@
+.howto-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+  }
+  
+  .guide-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .guide-container h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  /* Card styling */
+  .guide-step {
+    display: flex;
+    gap: 15px;
+    background: rgba(40, 40, 40, 0.3); /* dark theme */
+    padding: 12px 15px;
+    border-radius: 12px;
+    align-items: flex-start;
+    transition: transform 0.2s, box-shadow 0.2s;
+    backdrop-filter: blur(6px);
+  }
+  
+  .light .guide-step {
+    background: rgba(255, 255, 255, 0.3);
+    color: #000;
+    backdrop-filter: blur(6px);
+  }
+  
+  .guide-step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Number bubbles */
+  .step-number {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    min-width: 26px;
+    min-height: 26px;
+    border-radius: 50%;
+    background: #527230;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  
+  .light .step-number {
+    background: #476629;
+    color: #fff;
+  }
+  
+  /* Text */
+  .step-text {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .step-text p {
+    margin: 4px 0 0 0;
+  }
+  
+  .step-text ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 5px;
+  }
+  
+  .step-text ul li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+  
+  /* Arrows */
+  .arrow.up,
+  .arrow.down,
+  .arrow.new {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: #fff;
+    font-size: 12px;
+  }
+  
+  .arrow.up {
+    background-color: #27ae60;
+  }
+  .arrow.down {
+    background-color: #e74c3c;
+  }
+  .arrow.new {
+    background-color: #7fbb3f;
+  }
+  
+  /* Responsive */
+  @media (max-width: 900px) {
+    .guide-step {
+      flex-direction: column;
+    }
+  
+    .step-number {
+      min-width: 24px;
+      min-height: 24px;
+      font-size: 14px;
+    }
+  
+    .step-text,
+    .step-text ul li {
+      font-size: 13px;
+    }
+  
+    .guide-container h2 {
+      font-size: 18px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .howto-content {
+      padding: 15px;
+    }
+  
+    .step-number {
+      min-width: 20px;
+      min-height: 20px;
+      font-size: 12px;
+    }
+  
+    .step-text,
+    .step-text ul li {
+      font-size: 12px;
+    }
+  
+    .guide-container h2 {
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .guide-step {
+      padding: 10px 12px;
+    }
+  
+    .step-number {
+      min-width: 18px;
+      min-height: 18px;
+      font-size: 11px;
+    }
+  
+    .step-text,
+    .step-text ul li {
+      font-size: 11px;
+    }
+  
+    .guide-container h2 {
+      font-size: 14px;
+    }
+  }
+  
