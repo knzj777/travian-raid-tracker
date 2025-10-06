@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import hunsImage from "../images/huns.jpg";
+import winKeyImg from "../images/windows-key-png.png";
 import "./HowToUse.css";
 
 export default function HowToUse() {
@@ -57,6 +58,18 @@ export default function HowToUse() {
             {
               title: "Toggle Dark / Light Mode",
               text: "Click the button in the header to switch between dark and light themes. Everything adapts automatically.",
+            },
+            {
+              title: "Life Hack",
+              text: (
+                <>
+                  If you’re on Windows, you can press {" "}
+                  <span className="win-key">
+                    <img src={winKeyImg} alt="Win" />
+                  </span>{" "}
+                  Win + V to open your clipboard history and see everything you’ve copied recently. This is perfect if you copied previous hour data but you copied something else in the meantime.
+                </>
+              ),
             },
           ].map((step, i) => (
             <div key={i} className="guide-step">

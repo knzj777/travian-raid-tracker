@@ -99,7 +99,7 @@ export default function RaidDiffCalculator() {
         setPlayers(sorted);
       }
 
-      setInput(""); // clear input
+      setInput(""); 
     } catch (err) {
       console.error("Failed to read clipboard or process input: ", err);
       alert("Unable to access clipboard or process input.");
@@ -109,9 +109,12 @@ export default function RaidDiffCalculator() {
   const handleReset = () => {
     if (window.confirm("Clear all saved data?")) {
       setPlayers([]);
+      setRaidTime("00:30"); 
       localStorage.removeItem("raidData");
+      localStorage.removeItem("raidTime"); 
     }
   };
+  
 
   // Time selector
   const incrementHour = () => {

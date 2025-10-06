@@ -42,6 +42,26 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
+
+  .win-key {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 2px;
+    width: 18px;
+    height: 18px;
+    margin-right: 2px;
+    vertical-align: middle;
+  }
+  
+  .win-key img {
+    width: 12px;
+    height: auto;
+    display: block;
+  }
+  
   
   /* Number bubbles */
   .step-number {
