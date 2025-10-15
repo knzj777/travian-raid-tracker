@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/travian-raid-tracker/static/css/main.38dca910.css",
-    "main.js": "/travian-raid-tracker/static/js/main.bc9a0d00.js",
+    "main.css": "/travian-raid-tracker/static/css/main.428ae5fc.css",
+    "main.js": "/travian-raid-tracker/static/js/main.eff2086b.js",
     "static/js/453.b676a6fa.chunk.js": "/travian-raid-tracker/static/js/453.b676a6fa.chunk.js",
     "static/media/huns.jpg": "/travian-raid-tracker/static/media/huns.97b95a7bc43b0f58db81.jpg",
     "static/media/logo.png": "/travian-raid-tracker/static/media/logo.64882bcc7e66f6c2d7e3.png",
     "static/media/windows-key-png.png": "/travian-raid-tracker/static/media/windows-key-png.f5eccb779bd25b46c1b3.png",
     "index.html": "/travian-raid-tracker/index.html",
-    "main.38dca910.css.map": "/travian-raid-tracker/static/css/main.38dca910.css.map",
-    "main.bc9a0d00.js.map": "/travian-raid-tracker/static/js/main.bc9a0d00.js.map",
+    "main.428ae5fc.css.map": "/travian-raid-tracker/static/css/main.428ae5fc.css.map",
+    "main.eff2086b.js.map": "/travian-raid-tracker/static/js/main.eff2086b.js.map",
     "453.b676a6fa.chunk.js.map": "/travian-raid-tracker/static/js/453.b676a6fa.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.38dca910.css",
-    "static/js/main.bc9a0d00.js"
+    "static/css/main.428ae5fc.css",
+    "static/js/main.eff2086b.js"
   ]
 }
