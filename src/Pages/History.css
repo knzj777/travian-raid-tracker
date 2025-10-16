@@ -1,0 +1,389 @@
+.chart-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center the controls row */
+  gap: 12px; /* spacing between Resources and Difference */
+  flex-wrap: wrap;
+}
+
+.chart-controls .checkbox-item {
+  display: inline-flex; /* ensure flex on label */
+  align-items: center;  /* vertically center input + text */
+  gap: 8px;
+  white-space: nowrap;  /* keep pair on one line */
+}
+
+.chart-controls .checkbox-item input[type="checkbox"] {
+  margin: 0;                /* rely on flex gap */
+  align-self: center;       /* enforce vertical centering */
+  width: 16px; height: 16px;/* normalize size for alignment */
+}
+
+.checkbox-item span {
+  display: inline-flex;
+  align-items: center; /* vertically center text relative to checkbox */
+  line-height: 1.2;
+}
+/* Container & content */
+.history-content {
+  flex: 1;
+  padding: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  color: inherit;
+}
+
+.history-content h1 {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.empty-msg {
+  text-align: center;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+
+/* History list */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Card styling */
+.history-card {
+  background: rgba(40, 40, 40, 0.3);
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 900px; /* match HowToUse width */
+  margin: 0 auto;   /* center card within list */
+  box-sizing: border-box;
+}
+
+/* Light mode */
+.light .history-card {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(46, 46, 46, 0.1);
+  color: #000;
+}
+
+/* Header of each card */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  gap: 10px;
+}
+
+.history-header span {
+  display: block;
+}
+
+.saved-time {
+  font-size: 11px;
+  color: #ccc;
+  margin-top: 2px;
+}
+
+.light .saved-time {
+  color: rgb(146, 146, 146);
+}
+
+/* Buttons inside cards */
+.history-buttons button {
+  border: none;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+/* Snapshot details */
+.snapshot-details {
+
+  font-size: 12px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Diff Chart */
+.diff-chart {
+  margin: 10px 0 14px;
+  position: relative;
+}
+
+.chart-title {
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  text-align: left;
+}
+
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  background: rgba(40,40,40,0.18);
+}
+
+.light .chart {
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.18);
+}
+
+.grid {
+  stroke: rgba(255,255,255,0.12);
+  stroke-width: 1;
+}
+
+.light .grid {
+  stroke: rgba(0,0,0,0.12);
+}
+
+.axis {
+  stroke: rgba(255,255,255,0.4);
+  stroke-width: 1.25;
+}
+
+.light .axis {
+  stroke: rgba(0,0,0,0.4);
+}
+
+.bar {
+  fill: #7fbb3f;
+}
+
+.y-label, .x-label, .val-label {
+  fill: currentColor;
+  font-size: 10px;
+}
+
+.val-label {
+  opacity: 0.85;
+}
+
+.chart-legend {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.chart-legend.checkbox-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 12px;
+}
+
+/* Base label size for checkbox text */
+.chart-controls .checkbox-item span { font-size: 13px; }
+
+/* Explicit spacing between checkbox box and text */
+.checkbox-item input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.chart-controls .checkbox-item,
+.chart-controls .checkbox-item input {
+  cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"]:checked {
+  accent-color: #476629;
+}
+
+.chart-legend.compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+.legend-swatch.bar { background: linear-gradient(180deg, #a8cf6d, #476629); }
+.legend-swatch.line { background: linear-gradient(90deg, #3f5b20, #74a143); }
+
+.chart-meta {
+  display: flex;
+  justify-content: center; /* center meta contents */
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 8px; /* bottom gap under chart */
+  flex-wrap: wrap;
+  gap: 12px; /* spacing between blocks */
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7fbb3f;
+  margin-right: 6px;
+}
+
+/* Tooltip */
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.light .chart-tooltip {
+  background: rgba(255,255,255,0.95);
+  color: #000;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+
+.snapshot-details .leaderboard {
+  width: 100%;
+  max-width: 100%;
+}
+
+.snapshot-details .leaderboard {
+  margin-bottom: 16px; /* gap between table and chart */
+}
+
+.snapshot-details th,
+.snapshot-details td {
+  padding: 6px;
+  text-align: left;
+  white-space: normal;    /* allow wrapping */
+  word-break: break-word; /* break long words */
+  overflow-wrap: anywhere;
+  font-size: 15px;
+}
+
+/* tighter layout on very small screens */
+@media (max-width: 600px) {
+  .history-card {
+    padding: 5px;
+  }
+
+  .snapshot-details th,
+  .snapshot-details td {
+    padding: 5px;
+    font-size: 8px;
+  }
+  .chart-title { font-size: 12px; }
+  .y-label, .x-label, .val-label { font-size: 9px; }
+  /* Smaller checkbox label text on small screens */
+  .chart-controls .checkbox-item span { font-size: 12px; }
+}
+
+@media (max-width: 450px) {
+  /* Even smaller on very small devices */
+  .chart-controls .checkbox-item span { font-size: 10px; }
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Clear All button */
+.clear-all-btn {
+  margin-bottom: 15px;
+  background: #527230;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
+  display: block;
+  margin-left: auto;
+}
+
+.clear-all-btn:hover {
+  background: #74a143;
+}
+
+.delete-btn {
+  background: #d9534f;
+}
+
+.delete-btn:hover {
+  background: #ff706b;
+}
+
+/* Background image like other pages */
+.app-container {
+  background-image: url("../images/huns.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .app-container {
+    background-position: calc(50% + 280px) center; /* shift to the right on mobile */
+  }
+}
+
+@media (max-width: 400px) {
+  .app-container {
+    background-position: calc(50% + 320px) center; /* shift to the right on mobile */
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .snapshot-details table {
+    font-size: 12px;
+    min-width: unset;
+  }
+
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .clear-all-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .history-card {
+    min-width: unset;
+  }
+}

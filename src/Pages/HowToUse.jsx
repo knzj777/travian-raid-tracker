@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import hunsImage from "../images/huns.jpg";
 import winKeyImg from "../images/windows-key-png.png";
 import "./HowToUse.css";
 
@@ -16,19 +15,12 @@ export default function HowToUse() {
   return (
     <div
       className={`app-container ${darkMode ? "dark" : "light"}`}
-      style={{
-        backgroundImage: `url(${hunsImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
     >
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
 
       <div className="content howto-content" style={{ flex: 1 }}>
         <div className="guide-container">
+          <h1>How to Use</h1>
           {[
             {
               title: "Copy the Top 10 Table",

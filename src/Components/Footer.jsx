@@ -5,9 +5,11 @@ import "./Footer.css";
 export default function Footer() {
   return (
     <div className="footer-container">
-      <Link to="/how-to-use" className="howto-btn">
-        How to Use
-      </Link>
+      <div className="footer-container-links">
+      <Link to="/how-to-use" className="howto-btn">How to Use</Link>
+
+      </div>
+      
       <footer className="footer">
         Made with love by <strong>Fico</strong> for Akrep to make his
         miserable life a bit more bearable, he just loves numbers which I will

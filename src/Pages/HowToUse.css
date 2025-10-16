@@ -6,6 +6,14 @@
     flex-direction: column;
     color: inherit;
   }
+
+  .guide-container h1 {
+    font-family: "New Rocker", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+    margin-bottom: 20px;
+  }
   
   .guide-container {
     display: flex;
@@ -24,6 +32,7 @@
   .guide-step {
     display: flex;
     gap: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(40, 40, 40, 0.3); /* dark theme */
     padding: 12px 15px;
     border-radius: 12px;
@@ -34,6 +43,7 @@
   
   .light .guide-step {
     background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(46, 46, 46, 0.1);
     color: #000;
     backdrop-filter: blur(6px);
   }
@@ -54,6 +64,7 @@
     height: 18px;
     margin-right: 2px;
     vertical-align: middle;
+    border: 1px solid rgb(150, 150, 150);
   }
   
   .win-key img {
@@ -106,29 +117,43 @@
     font-size: 14px;
   }
   
-  /* Arrows */
-  .arrow.up,
-  .arrow.down,
-  .arrow.new {
+  
+  .howto-content .arrow {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: fit-content;
-    padding: 2px 5px;
-    border-radius: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
     font-weight: bold;
     color: #fff;
     font-size: 12px;
+    margin-right: 6px;
   }
+
+  .howto-content .arrow.up { background-color: #27ae60; }
+  .howto-content .arrow.down { background-color: #e74c3c; }
   
-  .arrow.up {
-    background-color: #27ae60;
+  .howto-content .arrow.new {
+    background-color: #7fbb3f; 
+    border-radius: 3px;
+    width: auto;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 5px;
   }
-  .arrow.down {
-    background-color: #e74c3c;
+
+  /* Responsive sizes similar to main */
+  @media (max-width: 600px) {
+    .howto-content .arrow { width: 14px; height: 14px; font-size: 8px; margin-right: 4px; }
+    .howto-content .arrow.new { font-size: 10px; height: 14px; line-height: 14px; padding: 0 4px; }
   }
-  .arrow.new {
-    background-color: #7fbb3f;
+  @media (max-width: 450px) {
+    .howto-content .arrow { width: 12px; height: 12px; font-size: 7px; margin-right: 4px; }
+    .howto-content .arrow.new { font-size: 9px; height: 12px; line-height: 12px; padding: 0 3px; }
   }
   
   /* Responsive */

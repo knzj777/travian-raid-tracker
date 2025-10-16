@@ -3,6 +3,65 @@
     z-index: 2;
     text-align: center;
   }
+
+  .footer-container-links {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    position: relative; /* allow pseudo elements to position */
+    padding-top: 10px;  /* room for the line above */
+  }
+
+  /* Centered fading separator line above links */
+  .footer-container-links::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 900px);
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0) 100%);
+    opacity: 0.6; /* more subtle overall */
+    pointer-events: none;
+  }
+
+  /* Subtle lighting glow in the middle */
+  .footer-container-links::after {
+    content: "";
+    position: absolute;
+    top: 1px; /* start just below the 1px line */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 720px; /* much wider */
+    height: 60px; /* taller to extend downward */
+    /* glow only below the line: anchor gradient at the top edge */
+    background: radial-gradient(ellipse at center top, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 45%, rgba(255,255,255,0) 75%);
+    filter: blur(0.1px);
+    pointer-events: none;
+  }
+
+  /* Light theme variants: black line/glow */
+  .light .footer-container-links::before {
+    background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0) 100%);
+    opacity: 0.6;
+  }
+
+  .light .footer-container-links::after {
+    background: radial-gradient(ellipse at center top, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.04) 45%, rgba(0,0,0,0) 75%);
+    filter: blur(0.1px);
+  }
+
+  /* Mobile: make the glow narrower and shorter */
+  @media (max-width: 700px) {
+    .footer-container-links::after { width: 420px; height: 42px; }
+  }
+
+  @media (max-width: 450px) {
+    .footer-container-links::after { width: 280px; height: 36px; }
+  }
   
   .howto-btn {
     display: inline-block;
@@ -16,7 +75,7 @@
   
   .footer {
     text-align: center;
-    font-size: 12px;
+    font-size: 10px;
     opacity: 0.75;
     line-height: 1.4;
     padding: 15px;

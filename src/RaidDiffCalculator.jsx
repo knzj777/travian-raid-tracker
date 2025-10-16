@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
+import Graph from "./Components/Graph";
+import LeaderboardTable from "./Components/LeaderboardTable";
 import "./RaidTracker.css";
-import hunsImage from "./images/huns.jpg";
+import Modal from "./Components/Modal";
 
 export default function RaidDiffCalculator() {
   const [input, setInput] = useState("");
   const [players, setPlayers] = useState([]);
   const [darkMode, setDarkMode] = useState(true);
-  const [raidTime, setRaidTime] = useState("00:30");
+  const [raidStart, setRaidStart] = useState("00:30");
+  const [raidEnd, setRaidEnd] = useState("01:30");
+  const [appliedRange, setAppliedRange] = useState("");
+  const [modal, setModal] = useState({ open: false, title: "", message: "", variant: "info", onConfirm: null, onCancel: null });
 
   const todayDate = new Date()
     .toLocaleDateString("hr-HR")
@@ -23,8 +28,14 @@ export default function RaidDiffCalculator() {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) setDarkMode(savedTheme === "dark");
 
-    const savedTime = localStorage.getItem("raidTime");
-    if (savedTime) setRaidTime(savedTime);
+    const savedTimeRange = localStorage.getItem("raidTimeRange");
+    if (savedTimeRange) {
+      const parts = savedTimeRange.split("-");
+      if (parts.length === 2) {
+        setRaidStart(parts[0].trim());
+        setRaidEnd(parts[1].trim());
+      }
+    }
   }, []);
 
   // Save data/theme/time
@@ -37,8 +48,9 @@ export default function RaidDiffCalculator() {
   }, [darkMode]);
 
   useEffect(() => {
-    localStorage.setItem("raidTime", raidTime);
-  }, [raidTime]);
+    const display = `${raidStart} - ${raidEnd}`;
+    localStorage.setItem("raidTimeRange", display);
+  }, [raidStart, raidEnd]);
 
   // Parse pasted data
   const parseData = (text) => {
@@ -62,7 +74,13 @@ export default function RaidDiffCalculator() {
       if (!textToParse) {
         textToParse = await navigator.clipboard.readText();
         if (!textToParse.trim()) {
-          alert("Input box is empty and clipboard has no text!");
+          setModal({
+            open: true,
+            title: "Nothing to paste",
+            message: "Input box is empty and clipboard has no text.",
+            variant: "info",
+            onConfirm: () => setModal((m) => ({ ...m, open: false })),
+          });
           return;
         }
       }
@@ -100,93 +118,144 @@ export default function RaidDiffCalculator() {
       }
 
       setInput(""); 
+      const display = `${raidStart} - ${raidEnd}`;
+      setAppliedRange(display);
     } catch (err) {
       console.error("Failed to read clipboard or process input: ", err);
-      alert("Unable to access clipboard or process input.");
+      setModal({
+        open: true,
+        title: "Paste failed",
+        message: "Unable to access clipboard or process input.",
+        variant: "info",
+        onConfirm: () => setModal((m) => ({ ...m, open: false })),
+      });
     }
   };
 
-  const handleReset = () => {
-    if (window.confirm("Clear all saved data?")) {
-      setPlayers([]);
-      setRaidTime("00:30"); 
-      localStorage.removeItem("raidData");
-      localStorage.removeItem("raidTime"); 
-    }
+  const handleSaveHistory = () => {
+    if (players.length === 0) return;
+  
+    const newSnapshot = {
+      timestamp: Date.now(),
+      raidTimeRange: `${raidStart} - ${raidEnd}`,
+      players,
+    };
+  
+    const history = JSON.parse(localStorage.getItem("history") || "[]");
+    history.push(newSnapshot);
+    localStorage.setItem("history", JSON.stringify(history));
+  
+    setModal({
+      open: true,
+      title: "Saved",
+      message: "Snapshot saved to history.",
+      variant: "info",
+      onConfirm: () => setModal((m) => ({ ...m, open: false })),
+    });
   };
   
 
-  // Time selector
+  const handleReset = () => {
+    setModal({
+      open: true,
+      title: "Reset data",
+      message: "Clear all saved data? This cannot be undone.",
+      variant: "confirm",
+      onCancel: () => setModal((m) => ({ ...m, open: false })),
+      onConfirm: () => {
+        setModal((m) => ({ ...m, open: false }));
+        setPlayers([]);
+        setRaidStart("00:30");
+        setRaidEnd("01:30");
+        localStorage.removeItem("raidData");
+        localStorage.removeItem("raidTimeRange");
+      },
+    });
+  };
+  
+
+  // Time range selector
   const incrementHour = () => {
-    const [hours, minutes] = raidTime.split(":").map(Number);
-    const newHours = (hours + 1) % 24;
-    setRaidTime(
-      `${newHours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}`
-    );
+    const [sh, sm] = raidStart.split(":").map(Number);
+    const [eh, em] = raidEnd.split(":").map(Number);
+    const ns = `${((sh + 1) % 24).toString().padStart(2, "0")}:${sm.toString().padStart(2, "0")}`;
+    const ne = `${((eh + 1) % 24).toString().padStart(2, "0")}:${em.toString().padStart(2, "0")}`;
+    setRaidStart(ns);
+    setRaidEnd(ne);
   };
 
   const decrementHour = () => {
-    const [hours, minutes] = raidTime.split(":").map(Number);
-    const newHours = (hours - 1 + 24) % 24;
-    setRaidTime(
-      `${newHours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}`
-    );
+    const [sh, sm] = raidStart.split(":").map(Number);
+    const [eh, em] = raidEnd.split(":").map(Number);
+    const ns = `${((sh - 1 + 24) % 24).toString().padStart(2, "0")}:${sm.toString().padStart(2, "0")}`;
+    const ne = `${((eh - 1 + 24) % 24).toString().padStart(2, "0")}:${em.toString().padStart(2, "0")}`;
+    setRaidStart(ns);
+    setRaidEnd(ne);
   };
 
   const handleTimeChange = (e) => {
     const val = e.target.value;
-    if (/^[0-9:]*$/.test(val)) {
-      setRaidTime(val);
+    if (/^[0-9:\\-\s]*$/.test(val)) {
+      const parts = val.split("-");
+      if (parts.length === 2) {
+        setRaidStart(parts[0].trim());
+        setRaidEnd(parts[1].trim());
+      }
     }
   };
 
   const handleTimeBlur = () => {
-    const [hours, minutes] = raidTime.split(":").map(Number);
-    if (!isNaN(hours) && !isNaN(minutes)) {
-      setRaidTime(
-        `${hours.toString().padStart(2, "0")}:${minutes
-          .toString()
-          .padStart(2, "0")}`
-      );
+    const norm = (val) => {
+      const [h, m] = (val || "").split(":").map(Number);
+      if (isNaN(h) || isNaN(m)) return null;
+      return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+    };
+    const s = norm(raidStart);
+    const e = norm(raidEnd);
+    if (s && e) {
+      setRaidStart(s);
+      setRaidEnd(e);
     } else {
-      setRaidTime("00:30");
+      setRaidStart("00:30");
+      setRaidEnd("01:30");
     }
   };
 
+  const applyCurrentRange = () => {
+    const display = `${raidStart} - ${raidEnd}`;
+    setAppliedRange(display);
+  };
+
   return (
-    <div
-      className={`app-container ${darkMode ? "dark" : "light"}`}
-      style={{
-        backgroundImage: `url(${hunsImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className={`app-container ${darkMode ? "dark" : "light"}`}>
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
 
       <div className="content" style={{ flex: "1" }}>
-        <textarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Copy the Top 10 table and paste it here or just press the button..."
-          className="input-box"
-        />
-
-        <div className="buttons">
-          <button className="paste-btn" onClick={handlePaste}>
-            📋 Paste & Update
-          </button>
-          <button className="reset-btn" onClick={handleReset}>
-            🗑 Reset
-          </button>
+        <div className="input-wrap">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Copy the Top 10 table and paste it here or just press the button..."
+            className="input-box"
+          />
         </div>
+
+<div className="buttons">
+  <button className="paste-btn" onClick={handlePaste}>
+    📋 Paste & Update
+  </button>
+  <button className="reset-btn" onClick={handleReset}>
+    🗑 Reset
+  </button>
+  <button 
+    className="save-history-btn" 
+    onClick={handleSaveHistory} 
+    disabled={players.length === 0}
+  >
+    💾 Save to History
+  </button>
+</div>
+
 
         <div className="time-display">
           <span className="date">{todayDate}</span>
@@ -194,71 +263,36 @@ export default function RaidDiffCalculator() {
             <button onClick={decrementHour}>-</button>
             <input
               type="text"
-              value={raidTime}
+              value={`${raidStart} - ${raidEnd}`}
               onChange={handleTimeChange}
               onBlur={handleTimeBlur}
             />
             <button onClick={incrementHour}>+</button>
+            
           </div>
+          <button onClick={applyCurrentRange} className="update-time-btn">Update Time</button>
         </div>
 
         {players.length > 0 && (
-          <table className="leaderboard">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Player</th>
-                <th>Resources</th>
-                <th>Last Hour</th>
-                <th>Difference</th>
-              </tr>
-            </thead>
-            <tbody>
-              {players.map((p, i) => {
-                let arrow = null;
-                if (!p.isNew && p.previousRank !== null) {
-                  if (p.previousRank > i + 1) arrow = "up";
-                  else if (p.previousRank < i + 1) arrow = "down";
-                }
+          <LeaderboardTable players={players} showMovement={true} maxWidth={900} subtitle={appliedRange || undefined} />
+        )}
 
-                return (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>
-                      {p.isNew && (
-                        <span className="arrow new">New</span>
-                      )}
-                      {arrow && (
-                        <span className={`arrow ${arrow}`}>
-                          {arrow === "up" ? "↑" : "↓"}
-                        </span>
-                      )}
-                      {p.player}
-                    </td>
-                    <td>{p.resources?.toLocaleString()}</td>
-                    <td>
-                      {typeof p.lastHour === "number"
-                        ? p.lastHour.toLocaleString()
-                        : p.lastHour}
-                    </td>
-                    <td
-                      className={
-                        typeof p.diff === "string" ? "waiting" : "positive"
-                      }
-                    >
-                      {typeof p.diff === "string"
-                        ? p.diff
-                        : p.diff.toLocaleString()}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        {players.length > 0 && (
+          <Graph players={players} darkMode={darkMode} maxWidth={900} />
         )}
       </div>
 
       <Footer />
+      <Modal
+        open={modal.open}
+        title={modal.title}
+        message={modal.message}
+        variant={modal.variant}
+        confirmText={modal.variant === 'confirm' ? 'Confirm' : 'OK'}
+        cancelText={"Cancel"}
+        onConfirm={modal.onConfirm}
+        onCancel={modal.onCancel}
+      />
     </div>
   );
 }

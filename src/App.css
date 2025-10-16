@@ -1,0 +1,15 @@
+/* Global container for all pages */
+.app-container {
+  background-image: url('./images/huns.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .app-container {
+    background-position: calc(50% + 300px) center; /* shift to the right on mobile */
+  }
+}

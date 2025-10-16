@@ -1,0 +1,381 @@
+.timer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.timer-content h1 {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Use Inter for section headings (Base time, Adjust by) */
+.timer-content h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 8px 0;
+}
+
+.timer-display {
+  font-size: 56px;
+  font-weight: 700;
+  text-align: center;
+  margin: 10px auto 16px; /* center and match running state margins */
+  padding: 10px 0;
+  border: 1px solid transparent; /* transparent border prevents jump */
+  border-radius: 10px;
+  width: 260px;
+}
+
+.timer-display.running {
+  /* same layout as default; just change visuals */
+  background: rgba(82, 114, 48, 0.18);
+  border: 1px solid #527230;
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px rgba(82, 114, 48, 0.08) inset;
+  backdrop-filter: blur(6px); /* blur only inside the timer box */
+}
+
+.timer-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px; /* tighter */
+  margin-bottom: 14px; /* compact */
+  padding: 12px; /* compact */
+  background: rgba(40, 40, 40, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+}
+
+.light .timer-controls {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(46, 46, 46, 0.1);
+}
+
+.timer-controls > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* tighter */
+}
+
+.timer-controls label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.time-input-with-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-input-with-buttons input {
+  flex: 1;
+  padding: 8px 10px; /* compact */
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: rgba(40,40,40,0.5);
+  color: inherit;
+  font-size: 14px;
+  text-align: center;
+}
+
+.light .time-input-with-buttons input {
+  background: rgba(255,255,255,0.5);
+}
+
+.increment-btn {
+  padding: 8px 10px; /* compact */
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: rgba(40,40,40,0.5);
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-width: 52px; /* narrower */
+}
+
+.light .increment-btn {
+  background: rgba(255,255,255,0.5);
+}
+
+.increment-btn:hover {
+  background: rgba(82, 114, 48, 0.3);
+  border-color: #527230;
+}
+
+.timer-controls select {
+  width: 100%;
+  padding: 8px 36px 8px 10px; /* compact */
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: rgba(40,40,40,0.5);
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23527230' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+}
+
+.light .timer-controls select {
+  background: rgba(255,255,255,0.5);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23527230' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.timer-controls select:hover {
+  border-color: #527230;
+  background-color: rgba(82, 114, 48, 0.1);
+}
+
+.light .timer-controls select:hover {
+  background-color: rgba(82, 114, 48, 0.05);
+}
+
+.timer-controls select:focus {
+  outline: none;
+  border-color: #74a143;
+  box-shadow: 0 0 0 2px rgba(82, 114, 48, 0.3);
+}
+
+/* Style dropdown options */
+.timer-controls select option {
+  background: #2a2a2a;
+  color: #f4f4f4;
+  padding: 8px 12px;
+}
+
+.light .timer-controls select option {
+  background: #ffffff;
+  color: #222222;
+}
+
+/* Custom dropdown styling to override browser defaults */
+.timer-controls select {
+  color-scheme: dark;
+}
+
+.light .timer-controls select {
+  color-scheme: light;
+}
+
+/* Additional styling for better option control */
+.timer-controls select option:hover {
+  background: #527230;
+  color: white;
+}
+
+
+/* Custom checkbox styling */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.checkbox-container span {
+  cursor: default;
+}
+
+.checkbox-container input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #555;
+  border-radius: 4px;
+  background: rgba(40,40,40,0.5);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.light .checkbox-container input[type="checkbox"] {
+  background: rgba(255,255,255,0.5);
+}
+
+.checkbox-container input[type="checkbox"]:checked {
+  background: #527230;
+  border-color: #527230;
+}
+
+.checkbox-container input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Sound section with test button */
+.sound {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sound > div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Volume control */
+.volume-control {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* label | slider | % */
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.volume-control label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.volume-value {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 12px;
+  background: rgba(40,40,40,0.35);
+  border: 1px solid rgba(255,255,255,0.18);
+  outline: none;
+}
+
+.light .volume-slider {
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.18);
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #527230;
+  border: 1px solid #3f5b20;
+  cursor: pointer;
+}
+
+.light .volume-slider::-webkit-slider-thumb {
+  background: #527230;
+  border-color: #3f5b20;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #527230;
+  border: 1px solid #3f5b20;
+  cursor: pointer;
+}
+
+.test-sound-btn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #527230;
+  background: #527230;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.test-sound-btn:hover {
+  background: #74a143;
+  border-color: #74a143;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px; /* compact */
+  justify-content: center;
+  margin-top: 14px; /* compact */
+}
+
+.action-buttons button {
+  padding: 10px 18px; /* compact */
+  border-radius: 8px;
+  border: none;
+  font-size: 14px; /* unified */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 90px;
+}
+
+.action-buttons .start {
+  background: #527230;
+  color: #fff;
+}
+
+.action-buttons .start:hover {
+  background: #74a143;
+}
+
+.action-buttons .stop {
+  background: #d9534f;
+  color: #fff;
+}
+
+.action-buttons .stop:hover {
+  background: #ff706b;
+}
+
+.action-buttons button:last-child {
+  background: rgba(40,40,40,0.5);
+  color: inherit;
+  border: 1px solid #555;
+}
+
+.light .action-buttons button:last-child {
+  background: rgba(255,255,255,0.5);
+}
+
+.action-buttons button:last-child:hover {
+  background: rgba(82, 114, 48, 0.3);
+  border-color: #527230;
+}
+
+@media (max-width: 600px) {
+  .timer-display { font-size: 44px; margin: 8px auto 12px; }
+  .timer-controls { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; padding: 10px; }
+  .time-input-with-buttons { gap: 6px; }
+  .time-input-with-buttons input { width: clamp(90px, 36vw, 115px); font-size: 12.5px; padding: 7px 9px; flex: 0 0 auto; }
+  .increment-btn { min-width: 46px; font-size: 12.5px; padding: 7px 9px; }
+}
+
+@media (max-width: 450px) {
+  .time-input-with-buttons input { width: clamp(82px, 42vw, 108px); font-size: 12px; }
+  .increment-btn { min-width: 42px; font-size: 12px; }
+}
+
+

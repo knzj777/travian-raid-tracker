@@ -6,6 +6,38 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* Global typography consistency */
+.app-container h1,
+.app-container h2 {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  color: inherit;
+}
+
+.app-container h1 {
+  font-size: 28px;
+  margin: 10px 0 14px;
+  text-align: center;
+}
+
+.app-container h2 {
+  font-size: 22px;
+  margin: 8px 0 12px;
+}
+
+.app-container p,
+.app-container li,
+.app-container td,
+.app-container th,
+.app-container label {
+  font-family: 'Inter', sans-serif;
+  color: inherit;
+}
+
+.time-display {
+  margin-bottom: 30px;
+}
+
 /* Variables */
 :root {
   --bg-gradient-dark: linear-gradient(
@@ -57,7 +89,7 @@
   --table-header-end: #476629;
 }
 
-/*  App Container  */
+/* App Container */
 .app-container {
   position: relative;
   min-height: 100vh;
@@ -112,7 +144,7 @@
 }
 
 .header h2 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
 }
 
@@ -120,7 +152,7 @@
 .content {
   position: relative;
   z-index: 1;
-  padding: 20px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -131,194 +163,249 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 15px;
+  justify-content: center;
+  gap: 10px;
   font-size: 14px;
   font-weight: 600;
+}
+
+/* Date badge */
+.time-display .date {
+  display: inline-block;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(40,40,40,0.35);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+.light .time-display .date {
+  color: #222;
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.18);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
 .time-selector {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .time-selector input {
-  width: 130px;
+  width: 14ch;
   text-align: center;
-  border-radius: 20px;
-  border: 1px solid #555;
-  padding: 8px 14px;
-  font-size: 16px;
-  color: var(--text-dark);
-  background: rgba(40, 40, 40, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #fff;
+  background: rgba(40,40,40,0.35);
   backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
 }
 
 .light .time-selector input {
-  color: var(--text-light);
-  background: rgba(255,255,255,0.3);
-  backdrop-filter: blur(6px);
+  color: #222;
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.18);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
-.dark .time-selector button {
-  background-color: #222;
-}
+.dark .time-selector button { background: rgba(40,40,40,0.35); }
 
 .time-selector button {
-  width: 36px;       
-  height: 36px;      
-  border-radius: 50%; 
-  border: 1px solid #555;
-  color: #555;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #fff;
   font-weight: 400;
   font-size: 14px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0;        
+  padding: 0;
   box-sizing: border-box;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
 }
 
-/* Input Box== */
-.input-box {
-  width: 100%;
-  max-width: 600px;
-  height: 120px;
+.light .time-selector button {
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.18);
+  color: #000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Update Time button */
+.update-time-btn {
   border-radius: 12px;
-  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  background: rgba(40,40,40,0.35);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  width: fit-content;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+.light.update-time-btn {
+  color: #222;
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.18);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* Hover states */
+.update-time-btn:hover { filter: brightness(1.06); }
+.update-time-btn:active { transform: translateY(1px); }
+.time-selector button:hover { filter: brightness(1.02); }
+.time-selector button:active { transform: translateY(1px); }
+
+/* Input Box */
+.input-wrap {
+  width: 100%;
+  max-width: 640px;
+  height: 140px;
+  border-radius: 12px;
+  padding: 10px;
   font-size: 14px;
   border: 1px solid var(--text-area-border);
   color: var(--text-dark);
   background: rgba(40,40,40,0.3);
   backdrop-filter: blur(6px);
-  resize: none;
+  overflow: hidden;
   margin-bottom: 10px;
 }
 
-.light .input-box {
+.light .input-wrap {
   color: var(--text-light);
   background: rgba(255,255,255,0.3);
   backdrop-filter: blur(6px);
+}
+
+.input-wrap:focus-within {
+  outline: 1px solid white;
+}
+
+.light .input-wrap:focus-within {
+  outline: 1px solid black;
+}
+
+.input-box {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  line-height: 1.4;
+  resize: none;
+  overflow: auto;
+  scrollbar-gutter: stable both-edges;
+}
+
+/* Scrollbars */
+.input-box::-webkit-scrollbar { width: 10px; }
+.input-box::-webkit-scrollbar-track { background: transparent; }
+.dark .input-box::-webkit-scrollbar-thumb,
+.light .input-box::-webkit-scrollbar-thumb {
+  background-color: var(--text-area-border);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.dark .input-box,
+.light .input-box {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-area-border) transparent;
 }
 
 /* Buttons */
 .buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 button {
   border-radius: 12px;
-  padding: 8px 16px;
+  padding: 6px 12px;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid black;
 }
 
-.paste-btn {
-  background: var(--button-bg);
-  color: #fff;
-}
-
-.reset-btn {
-  background: var(--reset-bg);
-  color: #fff;
-}
-
-/* Leaderboard Table */
-.leaderboard {
-  width: 100%;
-  max-width: 800px;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin-top: 15px;
-  border-radius: 3px;
-  overflow: hidden;
-  background: var(--table-bg-dark);
-  border: 1px solid var(--table-border-color);
-}
-
-.light .leaderboard {
-  background: var(--table-bg-light);
-}
-
-.leaderboard th {
-  background: linear-gradient(90deg, var(--table-header-start), var(--table-header-end));
-  color: white;
-  padding: 12px;
-  text-align: center;
+.buttons button {
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 600;
   font-size: 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  background: rgba(40,40,40,0.35);
+  backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
 }
 
-.leaderboard td {
-  padding: 12px;
-  text-align: center;
+.light .buttons button {
+  border-color: rgba(0,0,0,0.15);
+  color: #111;
+  background: rgba(255,255,255,0.65);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
-.leaderboard tr:nth-child(even) {
-  background: rgba(255,255,255,0.08);
-}
+.buttons button:hover { filter: brightness(1.02); }
+.buttons button:active { transform: translateY(1px); }
+.buttons button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-.light .leaderboard tr:nth-child(even) {
-  background: rgba(0,0,0,0.08);
+.buttons .paste-btn {
+  background: var(--button-bg);
+  border-color: #3f5b20;
+  color: #fff;
 }
+.buttons .paste-btn:hover { background: var(--button-bg-hover); }
+.light .buttons .paste-btn { background: var(--button-bg); color: #fff; }
+.light .buttons .paste-btn:hover { background: var(--button-bg-hover); }
 
-.leaderboard tr:hover {
-  background: rgba(255,255,255,0.12);
+.buttons .reset-btn {
+  background: var(--reset-bg);
+  border-color: #b53c3c;
+  color: #fff;
 }
+.buttons .reset-btn:hover { background: var(--reset-bg-hover); }
+.light .buttons .reset-btn { background: var(--reset-bg); color: #fff; }
+.light .buttons .reset-btn:hover { background: var(--reset-bg-hover); }
 
-.light .leaderboard tr:hover {
-  background: rgba(0,0,0,0.08);
+.buttons .save-history-btn {
+  background: rgba(40,40,40,0.35);
+  border-color: rgba(255,255,255,0.22);
+  color: #fff;
 }
+.buttons .save-history-btn:hover { filter: brightness(1.06); }
 
-/* Difference colors */
-.waiting {
-  color: #555;
+.light .buttons .save-history-btn {
+  background: rgba(255,255,255,0.65);
+  color: #222;
+  border-color: rgba(0,0,0,0.18);
 }
-
-.positive {
-  color: var(--table-header-start);
-  font-weight: bold;
-}
-
-.dark .positive {
-  color: var(--diff-green);
-}
-
-/* Arrows for position */
-.arrow {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: bold;
-  color: white;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-.arrow.up {
-  background-color: #27ae60; 
-}
-
-.arrow.down {
-  background-color: #e74c3c; 
-}
-
-.arrow.new {
-  background-color: #27ae60;
-  border-radius: 3px;
-  width: fit-content;
-  padding: 0 3px;
-  font-weight: bold;
-  margin-right: 5px;
-}
+.light .buttons .save-history-btn:hover { filter: brightness(1.06); }
 
 /* How to use link */
 .how-to-use-link {
@@ -339,27 +426,101 @@ button {
   opacity: 0.8;
 }
 
+/* ========================= */
+/* Better Mobile Responsiveness */
+/* ========================= */
 
-/* Responsive */
 @media (max-width: 600px) {
   .header h2 { font-size: 18px; }
-  .time-display { font-size: 12px; flex-wrap: wrap; }
-  .time-selector input { width: 90px; font-size: 14px; }
-  .input-box { font-size: 12px; height: 100px; }
-  .leaderboard th, .leaderboard td { font-size: 12px; padding: 8px; }
-  .arrow { width: 14px; height: 14px; font-size: 9px; margin-right: 4px; }
+
+  .time-display {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .time-display .date {
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 240px;
+    text-align: center;
+  }
+
+  .time-selector {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width:100%;
+  }
+
+  .time-selector input {
+    width: fit-content;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px 2px;
+  }
+
+  .time-selector button {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+
+  .update-time-btn {
+    width: 100%;
+    max-width: 240px;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .buttons { justify-content: center; }
 }
 
 @media (max-width: 450px) {
   .header h2 { font-size: 14px; }
   .header-title .logo { width: 30px; height: 30px; }
-  .mode-toggle { font-size: 10px;}
+  .mode-toggle { font-size: 10px; }
+
+  .time-display {
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .time-display .date {
+    font-size: 12px;
+    padding: 7px 12px;
+    max-width: 200px;
+  }
+
+  .time-selector input {
+    font-size: 12px;
+    padding: 7px 2px;
+    width: fit-content;
+    max-width: 180px;
+  }
+
+  .time-selector button {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .update-time-btn {
+    font-size: 12px;
+    padding: 7px 0;
+    max-width: 200px;
+  }
+
   .input-box { font-size: 12px; height: 90px; padding: 8px; }
   .buttons button { font-size: 12px; padding: 6px 12px; }
-  .time-display { font-size: 12px; gap: 8px; }
-  .time-selector input { width: 80px; font-size: 14px; padding: 6px 10px; }
-  .time-selector button { width: 28px; height: 28px; font-size: 12px; }
-  .leaderboard th, .leaderboard td { font-size: 10px; padding: 6px; }
   .footer { font-size: 10px; padding: 8px; }
-  .arrow { width: 12px; height: 12px; font-size: 7px; margin-right: 4px; }
+  .buttons { justify-content: center; }
 }

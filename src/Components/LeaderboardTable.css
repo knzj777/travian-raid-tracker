@@ -1,0 +1,134 @@
+.leaderboard-table {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* center table within container */
+}
+
+/* Base table style pulls from app theme but refined for readability */
+.leaderboard {
+  width: 100%;
+  max-width: 900px; /* wider, matches history card width */
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px; /* match graph radius */
+  overflow: hidden;
+  background: rgba(40,40,40,0.18); /* subtle like graph */
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(6px);
+}
+
+.light .leaderboard {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(0,0,0,0.1);
+  backdrop-filter: blur(6px);
+}
+
+/* Header improvements: stronger gradient and tighter paddings on small screens */
+.leaderboard th {
+  background: linear-gradient(90deg, var(--table-header-start), var(--table-header-end));
+  color: white;
+  padding: 6px 8px; /* compact */
+  text-align: center;
+  font-size: 12px; /* slightly larger */
+  line-height: 1.12;
+  letter-spacing: 0.2px;
+}
+
+/* Difference column header with time subtitle */
+.diff-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.diff-subtitle {
+  font-size: 11px; /* slightly larger on desktop */
+  opacity: 0.9;
+}
+
+/* Force white header text in light mode as well */
+.light .leaderboard th {
+  color: #fff;
+}
+
+/* Column sizing for better layout */
+.col-rank { width: 64px; text-align: center; }
+.col-player { text-align: left; }
+.col-resources, .col-last, .col-diff { width: 22%; }
+
+/* Cells */
+.leaderboard td {
+  padding: 10px 10px; /* slightly larger */
+  text-align: center;
+  font-size: 16px; /* bigger on desktop */
+}
+
+/* Soften Last Hour column text */
+.leaderboard td.col-last { color: #aaaaaa; }
+.light .leaderboard td.col-last { color: #555555; }
+
+.leaderboard td.col-player { text-align: left; }
+
+.leaderboard tr:nth-child(even) { background: rgba(255,255,255,0.08); }
+.light .leaderboard tr:nth-child(even) { background: rgba(0,0,0,0.06); }
+
+
+/* Difference coloring from app */
+.waiting { color: #555; }
+.positive { color: var(--table-header-start); font-weight: bold; }
+.dark .positive { color: var(--diff-green); }
+
+/* Arrow badges spacing in player column */
+.col-player .arrow { margin-right: 6px; }
+
+/* Movement arrows (scoped to table) */
+.leaderboard .arrow {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.leaderboard .arrow.up { background-color: #27ae60; }
+.leaderboard .arrow.down { background-color: #e74c3c; }
+
+/* New badge (pill) */
+.leaderboard .arrow.new {
+  background-color: #7fbb3f;
+  border-radius: 10px;
+  width: auto;
+  padding: 0 6px;
+  font-size: 11px;
+  line-height: 18px;
+  height: 18px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .leaderboard { max-width: 100%; }
+  .col-resources, .col-last, .col-diff { width: auto; }
+  .col-rank { width: 48px; }
+  .leaderboard th { padding: 4px 5px; font-size: 9px; line-height: 1.05; }
+  .diff-subtitle { font-size: 8.5px; }
+  .diff-header { gap: 2px; }
+  .leaderboard td { padding: 6px 6px; font-size: 10px; }
+  /* Smaller movement arrows and New badge on small screens */
+  .leaderboard .arrow { width: 14px; height: 14px; font-size: 8px; }
+  .leaderboard .arrow.new { font-size: 10px; height: 14px; line-height: 14px; padding: 0 4px; }
+}
+
+@media (max-width: 450px) {
+  .leaderboard th { padding: 3px 5px; font-size: 8px; line-height: 1.05; }
+  .leaderboard td { padding: 4px 5px; font-size: 8px; }
+  .col-rank { width: 40px; }
+  /* Even smaller on very small devices */
+  .leaderboard .arrow { width: 12px; height: 12px; font-size: 7px; }
+  .leaderboard .arrow.new { font-size: 9px; height: 12px; line-height: 12px; padding: 0 3px; }
+}

@@ -1,0 +1,170 @@
+/* Container */
+.timecalc-content {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.timecalc-content h1 {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Panel card */
+.panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px; /* compact */
+  margin-bottom: 14px; /* compact */
+  padding: 12px; /* compact */
+  background: rgba(40, 40, 40, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+}
+
+.light .panel {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(46, 46, 46, 0.1);
+}
+
+.section h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.triple-input {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* compact */
+}
+
+.triple-input label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.triple-input label span {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.triple-input input {
+  padding: 8px 10px; /* compact */
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: rgba(40,40,40,0.5);
+  color: inherit;
+  font-size: 14px;
+  text-align: center;
+}
+
+.light .triple-input input {
+  background: rgba(255,255,255,0.5);
+}
+
+/* Operation toggle */
+.op-toggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.op-toggle button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: rgba(40,40,40,0.5);
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.light .op-toggle button {
+  background: rgba(255,255,255,0.5);
+}
+
+.op-toggle button.active,
+.op-toggle button:hover {
+  background: rgba(82, 114, 48, 0.3);
+  border-color: #527230;
+}
+
+/* Result card */
+.result-card {
+  background: rgba(40, 40, 40, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  padding: 12px; /* compact */
+  display: grid;
+  gap: 6px; /* compact */
+}
+
+.light .result-card {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(46, 46, 46, 0.1);
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result-row .label {
+  opacity: 0.8;
+}
+
+.result-row .value {
+  font-weight: 700;
+}
+
+.result-row.secondary .value {
+  font-weight: 600;
+}
+
+.warn {
+  color: #e74c3c;
+  font-size: 12px;
+}
+
+/* Large result display */
+.result-display {
+  text-align: center;
+  font-size: 44px; /* compact */
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin: 8px auto 16px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid #527230;
+  background: rgba(82, 114, 48, 0.18);
+  box-shadow: 0 0 0 2px rgba(82, 114, 48, 0.08) inset;
+  width: min(340px, 90%);
+  backdrop-filter: blur(6px);
+}
+
+/* Responsive */
+@media (max-width: 750px) {
+  /* Use two columns to avoid overflow between 750px and 600px */
+  .triple-input { grid-template-columns: repeat(2, 1fr); }
+  /* Place the last field on its own row */
+  .triple-input label:last-child { grid-column: 1 / -1; }
+  /* Slightly smaller labels to help fit */
+  .triple-input label span { font-size: 12px; }
+  .panel { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .triple-input { grid-template-columns: 1fr; }
+  .result-display { font-size: 36px; padding: 8px 12px; }
+  .panel { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+}
