@@ -19,6 +19,7 @@ export default function Header({ darkMode, setDarkMode }) {
         <nav className="nav-links">
           <Link to="/timer" className="nav-link">Timer</Link>
           <Link to="/time-calculator" className="nav-link">Time Calculator</Link>
+          <Link to="/reports" className="nav-link">Reports</Link>
           <Link to="/history" className="nav-link">History</Link>
           <button
             className="mode-toggle"
@@ -42,6 +43,7 @@ export default function Header({ darkMode, setDarkMode }) {
           <div className="mobile-menu">
             <Link to="/timer" className="mobile-link" onClick={() => setOpen(false)}>Timer</Link>
             <Link to="/time-calculator" className="mobile-link" onClick={() => setOpen(false)}>Time Calculator</Link>
+            <Link to="/reports" className="mobile-link" onClick={() => setOpen(false)}>Reports</Link>
             <Link to="/history" className="mobile-link" onClick={() => setOpen(false)}>History</Link>
             <button
               className="mobile-mode-toggle"

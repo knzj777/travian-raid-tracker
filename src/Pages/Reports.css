@@ -1,0 +1,21 @@
+/* Reports Page Styles - Matching original app styling */
+
+.error-message {
+  background: rgba(217, 83, 79, 0.2);
+  color: var(--text-dark);
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid var(--reset-bg);
+  font-weight: bold;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.report-container {
+  margin: 20px 0;
+  background: var(--table-bg-dark);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}

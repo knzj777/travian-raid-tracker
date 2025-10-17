@@ -1,0 +1,345 @@
+.attack-report {
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  background: var(--table-bg-dark);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--text-dark);
+  border: 1px solid var(--table-border-color);
+}
+
+/* Light mode */
+.attack-report.light {
+  background: var(--table-bg-light);
+  color: var(--text-light);
+  border-color: var(--table-border-color-light);
+}
+
+/* Header */
+.report-header {
+  background: linear-gradient(135deg, var(--table-header-start), var(--table-header-end));
+  color: white;
+  padding: 8px 15px;
+}
+
+.header-info {
+  margin-bottom: 5px;
+}
+
+.date-time {
+  font-size: 11px;
+  color: #ddd;
+  margin-bottom: 3px;
+}
+
+.attack-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Section Headers */
+.section-header {
+  padding: 4px 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attacker-header {
+  background: linear-gradient(90deg, rgba(229, 62, 62, 0.5), rgba(197, 48, 48, 0.3));
+}
+
+.light .attacker-header {
+    background: linear-gradient(90deg, rgba(229, 62, 62, 1), rgba(197, 48, 48, 0.75));
+  }
+
+.defender-header {
+  background: linear-gradient(90deg, rgba(70, 130, 180, 0.5), rgba(44, 90, 138, 0.3));
+}
+
+.light .defender-header {
+    background: linear-gradient(90deg, rgba(70, 130, 180, 1), rgba(44, 90, 138, 0.5));
+  }
+
+.statistics-header {
+  background: linear-gradient(90deg, var(--table-header-start), var(--table-header-end));
+}
+
+/* Player Info */
+.player-info {
+  padding: 6px 12px;
+  background: transparent;
+  font-size: 11px;
+}
+
+.player-info .tribe {
+  color: var(--text-dark);
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.player-info .player {
+  color: var(--text-dark);
+  font-weight: bold;
+  margin: 0 4px;
+}
+
+.player-info .village {
+  color: var(--text-dark);
+  opacity: 0.8;
+}
+
+/* Light mode player info */
+.attack-report.light .player-info .tribe,
+.attack-report.light .player-info .player,
+.attack-report.light .player-info .village {
+  color: var(--text-light);
+}
+
+/* Unit Tables */
+.unit-table {
+  background: transparent;
+}
+
+.unit-headers {
+  display: flex;
+  background: transparent;
+}
+
+.unit-header {
+  flex: 1;
+  padding: 4px 3px;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  min-width: 50px;
+  color: var(--text-dark);
+}
+
+.unit-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.unit-row {
+  display: flex;
+}
+
+.unit-cell {
+  flex: 1;
+  padding: 3px;
+  font-size: 11px;
+  text-align: center;
+  min-width: 50px;
+  color: var(--text-dark);
+}
+
+/* Light mode unit tables */
+.attack-report.light .unit-header,
+.attack-report.light .unit-cell {
+  color: var(--text-light);
+}
+
+/* Information Section */
+.information-section {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  padding: 6px 12px;
+  background: transparent;
+}
+
+.info-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--text-dark);
+  font-size: 11px;
+}
+
+.info-content {
+  font-size: 11px;
+  color: var(--text-dark);
+  opacity: 0.9;
+}
+
+.info-item {
+  margin-bottom: 2px;
+}
+
+/* Light mode information */
+.attack-report.light .info-title,
+.attack-report.light .info-content {
+  color: var(--text-light);
+}
+
+/* Bounty Section */
+.bounty-section {
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  padding: 6px 12px;
+  margin-bottom: 10px;
+  background: transparent;
+}
+
+.bounty-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--text-dark);
+  font-size: 11px;
+}
+
+.bounty-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resources {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.resource-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.resource-icon.wood {
+  background: #8B4513;
+}
+
+.resource-icon.clay {
+  background: #FF8C00;
+}
+
+.resource-icon.iron {
+  background: #708090;
+}
+
+.resource-icon.crop {
+  background: #FFD700;
+}
+
+.resource-value {
+  font-weight: normal;
+  color: var(--text-dark);
+  font-size: 11px;
+}
+
+.total-capacity {
+  font-weight: normal;
+  color: var(--text-dark);
+  font-size: 11px;
+}
+
+/* Light mode bounty */
+.attack-report.light .bounty-title,
+.attack-report.light .resource-value,
+.attack-report.light .total-capacity {
+  color: var(--text-light);
+}
+
+/* Statistics Section */
+.statistics-section {
+  margin-top: 10px;
+  background: transparent;
+}
+
+.statistics-table {
+  padding: 6px 12px;
+}
+
+.statistics-row {
+  display: flex;
+  padding: 4px 0;
+}
+
+.statistics-row.header {
+  font-weight: bold;
+  background: transparent;
+  margin-bottom: 2px;
+}
+
+.stat-name {
+  flex: 1;
+  font-size: 11px;
+  color: var(--text-dark);
+}
+
+.stat-value {
+  flex: 1;
+  text-align: right;
+  font-size: 11px;
+  font-weight: normal;
+  padding: 0 8px;
+  color: var(--text-dark);
+}
+
+.stat-value.attacker {
+  color: var(--text-dark);
+}
+
+.stat-value.defender {
+  color: var(--text-dark);
+}
+
+/* Light mode statistics */
+.attack-report.light .stat-name,
+.attack-report.light .stat-value {
+  color: var(--text-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .attack-report {
+    margin: 10px;
+    font-size: 12px;
+  }
+  
+  .unit-headers,
+  .unit-row {
+    flex-wrap: wrap;
+  }
+  
+  .unit-header,
+  .unit-cell {
+    min-width: 40px;
+    font-size: 9px;
+  }
+  
+  .resources {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .resource-item {
+    min-width: 70px;
+  }
+  
+  .statistics-row {
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .stat-value {
+    text-align: left;
+  }
+}

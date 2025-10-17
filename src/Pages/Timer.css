@@ -40,8 +40,8 @@
 }
 
 .timer-controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 12px; /* tighter */
   margin-bottom: 14px; /* compact */
   padding: 12px; /* compact */
