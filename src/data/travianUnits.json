@@ -1,0 +1,1238 @@
+{
+  "gauls": {
+    "name": "Gauls",
+    "description": "Defensive tribe with strong infantry and cavalry",
+    "units": {
+      "phalanx": {
+        "name": "Phalanx",
+        "type": "infantry",
+        "icon": "shield-spear",
+        "cost": {
+          "lumber": 100,
+          "clay": 130,
+          "iron": 55,
+          "crop": 20
+        },
+        "stats": {
+          "attack": 15,
+          "defenseInfantry": 40,
+          "defenseCavalry": 50,
+          "velocity": 14,
+          "carryCapacity": 35,
+          "upkeep": 1,
+          "trainingTime": "0:05:47"
+        }
+      },
+      "swordsman": {
+        "name": "Swordsman",
+        "type": "infantry",
+        "icon": "sword-cross",
+        "cost": {
+          "lumber": 140,
+          "clay": 150,
+          "iron": 185,
+          "crop": 60
+        },
+        "stats": {
+          "attack": 65,
+          "defenseInfantry": 35,
+          "defenseCavalry": 20,
+          "velocity": 12,
+          "carryCapacity": 45,
+          "upkeep": 1,
+          "trainingTime": "0:08:00"
+        }
+      },
+      "pathfinder": {
+        "name": "Pathfinder",
+        "type": "infantry",
+        "icon": "eye-scout",
+        "cost": {
+          "lumber": 170,
+          "clay": 150,
+          "iron": 20,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 20,
+          "defenseCavalry": 10,
+          "velocity": 34,
+          "carryCapacity": 0,
+          "upkeep": 2,
+          "trainingTime": "0:07:33"
+        }
+      },
+      "theutatesThunder": {
+        "name": "Theutates Thunder",
+        "type": "cavalry",
+        "icon": "lightning-horse",
+        "cost": {
+          "lumber": 350,
+          "clay": 450,
+          "iron": 230,
+          "crop": 60
+        },
+        "stats": {
+          "attack": 100,
+          "defenseInfantry": 25,
+          "defenseCavalry": 40,
+          "velocity": 38,
+          "carryCapacity": 75,
+          "upkeep": 2,
+          "trainingTime": "0:13:47"
+        }
+      },
+      "druidrider": {
+        "name": "Druidrider",
+        "type": "cavalry",
+        "icon": "magic-horse",
+        "cost": {
+          "lumber": 360,
+          "clay": 330,
+          "iron": 280,
+          "crop": 120
+        },
+        "stats": {
+          "attack": 45,
+          "defenseInfantry": 115,
+          "defenseCavalry": 55,
+          "velocity": 32,
+          "carryCapacity": 35,
+          "upkeep": 2,
+          "trainingTime": "0:14:13"
+        }
+      },
+      "haeduan": {
+        "name": "Haeduan",
+        "type": "cavalry",
+        "icon": "elite-cavalry",
+        "cost": {
+          "lumber": 500,
+          "clay": 620,
+          "iron": 675,
+          "crop": 170
+        },
+        "stats": {
+          "attack": 140,
+          "defenseInfantry": 60,
+          "defenseCavalry": 165,
+          "velocity": 26,
+          "carryCapacity": 65,
+          "upkeep": 3,
+          "trainingTime": "0:17:20"
+        }
+      },
+      "ram": {
+        "name": "Ram",
+        "type": "siege",
+        "icon": "battering-ram",
+        "cost": {
+          "lumber": 950,
+          "clay": 555,
+          "iron": 330,
+          "crop": 75
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 30,
+          "defenseCavalry": 105,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 3,
+          "trainingTime": "0:27:47"
+        }
+      },
+      "trebuchet": {
+        "name": "Trebuchet",
+        "type": "siege",
+        "icon": "catapult-stone",
+        "cost": {
+          "lumber": 960,
+          "clay": 1450,
+          "iron": 630,
+          "crop": 90
+        },
+        "stats": {
+          "attack": 70,
+          "defenseInfantry": 45,
+          "defenseCavalry": 10,
+          "velocity": 6,
+          "carryCapacity": 0,
+          "upkeep": 6,
+          "trainingTime": "0:50:00"
+        }
+      },
+      "chieftain": {
+        "name": "Chieftain",
+        "type": "special",
+        "icon": "crown-leader",
+        "cost": {
+          "lumber": 30750,
+          "clay": 45400,
+          "iron": 31000,
+          "crop": 37500
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 50,
+          "defenseCavalry": 50,
+          "velocity": 10,
+          "carryCapacity": 0,
+          "upkeep": 4,
+          "trainingTime": "08:23:53"
+        }
+      },
+      "settlerGauls": {
+        "name": "Settler",
+        "type": "special",
+        "icon": "settler-hut",
+        "cost": {
+          "lumber": 4400,
+          "clay": 5600,
+          "iron": 4200,
+          "crop": 3900
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 80,
+          "defenseCavalry": 80,
+          "velocity": 10,
+          "carryCapacity": 3000,
+          "upkeep": 1,
+          "trainingTime": "02:06:07"
+        }
+      }
+    }
+  },
+  "teutons": {
+    "name": "Teutons",
+    "description": "Offensive tribe with powerful infantry",
+    "units": {
+      "clubswinger": {
+        "name": "Clubswinger",
+        "type": "infantry",
+        "icon": "club-warrior",
+        "cost": {
+          "lumber": 95,
+          "clay": 75,
+          "iron": 40,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 20,
+          "defenseCavalry": 5,
+          "velocity": 14,
+          "carryCapacity": 60,
+          "upkeep": 1,
+          "trainingTime": "0:04:00"
+        }
+      },
+      "spearman": {
+        "name": "Spearman",
+        "type": "infantry",
+        "icon": "spear-defender",
+        "cost": {
+          "lumber": 145,
+          "clay": 70,
+          "iron": 85,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 10,
+          "defenseInfantry": 35,
+          "defenseCavalry": 60,
+          "velocity": 14,
+          "carryCapacity": 40,
+          "upkeep": 1,
+          "trainingTime": "0:06:13"
+        }
+      },
+      "axeman": {
+        "name": "Axeman",
+        "type": "infantry",
+        "icon": "axe-berserker",
+        "cost": {
+          "lumber": 130,
+          "clay": 120,
+          "iron": 170,
+          "crop": 70
+        },
+        "stats": {
+          "attack": 60,
+          "defenseInfantry": 30,
+          "defenseCavalry": 30,
+          "velocity": 12,
+          "carryCapacity": 50,
+          "upkeep": 1,
+          "trainingTime": "0:06:40"
+        }
+      },
+      "scout": {
+        "name": "Scout",
+        "type": "infantry",
+        "icon": "spy-glass",
+        "cost": {
+          "lumber": 160,
+          "clay": 100,
+          "iron": 50,
+          "crop": 50
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 10,
+          "defenseCavalry": 5,
+          "velocity": 18,
+          "carryCapacity": 0,
+          "upkeep": 1,
+          "trainingTime": "0:06:13"
+        }
+      },
+      "paladin": {
+        "name": "Paladin",
+        "type": "cavalry",
+        "icon": "holy-knight",
+        "cost": {
+          "lumber": 370,
+          "clay": 270,
+          "iron": 290,
+          "crop": 75
+        },
+        "stats": {
+          "attack": 55,
+          "defenseInfantry": 100,
+          "defenseCavalry": 40,
+          "velocity": 20,
+          "carryCapacity": 110,
+          "upkeep": 2,
+          "trainingTime": "0:13:20"
+        }
+      },
+      "teutonicKnight": {
+        "name": "Teutonic Knight",
+        "type": "cavalry",
+        "icon": "heavy-knight",
+        "cost": {
+          "lumber": 450,
+          "clay": 515,
+          "iron": 480,
+          "crop": 80
+        },
+        "stats": {
+          "attack": 150,
+          "defenseInfantry": 50,
+          "defenseCavalry": 75,
+          "velocity": 18,
+          "carryCapacity": 80,
+          "upkeep": 3,
+          "trainingTime": "0:16:27"
+        }
+      },
+      "ram": {
+        "name": "Ram",
+        "type": "siege",
+        "icon": "siege-ram",
+        "cost": {
+          "lumber": 1000,
+          "clay": 300,
+          "iron": 350,
+          "crop": 70
+        },
+        "stats": {
+          "attack": 65,
+          "defenseInfantry": 30,
+          "defenseCavalry": 80,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 3,
+          "trainingTime": "0:23:20"
+        }
+      },
+      "catapult": {
+        "name": "Catapult",
+        "type": "siege",
+        "icon": "stone-thrower",
+        "cost": {
+          "lumber": 900,
+          "clay": 1200,
+          "iron": 600,
+          "crop": 60
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 60,
+          "defenseCavalry": 10,
+          "velocity": 6,
+          "carryCapacity": 0,
+          "upkeep": 6,
+          "trainingTime": "0:50:00"
+        }
+      },
+      "chieftain": {
+        "name": "Chieftain",
+        "type": "special",
+        "icon": "barbarian-chief",
+        "cost": {
+          "lumber": 35550,
+          "clay": 26600,
+          "iron": 25000,
+          "crop": 27200
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 60,
+          "defenseCavalry": 40,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 4,
+          "trainingTime": "6:31:40"
+        }
+      },
+      "settlerTeutons": {
+        "name": "Settler",
+        "type": "special",
+        "icon": "settler-wagon",
+        "cost": {
+          "lumber": 5800,
+          "clay": 4400,
+          "iron": 4600,
+          "crop": 5200
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 80,
+          "defenseCavalry": 80,
+          "velocity": 10,
+          "carryCapacity": 3000,
+          "upkeep": 1,
+          "trainingTime": "02:52:13"
+        }
+      }
+    }
+  },
+  "romans": {
+    "name": "Romans",
+    "description": "Balanced tribe with versatile units",
+    "units": {
+      "legionnaire": {
+        "name": "Legionnaire",
+        "type": "infantry",
+        "icon": "roman-shield",
+        "cost": {
+          "lumber": 120,
+          "clay": 100,
+          "iron": 150,
+          "crop": 30
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 35,
+          "defenseCavalry": 50,
+          "velocity": 12,
+          "carryCapacity": 50,
+          "upkeep": 1,
+          "trainingTime": "0:08:53"
+        }
+      },
+      "praetorian": {
+        "name": "Praetorian",
+        "type": "infantry",
+        "icon": "elite-guard",
+        "cost": {
+          "lumber": 100,
+          "clay": 130,
+          "iron": 160,
+          "crop": 70
+        },
+        "stats": {
+          "attack": 30,
+          "defenseInfantry": 65,
+          "defenseCavalry": 35,
+          "velocity": 10,
+          "carryCapacity": 20,
+          "upkeep": 1,
+          "trainingTime": "0:09:47"
+        }
+      },
+      "imperian": {
+        "name": "Imperian",
+        "type": "infantry",
+        "icon": "gladiator-sword",
+        "cost": {
+          "lumber": 150,
+          "clay": 160,
+          "iron": 210,
+          "crop": 80
+        },
+        "stats": {
+          "attack": 70,
+          "defenseInfantry": 40,
+          "defenseCavalry": 25,
+          "velocity": 14,
+          "carryCapacity": 50,
+          "upkeep": 1,
+          "trainingTime": "0:10:40"
+        }
+      },
+      "equitesLegati": {
+        "name": "Equites Legati",
+        "type": "cavalry",
+        "icon": "roman-scout",
+        "cost": {
+          "lumber": 140,
+          "clay": 160,
+          "iron": 20,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 20,
+          "defenseCavalry": 10,
+          "velocity": 32,
+          "carryCapacity": 0,
+          "upkeep": 2,
+          "trainingTime": "0:07:33"
+        }
+      },
+      "equitesImperatoris": {
+        "name": "Equites Imperatoris",
+        "type": "cavalry",
+        "icon": "imperial-cavalry",
+        "cost": {
+          "lumber": 550,
+          "clay": 440,
+          "iron": 320,
+          "crop": 100
+        },
+        "stats": {
+          "attack": 120,
+          "defenseInfantry": 65,
+          "defenseCavalry": 50,
+          "velocity": 28,
+          "carryCapacity": 100,
+          "upkeep": 3,
+          "trainingTime": "0:14:40"
+        }
+      },
+      "equitesCaesaris": {
+        "name": "Equites Caesaris",
+        "type": "cavalry",
+        "icon": "caesar-cavalry",
+        "cost": {
+          "lumber": 550,
+          "clay": 640,
+          "iron": 800,
+          "crop": 180
+        },
+        "stats": {
+          "attack": 180,
+          "defenseInfantry": 80,
+          "defenseCavalry": 105,
+          "velocity": 20,
+          "carryCapacity": 70,
+          "upkeep": 4,
+          "trainingTime": "0:19:33"
+        }
+      },
+      "ram": {
+        "name": "Ram",
+        "type": "siege",
+        "icon": "roman-ram",
+        "cost": {
+          "lumber": 900,
+          "clay": 360,
+          "iron": 500,
+          "crop": 70
+        },
+        "stats": {
+          "attack": 60,
+          "defenseInfantry": 30,
+          "defenseCavalry": 75,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 3,
+          "trainingTime": "0:25:33"
+        }
+      },
+      "fireCatapult": {
+        "name": "Fire Catapult",
+        "type": "siege",
+        "icon": "fire-ballista",
+        "cost": {
+          "lumber": 950,
+          "clay": 1350,
+          "iron": 600,
+          "crop": 90
+        },
+        "stats": {
+          "attack": 75,
+          "defenseInfantry": 60,
+          "defenseCavalry": 10,
+          "velocity": 6,
+          "carryCapacity": 0,
+          "upkeep": 6,
+          "trainingTime": "0:50:00"
+        }
+      },
+      "senator": {
+        "name": "Senator",
+        "type": "special",
+        "icon": "senate-leader",
+        "cost": {
+          "lumber": 30750,
+          "clay": 27200,
+          "iron": 45000,
+          "crop": 37500
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 40,
+          "defenseCavalry": 30,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 5,
+          "trainingTime": "08:23:53"
+        }
+      },
+      "settlerRomans": {
+        "name": "Settler",
+        "type": "special",
+        "icon": "settler-villa",
+        "cost": {
+          "lumber": 4600,
+          "clay": 4200,
+          "iron": 5800,
+          "crop": 4400
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 80,
+          "defenseCavalry": 80,
+          "velocity": 10,
+          "carryCapacity": 3000,
+          "upkeep": 1,
+          "trainingTime": "02:29:27"
+        }
+      }
+    }
+  },
+  "huns": {
+    "name": "Huns",
+    "description": "Fast cavalry-focused tribe",
+    "units": {
+      "mercenary": {
+        "name": "Mercenary",
+        "type": "infantry",
+        "icon": "mercenary-sword",
+        "cost": {
+          "lumber": 130,
+          "clay": 80,
+          "iron": 40,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 35,
+          "defenseInfantry": 40,
+          "defenseCavalry": 30,
+          "velocity": 12,
+          "carryCapacity": 50,
+          "upkeep": 1,
+          "trainingTime": "0:04:30"
+        }
+      },
+      "bowman": {
+        "name": "Bowman",
+        "type": "infantry",
+        "icon": "archer-bow",
+        "cost": {
+          "lumber": 140,
+          "clay": 110,
+          "iron": 60,
+          "crop": 60
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 30,
+          "defenseCavalry": 10,
+          "velocity": 12,
+          "carryCapacity": 30,
+          "upkeep": 1,
+          "trainingTime": "0:06:13"
+        }
+      },
+      "spotter": {
+        "name": "Spotter",
+        "type": "scout",
+        "icon": "eagle-eye",
+        "cost": {
+          "lumber": 170,
+          "clay": 150,
+          "iron": 20,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 20,
+          "defenseCavalry": 10,
+          "velocity": 38,
+          "carryCapacity": 0,
+          "upkeep": 1,
+          "trainingTime": "0:07:33"
+        }
+      },
+      "steppeRaider": {
+        "name": "Steppe Raider",
+        "type": "cavalry",
+        "icon": "horse-archer",
+        "cost": {
+          "lumber": 290,
+          "clay": 370,
+          "iron": 190,
+          "crop": 45
+        },
+        "stats": {
+          "attack": 120,
+          "defenseInfantry": 30,
+          "defenseCavalry": 15,
+          "velocity": 32,
+          "carryCapacity": 75,
+          "upkeep": 2,
+          "trainingTime": "0:13:20"
+        }
+      },
+      "marksman": {
+        "name": "Marksman",
+        "type": "cavalry",
+        "icon": "precision-archer",
+        "cost": {
+          "lumber": 320,
+          "clay": 350,
+          "iron": 330,
+          "crop": 50
+        },
+        "stats": {
+          "attack": 110,
+          "defenseInfantry": 80,
+          "defenseCavalry": 70,
+          "velocity": 30,
+          "carryCapacity": 105,
+          "upkeep": 2,
+          "trainingTime": "0:13:47"
+        }
+      },
+      "marauder": {
+        "name": "Marauder",
+        "type": "cavalry",
+        "icon": "raider-axe",
+        "cost": {
+          "lumber": 450,
+          "clay": 560,
+          "iron": 610,
+          "crop": 140
+        },
+        "stats": {
+          "attack": 180,
+          "defenseInfantry": 60,
+          "defenseCavalry": 40,
+          "velocity": 28,
+          "carryCapacity": 80,
+          "upkeep": 3,
+          "trainingTime": "0:16:37"
+        }
+      },
+      "ram": {
+        "name": "Ram",
+        "type": "siege",
+        "icon": "hunnic-ram",
+        "cost": {
+          "lumber": 1060,
+          "clay": 330,
+          "iron": 360,
+          "crop": 70
+        },
+        "stats": {
+          "attack": 65,
+          "defenseInfantry": 30,
+          "defenseCavalry": 90,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 3,
+          "trainingTime": "0:24:27"
+        }
+      },
+      "catapult": {
+        "name": "Catapult",
+        "type": "siege",
+        "icon": "hunnic-catapult",
+        "cost": {
+          "lumber": 950,
+          "clay": 1280,
+          "iron": 620,
+          "crop": 60
+        },
+        "stats": {
+          "attack": 45,
+          "defenseInfantry": 55,
+          "defenseCavalry": 10,
+          "velocity": 6,
+          "carryCapacity": 0,
+          "upkeep": 6,
+          "trainingTime": "0:50:00"
+        }
+      },
+      "logades": {
+        "name": "Logades",
+        "type": "special",
+        "icon": "hunnic-chief",
+        "cost": {
+          "lumber": 37200,
+          "clay": 27600,
+          "iron": 25200,
+          "crop": 27600
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 40,
+          "defenseCavalry": 30,
+          "velocity": 10,
+          "carryCapacity": 0,
+          "upkeep": 4,
+          "trainingTime": "08:23:53"
+        }
+      },
+      "settlerHuns": {
+        "name": "Settler",
+        "type": "special",
+        "icon": "settler-yurt",
+        "cost": {
+          "lumber": 6100,
+          "clay": 4600,
+          "iron": 1800,
+          "crop": 5400
+        },
+        "stats": {
+          "attack": 10,
+          "defenseInfantry": 80,
+          "defenseCavalry": 80,
+          "velocity": 10,
+          "carryCapacity": 3000,
+          "upkeep": 1,
+          "trainingTime": "02:40:50"
+        }
+      }
+    }
+  },
+  "egyptians": {
+    "name": "Egyptians",
+    "description": "Defensive tribe with strong ranged units",
+    "units": {
+      "slaveMilitia": {
+        "name": "Slave Militia",
+        "type": "infantry",
+        "icon": "slave-spear",
+        "cost": {
+          "lumber": 45,
+          "clay": 60,
+          "iron": 30,
+          "crop": 15
+        },
+        "stats": {
+          "attack": 10,
+          "defenseInfantry": 30,
+          "defenseCavalry": 20,
+          "velocity": 14,
+          "carryCapacity": 15,
+          "upkeep": 1,
+          "trainingTime": "0:02:57"
+        }
+      },
+      "ashWarden": {
+        "name": "Ash Warden",
+        "type": "infantry",
+        "icon": "guardian-shield",
+        "cost": {
+          "lumber": 115,
+          "clay": 100,
+          "iron": 145,
+          "crop": 60
+        },
+        "stats": {
+          "attack": 30,
+          "defenseInfantry": 55,
+          "defenseCavalry": 40,
+          "velocity": 12,
+          "carryCapacity": 50,
+          "upkeep": 2,
+          "trainingTime": "0:07:40"
+        }
+      },
+      "khopeshWarrior": {
+        "name": "Kopesh Warrior",
+        "type": "infantry",
+        "icon": "khopesh-sword",
+        "cost": {
+          "lumber": 170,
+          "clay": 1800,
+          "iron": 220,
+          "crop": 80
+        },
+        "stats": {
+          "attack": 65,
+          "defenseInfantry": 50,
+          "defenseCavalry": 20,
+          "velocity": 14,
+          "carryCapacity": 45,
+          "upkeep": 2,
+          "trainingTime": "0:08:00"
+        }
+      },
+      "spoduExplorer": {
+        "name": "Spodu Explorer",
+        "type": "scout",
+        "icon": "desert-scout",
+        "cost": {
+          "lumber": 170,
+          "clay": 150,
+          "iron": 20,
+          "crop": 40
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 50,
+          "defenseCavalry": 50,
+          "velocity": 5,
+          "carryCapacity": 0,
+          "upkeep": 2,
+          "trainingTime": "0:00:30"
+        }
+      },
+      "anhurGuard": {
+        "name": "Anhur Guard",
+        "type": "cavalry",
+        "icon": "egyptian-cavalry",
+        "cost": {
+          "lumber": 360,
+          "clay": 330,
+          "iron": 280,
+          "crop": 120
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 110,
+          "defenseCavalry": 50,
+          "velocity": 30,
+          "carryCapacity": 50,
+          "upkeep": 2,
+          "trainingTime": "0:14:13"
+        }
+      },
+      "repeshChariot": {
+        "name": "Repesh Chariot",
+        "type": "cavalry",
+        "icon": "war-chariot",
+        "cost": {
+          "lumber": 450,
+          "clay": 560,
+          "iron": 610,
+          "crop": 180
+        },
+        "stats": {
+          "attack": 110,
+          "defenseInfantry": 120,
+          "defenseCavalry": 150,
+          "velocity": 20,
+          "carryCapacity": 70,
+          "upkeep": 3,
+          "trainingTime": "0:18:00"
+        }
+      },
+      "ram": {
+        "name": "Ram",
+        "type": "siege",
+        "icon": "egyptian-ram",
+        "cost": {
+          "lumber": 995,
+          "clay": 575,
+          "iron": 340,
+          "crop": 80
+        },
+        "stats": {
+          "attack": 55,
+          "defenseInfantry": 30,
+          "defenseCavalry": 95,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 3,
+          "trainingTime": "0:26:40"
+        }
+      },
+      "stoneCatapult": {
+        "name": "Stone Catapult",
+        "type": "siege",
+        "icon": "pyramid-catapult",
+        "cost": {
+          "lumber": 980,
+          "clay": 1510,
+          "iron": 660,
+          "crop": 100
+        },
+        "stats": {
+          "attack": 65,
+          "defenseInfantry": 55,
+          "defenseCavalry": 10,
+          "velocity": 6,
+          "carryCapacity": 0,
+          "upkeep": 6,
+          "trainingTime": "0:50:00"
+        }
+      },
+      "nomarch": {
+        "name": "Nomarch",
+        "type": "special",
+        "icon": "pharaoh-crown",
+        "cost": {
+          "lumber": 34000,
+          "clay": 50000,
+          "iron": 34000,
+          "crop": 42000
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 50,
+          "defenseCavalry": 50,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 4,
+          "trainingTime": "08:23:53"
+        }
+      },
+      "settlerEgyptians": {
+        "name": "Settler",
+        "type": "special",
+        "icon": "settler-pyramid",
+        "cost": {
+          "lumber": 5040,
+          "clay": 6510,
+          "iron": 4830,
+          "crop": 4620
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 80,
+          "defenseCavalry": 80,
+          "velocity": 10,
+          "carryCapacity": 3000,
+          "upkeep": 1,
+          "trainingTime": "02:17:47"
+        }
+      }
+    }
+  },
+  "spartans": {
+    "name": "Spartans",
+    "description": "Elite defensive tribe with powerful infantry",
+    "units": {
+      "hoplite": {
+        "name": "Hoplite",
+        "type": "infantry",
+        "icon": "spartan-shield",
+        "cost": {
+          "lumber": 110,
+          "clay": 185,
+          "iron": 110,
+          "crop": 35
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 35,
+          "defenseCavalry": 30,
+          "velocity": 12,
+          "carryCapacity": 60,
+          "upkeep": 1,
+          "trainingTime": "0:09:27"
+        }
+      },
+      "sentinel": {
+        "name": "Sentinel",
+        "type": "scout",
+        "icon": "spartan-scout",
+        "cost": {
+          "lumber": 185,
+          "clay": 150,
+          "iron": 35,
+          "crop": 75
+        },
+        "stats": {
+          "attack": 0,
+          "defenseInfantry": 40,
+          "defenseCavalry": 22,
+          "velocity": 18,
+          "carryCapacity": 0,
+          "upkeep": 1,
+          "trainingTime": "0:06:51"
+        }
+      },
+      "shieldsman": {
+        "name": "Shieldsman",
+        "type": "infantry",
+        "icon": "bronze-shield",
+        "cost": {
+          "lumber": 145,
+          "clay": 95,
+          "iron": 245,
+          "crop": 45
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 85,
+          "defenseCavalry": 45,
+          "velocity": 16,
+          "carryCapacity": 40,
+          "upkeep": 1,
+          "trainingTime": "0:10:45"
+        }
+      },
+      "twinsteelTherion": {
+        "name": "Twinsteel Therion",
+        "type": "infantry",
+        "icon": "dual-swords",
+        "cost": {
+          "lumber": 130,
+          "clay": 200,
+          "iron": 400,
+          "crop": 65
+        },
+        "stats": {
+          "attack": 90,
+          "defenseInfantry": 55,
+          "defenseCavalry": 40,
+          "velocity": 12,
+          "carryCapacity": 50,
+          "upkeep": 1,
+          "trainingTime": "0:11:54"
+        }
+      },
+      "elpidaRider": {
+        "name": "Elpida Rider",
+        "type": "cavalry",
+        "icon": "spartan-cavalry",
+        "cost": {
+          "lumber": 555,
+          "clay": 445,
+          "iron": 330,
+          "crop": 110
+        },
+        "stats": {
+          "attack": 55,
+          "defenseInfantry": 120,
+          "defenseCavalry": 90,
+          "velocity": 32,
+          "carryCapacity": 110,
+          "upkeep": 2,
+          "trainingTime": "0:15:39"
+        }
+      },
+      "corinthianCrusher": {
+        "name": "Corinthian Crusher",
+        "type": "cavalry",
+        "icon": "heavy-cavalry",
+        "cost": {
+          "lumber": 660,
+          "clay": 495,
+          "iron": 995,
+          "crop": 165
+        },
+        "stats": {
+          "attack": 195,
+          "defenseInfantry": 80,
+          "defenseCavalry": 75,
+          "velocity": 18,
+          "carryCapacity": 80,
+          "upkeep": 3,
+          "trainingTime": "0:19:04"
+        }
+      },
+      "ram": {
+        "name": "Ram",
+        "type": "siege",
+        "icon": "spartan-ram",
+        "cost": {
+          "lumber": 525,
+          "clay": 360,
+          "iron": 790,
+          "crop": 130
+        },
+        "stats": {
+          "attack": 65,
+          "defenseInfantry": 30,
+          "defenseCavalry": 80,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 3,
+          "trainingTime": "0:25:40"
+        }
+      },
+      "ballista": {
+        "name": "Ballista",
+        "type": "siege",
+        "icon": "spartan-ballista",
+        "cost": {
+          "lumber": 550,
+          "clay": 1240,
+          "iron": 825,
+          "crop": 135
+        },
+        "stats": {
+          "attack": 50,
+          "defenseInfantry": 60,
+          "defenseCavalry": 10,
+          "velocity": 6,
+          "carryCapacity": 0,
+          "upkeep": 6,
+          "trainingTime": "0:50:00"
+        }
+      },
+      "ephor": {
+        "name": "Ephor",
+        "type": "special",
+        "icon": "spartan-leader",
+        "cost": {
+          "lumber": 33450,
+          "clay": 30665,
+          "iron": 36240,
+          "crop": 13935
+        },
+        "stats": {
+          "attack": 40,
+          "defenseInfantry": 60,
+          "defenseCavalry": 40,
+          "velocity": 8,
+          "carryCapacity": 0,
+          "upkeep": 4,
+          "trainingTime": "07:10:50"
+        }
+      },
+      "settlerSpartans": {
+        "name": "Settler",
+        "type": "special",
+        "icon": "settler-acropolis",
+        "cost": {
+          "lumber": 5115,
+          "clay": 5580,
+          "iron": 6045,
+          "crop": 3255
+        },
+        "stats": {
+          "attack": 10,
+          "defenseInfantry": 80,
+          "defenseCavalry": 80,
+          "velocity": 10,
+          "carryCapacity": 3000,
+          "upkeep": 1,
+          "trainingTime": "03:09:27"
+        }
+      }
+    }
+  }
+}

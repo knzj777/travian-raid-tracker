@@ -3,7 +3,7 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./TimeCalculator.css";
 
-export default function TimeCalculator() {
+export default function TimeCalculator({ settings, onSettingsOpen }) {
   const [darkMode, setDarkMode] = useState(true);
 
   // base time
@@ -52,7 +52,7 @@ export default function TimeCalculator() {
 
   return (
     <div className={`app-container ${darkMode ? "dark" : "light"}`}>
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} />
 
       <div className="content timecalc-content" style={{ flex: 1 }}>
         <h1>Time Calculator</h1>

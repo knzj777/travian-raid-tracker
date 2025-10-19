@@ -4,7 +4,7 @@ import Footer from "../Components/Footer";
 import winKeyImg from "../images/windows-key-png.png";
 import "./HowToUse.css";
 
-export default function HowToUse() {
+export default function HowToUse({ settings, onSettingsOpen }) {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function HowToUse() {
     <div
       className={`app-container ${darkMode ? "dark" : "light"}`}
     >
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} />
 
       <div className="content howto-content" style={{ flex: 1 }}>
         <div className="guide-container">

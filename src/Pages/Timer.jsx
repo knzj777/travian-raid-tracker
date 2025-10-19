@@ -1,21 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./Timer.css";
 
-export default function Timer() {
-  const [darkMode, setDarkMode] = useState(true);
-  const [repeat, setRepeat] = useState(true);
-  const [running, setRunning] = useState(false);
-  const [seconds, setSeconds] = useState(60 * 5); // current remaining seconds
-  const [initialSeconds, setInitialSeconds] = useState(60 * 5); // configured duration
-  const [soundName, setSoundName] = useState("beep");
-  const [vibration, setVibration] = useState(false);
-  const [volume, setVolume] = useState(0.7);
-  const [timeInput, setTimeInput] = useState("05:00");
-
-  const intervalRef = useRef(null);
-  const audioRef = useRef(null);
+export default function Timer({ settings, onSettingsOpen, timerState, onTimerStateChange, playSound }) {
+  const [darkMode, setDarkMode] = React.useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -24,117 +13,11 @@ export default function Timer() {
     // Update page title
     document.title = "Timer - Raid Tracker";
     
-    // Load saved timer settings
-    try {
-      const raw = localStorage.getItem("timerSettings");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (typeof parsed.repeat === "boolean") setRepeat(parsed.repeat);
-        if (typeof parsed.vibration === "boolean") setVibration(parsed.vibration);
-        if (typeof parsed.soundName === "string") setSoundName(parsed.soundName);
-        if (typeof parsed.volume === "number") setVolume(Math.min(1, Math.max(0, parsed.volume)));
-        if (typeof parsed.initialSeconds === "number" && parsed.initialSeconds >= 0) {
-          setInitialSeconds(parsed.initialSeconds);
-          setSeconds(parsed.initialSeconds);
-          // timeInput will sync via the effect below, but update optimistically as well
-          setTimeInput(format(parsed.initialSeconds));
-        }
-      }
-    } catch {}
-    
-    // If vibration isn't supported in this environment, ensure it's off
-    if (!supportsVibration()) {
-      setVibration(false);
-    }
-    
     // Cleanup function to reset title when leaving the page
     return () => {
       document.title = "Raid Tracker";
     };
   }, []);
-
-  // Basic synthesized sounds using WebAudio API
-  const playSound = useMemo(() => {
-    return async (name) => {
-      // fallback simple <audio> element
-      if (audioRef.current) {
-        try {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-        } catch {}
-      }
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return;
-      const ctx = new AC();
-      const now = ctx.currentTime;
-      const master = ctx.createGain();
-      master.gain.value = Math.min(1, Math.max(0, volume));
-      master.connect(ctx.destination);
-
-      const pattern = [];
-      switch (name) {
-        case "beep":
-          // Three beeps in a row
-          pattern.push({ f: 1000, t: 0.2, d: 0 });
-          pattern.push({ f: 1000, t: 0.2, d: 0.3 });
-          pattern.push({ f: 1000, t: 0.2, d: 0.6 });
-          break;
-        case "tri":
-          pattern.push({ f: 600, t: 0.15 });
-          pattern.push({ f: 800, t: 0.15, d: 0.2 });
-          pattern.push({ f: 1000, t: 0.2, d: 0.4 });
-          break;
-        case "alarm":
-          for (let i = 0; i < 4; i++) {
-            pattern.push({ f: 880, t: 0.12, d: i * 0.18 });
-            pattern.push({ f: 660, t: 0.12, d: i * 0.18 + 0.12 });
-          }
-          break;
-        default:
-          pattern.push({ f: 1000, t: 0.2 });
-      }
-
-      pattern.forEach((p) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = name === "alarm" ? "square" : name === "tri" ? "triangle" : "sine";
-        osc.frequency.value = p.f;
-        const startAt = now + (p.d || 0);
-        const endAt = startAt + p.t;
-        osc.connect(gain);
-        gain.connect(master);
-        gain.gain.setValueAtTime(0, startAt);
-        gain.gain.linearRampToValueAtTime(1, startAt + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, endAt);
-        osc.start(startAt);
-        osc.stop(endAt + 0.01);
-      });
-    };
-  }, [volume]);
-
-  const supportsVibration = () => {
-    try {
-      return typeof navigator !== "undefined" && "vibrate" in navigator && isSecureContext;
-    } catch {
-      return false;
-    }
-  };
-
-  const doVibrate = (pattern = [150, 100, 150, 100, 300]) => {
-    try {
-      if (!supportsVibration()) return false;
-      const result = navigator.vibrate(pattern);
-      // Some browsers return boolean, others undefined. Only treat explicit false as failure.
-      return result !== false;
-    } catch {
-      return false;
-    }
-  };
-
-  const vibrate = () => {
-    if (!vibration) return false;
-    return doVibrate([150, 100, 150, 100, 300]);
-  };
 
   const format = (total) => {
     const m = Math.floor(total / 60)
@@ -146,33 +29,7 @@ export default function Timer() {
     return `${m}:${s}`;
   };
 
-  // Keep the text input in sync when the base duration changes externally (buttons)
-  useEffect(() => {
-    setTimeInput(format(initialSeconds));
-  }, [initialSeconds]);
-
-  // Persist settings whenever they change
-  useEffect(() => {
-    const toSave = {
-      repeat,
-      vibration,
-      soundName,
-      initialSeconds,
-      volume,
-    };
-    try {
-      localStorage.setItem("timerSettings", JSON.stringify(toSave));
-    } catch {}
-  }, [repeat, vibration, soundName, initialSeconds, volume]);
-
   // Parse flexible user input into seconds.
-  // Accepts:
-  // - "" -> invalid (keep editing)
-  // - "5" -> 5:00
-  // - "12" -> 12:00
-  // - "123" -> 1:23
-  // - "1234" -> 12:34
-  // - "1:2", "01:2", "1:02" -> 01:02
   const parseFlexible = (val) => {
     if (val == null) return null;
     const clean = val.replace(/[^0-9:]/g, "");
@@ -202,141 +59,141 @@ export default function Timer() {
     return m * 60 + s;
   };
 
-  const formatHMS = (total) => {
-    const h = Math.floor(total / 3600)
-      .toString()
-      .padStart(2, "0");
-    const m = Math.floor((total % 3600) / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = Math.floor(total % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${h}:${m}:${s}`;
+  const handleStartStop = () => {
+    // Initialize audio context on user interaction to bypass autoplay policy
+    if (!timerState.running) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        const ctx = new AC();
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(e => console.log('Failed to resume audio context:', e));
+        }
+      }
+    }
+    
+    onTimerStateChange({
+      ...timerState,
+      running: !timerState.running,
+    });
+    // Prime vibration on a user gesture so later calls are more likely to be honored
+    if (!timerState.running && timerState.vibration) {
+      // Vibration is now handled globally in App.js
+    }
   };
 
-  useEffect(() => {
-    document.title = `${formatHMS(seconds)} - Raid Tracker`;
-  }, [seconds]);
-
-  const tick = () => {
-    setSeconds((prev) => {
-      if (prev <= 1) {
-        // trigger alarm
-        let didVibrate = false;
-        if (vibration) {
-          didVibrate = vibrate();
-        }
-        if (!didVibrate) {
-          playSound(soundName);
-        }
-        if (repeat) {
-          return initialSeconds;
-        }
-        setRunning(false);
-        return 0;
-      }
-      return prev - 1;
+  const addSeconds = (delta) => {
+    const newInitialSeconds = Math.max(0, timerState.initialSeconds + delta);
+    const newSeconds = Math.max(0, timerState.seconds + delta);
+    onTimerStateChange({
+      ...timerState,
+      initialSeconds: newInitialSeconds,
+      seconds: newSeconds,
+      timeInput: format(newInitialSeconds),
     });
   };
 
-  const handleStartStop = () => {
-    setRunning((r) => !r);
-    // Prime vibration on a user gesture so later calls are more likely to be honored
-    if (!running && vibration) {
-      doVibrate([20]);
-    }
-  };
-
-  useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(tick, 1000);
-    } else if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running, initialSeconds, repeat, soundName]);
-
-  const addSeconds = (delta) => {
-    setInitialSeconds((v) => Math.max(0, v + delta));
-    setSeconds((v) => Math.max(0, v + delta));
-  };
-
   const reset = () => {
-    setSeconds(initialSeconds);
-    setRunning(false);
+    onTimerStateChange({
+      ...timerState,
+      seconds: timerState.initialSeconds,
+      running: false,
+    });
+  };
+
+  const updateTimerSetting = (key, value) => {
+    onTimerStateChange({
+      ...timerState,
+      [key]: value,
+    });
+  };
+
+  const handleTimeInputChange = (raw) => {
+    const sanitized = raw.replace(/[^0-9:]/g, "");
+    const parsed = parseFlexible(sanitized);
+    
+    onTimerStateChange({
+      ...timerState,
+      timeInput: sanitized,
+      ...(parsed !== null && {
+        initialSeconds: parsed,
+        seconds: parsed,
+      }),
+    });
+  };
+
+  const handleTimeInputBlur = () => {
+    const parsed = parseFlexible(timerState.timeInput);
+    if (parsed === null) {
+      // revert to last known good value
+      onTimerStateChange({
+        ...timerState,
+        timeInput: format(timerState.initialSeconds),
+      });
+    } else {
+      const m = Math.floor(parsed / 60)
+        .toString()
+        .padStart(2, "0");
+      const s = Math.floor(parsed % 60)
+        .toString()
+        .padStart(2, "0");
+      onTimerStateChange({
+        ...timerState,
+        timeInput: `${m}:${s}`,
+      });
+    }
   };
 
   return (
     <div
       className={`app-container ${darkMode ? "dark" : "light"}`}
     >
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} />
 
-      <div className={`content timer-content ${running ? 'timer-running' : ''}`} style={{ flex: 1 }}>
+      <div className={`content timer-content ${timerState.running ? 'timer-running' : ''}`} style={{ flex: 1 }}>
         <h1>Timer</h1>
 
-        <div className={`timer-display ${running ? "running" : ""}`}>{format(seconds)}</div>
+        <div className={`timer-display ${timerState.running ? "running" : ""}`}>{format(timerState.seconds)}</div>
 
         <div className="timer-controls">
           <div className="time-input-section">
             <label>Set (mm:ss)</label>
             <div className="time-input-with-buttons">
-              <button onClick={() => addSeconds(-30)} className="increment-btn">-30s</button>
+              <button onClick={() => addSeconds(-30)} className="increment-btn">-30</button>
+              <button onClick={() => addSeconds(-15)} className="increment-btn">-15</button>
               <input
                 type="text"
-                value={timeInput}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  const sanitized = raw.replace(/[^0-9:]/g, "");
-                  setTimeInput(sanitized);
-                  const parsed = parseFlexible(sanitized);
-                  if (parsed !== null) {
-                    setInitialSeconds(parsed);
-                    setSeconds(parsed);
-                  }
-                }}
-                onBlur={() => {
-                  const parsed = parseFlexible(timeInput);
-                  if (parsed === null) {
-                    // revert to last known good value
-                    setTimeInput(format(initialSeconds));
-                  } else {
-                    const m = Math.floor(parsed / 60)
-                      .toString()
-                      .padStart(2, "0");
-                    const s = Math.floor(parsed % 60)
-                      .toString()
-                      .padStart(2, "0");
-                    setTimeInput(`${m}:${s}`);
-                  }
-                }}
+                value={timerState.timeInput}
+                onChange={(e) => handleTimeInputChange(e.target.value)}
+                onBlur={handleTimeInputBlur}
               />
-              <button onClick={() => addSeconds(+30)} className="increment-btn">+30s</button>
+              <button onClick={() => addSeconds(+15)} className="increment-btn">+15</button>
+              <button onClick={() => addSeconds(+30)} className="increment-btn">+30</button>
             </div>
           </div>
-          <div className="repeat">
+          <div className="checkbox-section">
             <div className="checkbox-container">
-              <input type="checkbox" checked={repeat} onChange={(e) => setRepeat(e.target.checked)} />
+              <input 
+                type="checkbox" 
+                checked={timerState.repeat} 
+                onChange={(e) => updateTimerSetting('repeat', e.target.checked)} 
+              />
               <span>Repeat</span>
             </div>
-          </div>
-          <div className="vibration">
             <div className="checkbox-container">
-              <input type="checkbox" checked={vibration} disabled={!supportsVibration()} onChange={(e) => setVibration(e.target.checked)} />
-              <span>Vibration{!supportsVibration() ? " (unsupported)" : ""}</span>
+              <input 
+                type="checkbox" 
+                checked={timerState.vibration} 
+                onChange={(e) => updateTimerSetting('vibration', e.target.checked)} 
+              />
+              <span>Vibration</span>
             </div>
           </div>
           <div className="sound">
             <label>Sound</label>
-            <select value={soundName} onChange={(e) => setSoundName(e.target.value)}>
+            <select 
+              value={timerState.soundName} 
+              onChange={(e) => updateTimerSetting('soundName', e.target.value)}
+            >
               <option value="beep">Beep</option>
               <option value="tri">Tri-tone</option>
               <option value="alarm">Alarm</option>
@@ -344,18 +201,13 @@ export default function Timer() {
             <button 
               className="test-sound-btn" 
               onClick={() => {
-                playSound(soundName);
-                if (vibration) {
-                  const ok = vibrate();
-                  if (!ok) {
-                    alert(
-                      "Vibration isn't available. It requires a supported mobile browser (e.g. Chrome on Android) and a secure context (https). iOS Safari does not support the Vibration API."
-                    );
-                  }
+                if (playSound) {
+                  playSound(timerState.soundName);
                 }
               }}
             >
-              🔊 Test
+              🔊
+              Test
             </button>
             <div className="volume-control">
               <label htmlFor="volume-slider">Volume</label>
@@ -365,25 +217,23 @@ export default function Timer() {
                 type="range"
                 min="0"
                 max="100"
-                value={Math.round(volume * 100)}
-                onChange={(e) => setVolume(Math.min(1, Math.max(0, Number(e.target.value) / 100)))}
+                value={Math.round(timerState.volume * 100)}
+                onChange={(e) => updateTimerSetting('volume', Math.min(1, Math.max(0, Number(e.target.value) / 100)))}
               />
-              <span className="volume-value">{Math.round(volume * 100)}%</span>
+              <span className="volume-value">{Math.round(timerState.volume * 100)}%</span>
             </div>
           </div>
         </div>
 
         <div className="action-buttons">
-          <button className={running ? "stop" : "start"} onClick={handleStartStop}>
-            {running ? "Stop" : "Start"}
+          <button className={timerState.running ? "stop" : "start"} onClick={handleStartStop}>
+            {timerState.running ? "Stop" : "Start"}
           </button>
           <button onClick={reset}>Reset</button>
         </div>
       </div>
 
       <Footer />
-      {/* hidden tag used for potential file-based audio in future */}
-      <audio ref={audioRef} style={{ display: "none" }} />
     </div>
   );
 }

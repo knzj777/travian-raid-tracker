@@ -182,7 +182,7 @@ export default function Graph({ players = [], darkMode = true, maxWidth }) {
                 filter={isHover ? 'url(#hoverGlow)' : undefined}
                 onMouseEnter={(e) => {
                   const rect = e.currentTarget.ownerSVGElement.getBoundingClientRect();
-                  setHover({ x: e.clientX - rect.left, y: e.clientY - rect.top, text: `${v.toLocaleString()} resources`, idx, type: 'bar', cw: rect.width, ch: rect.height });
+                  setHover({ x: e.clientX - rect.left, y: e.clientY - rect.top, text: `${v.toLocaleString()}`, idx, type: 'bar', cw: rect.width, ch: rect.height });
                 }}
                 onMouseLeave={() => setHover(null)}
               />
@@ -207,7 +207,7 @@ export default function Graph({ players = [], darkMode = true, maxWidth }) {
                       filter={isHover ? 'url(#hoverGlow)' : undefined}
                       onMouseEnter={(e) => {
                         const rect = e.currentTarget.ownerSVGElement.getBoundingClientRect();
-                        setHover({ x: e.clientX - rect.left, y: e.clientY - rect.top, text: `${(diffs[p.idx] || 0).toLocaleString()} diff`, idx: p.idx, type: 'diff', cw: rect.width, ch: rect.height });
+                        setHover({ x: e.clientX - rect.left, y: e.clientY - rect.top, text: `${(diffs[p.idx] || 0).toLocaleString()}`, idx: p.idx, type: 'diff', cw: rect.width, ch: rect.height });
                       }}
                       onMouseLeave={() => setHover(null)}
                     />

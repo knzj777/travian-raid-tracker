@@ -2,35 +2,35 @@
   width: 100%;
   display: flex;
   justify-content: center; /* center table within container */
+  margin: 24px 0; /* Add more margin at top and bottom */
 }
 
 /* Base table style pulls from app theme but refined for readability */
 .leaderboard {
   width: 100%;
-  max-width: 900px; /* wider, matches history card width */
+  max-width: 900px;
   border-collapse: separate;
   border-spacing: 0;
-  border-radius: 8px; /* match graph radius */
+  border-radius: 4px;
   overflow: hidden;
-  background: rgba(40,40,40,0.18); /* subtle like graph */
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(6px);
+  font-size: 14px;
+  background: rgba(40,40,40,0.7);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .light .leaderboard {
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(0,0,0,0.1);
-  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.2);
 }
 
 /* Header improvements: stronger gradient and tighter paddings on small screens */
 .leaderboard th {
   background: linear-gradient(90deg, var(--table-header-start), var(--table-header-end));
   color: white;
-  padding: 6px 8px; /* compact */
+  padding: 8px 10px;
   text-align: center;
-  font-size: 12px; /* slightly larger */
-  line-height: 1.12;
+  font-size: 14px;
+  line-height: 1.2;
   letter-spacing: 0.2px;
 }
 
@@ -102,7 +102,7 @@
 /* New badge (pill) */
 .leaderboard .arrow.new {
   background-color: #7fbb3f;
-  border-radius: 10px;
+  border-radius: 4px;
   width: auto;
   padding: 0 6px;
   font-size: 11px;

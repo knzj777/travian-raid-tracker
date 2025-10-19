@@ -32,24 +32,20 @@
   .guide-step {
     display: flex;
     gap: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(40, 40, 40, 0.3); /* dark theme */
-    padding: 12px 15px;
-    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(40, 40, 40, 0.7);
+    padding: 14px 16px;
+    border-radius: 4px;
     align-items: flex-start;
-    transition: transform 0.2s, box-shadow 0.2s;
-    backdrop-filter: blur(6px);
   }
   
   .light .guide-step {
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(46, 46, 46, 0.1);
-    color: #000;
-    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: #222;
   }
   
   .guide-step:hover {
-    transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 
@@ -136,7 +132,7 @@
   
   .howto-content .arrow.new {
     background-color: #7fbb3f; 
-    border-radius: 3px;
+    border-radius: 4px;
     width: auto;
     height: 18px;
     line-height: 18px;

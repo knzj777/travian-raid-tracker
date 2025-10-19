@@ -59,29 +59,29 @@
 
 /* Card styling */
 .history-card {
-  background: rgba(40, 40, 40, 0.3);
-  backdrop-filter: blur(6px);
-  border-radius: 12px;
-  padding: 12px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(40, 40, 40, 0.7);
+  border-radius: 4px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
   position: relative;
   width: 100%;
-  max-width: 900px; /* match HowToUse width */
-  margin: 0 auto;   /* center card within list */
+  max-width: 900px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
 /* Light mode */
 .light .history-card {
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(46, 46, 46, 0.1);
-  color: #000;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #222;
 }
 
 /* Header of each card */
 .history-header {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
@@ -91,6 +91,23 @@
 
 .history-header span {
   display: block;
+}
+
+/* Add margin-bottom only when snapshot details are visible */
+.history-card:has(.snapshot-details:not([style*="display: none"])) .history-header {
+  margin-bottom: 20px;
+}
+
+/* Ensure date stays on the left */
+.history-header > div:first-child {
+  flex: 1;
+  text-align: left;
+}
+
+/* Ensure buttons stay on the right */
+.history-buttons {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .saved-time {
@@ -108,17 +125,15 @@
   border: none;
   color: white;
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  transition: 0.2s;
 }
 
 /* Snapshot details */
 .snapshot-details {
 
   font-size: 12px;
-  animation: fadeIn 0.2s ease-in-out;
 }
 
 /* Diff Chart */
@@ -138,13 +153,13 @@
   height: auto;
   display: block;
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  background: rgba(40,40,40,0.18);
+  border-radius: 4px;
+  background: rgba(40,40,40,0.4);
 }
 
 .light .chart {
   border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.4);
 }
 
 .grid {
@@ -218,7 +233,7 @@
   display: inline-block;
   width: 12px;
   height: 12px;
-  border-radius: 3px;
+  border-radius: 4px;
   margin-right: 4px;
 }
 .legend-swatch.bar { background: linear-gradient(180deg, #a8cf6d, #476629); }
@@ -252,7 +267,7 @@
   border: 1px solid rgba(255,255,255,0.2);
   padding: 4px 8px;
   font-size: 12px;
-  border-radius: 6px;
+  border-radius: 4px;
   white-space: nowrap;
 }
 
@@ -304,17 +319,6 @@
   .chart-controls .checkbox-item span { font-size: 10px; }
 }
 
-/* Smooth fade-in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 /* Clear All button */
 .clear-all-btn {
@@ -322,13 +326,18 @@
   background: #527230;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 6px 14px;
   cursor: pointer;
-  transition: 0.2s;
   font-size: 13px;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-left: auto;
+}
+
+.clear-all-btn svg {
+  flex-shrink: 0;
 }
 
 .clear-all-btn:hover {
@@ -373,9 +382,10 @@
   }
 
   .history-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
   }
 
   .clear-all-btn {

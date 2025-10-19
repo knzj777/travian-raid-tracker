@@ -1,15 +1,149 @@
+/* Global color variables */
+:root {
+  /* Primary Colors */
+  --primary-green: #527230;
+  --primary-green-hover: #3f5b20;
+  --primary-green-dark: #3d5a22;
+  
+  /* Background Colors */
+  --bg-dark: rgba(40, 40, 40, 0.6);
+  --bg-light: rgba(255, 255, 255, 0.6);
+  --bg-input-dark: rgba(40, 40, 40, 0.7);
+  --bg-input-light: rgba(255, 255, 255, 0.7);
+  
+  /* Border Colors */
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(46, 46, 46, 0.1);
+  --border-input: #555;
+  
+  /* Text Colors */
+  --text-dark: #f4f4f4;
+  --text-light: #222222;
+  
+  /* Card Colors */
+  --card-bg-dark: rgba(40, 40, 40, 0.6);
+  --card-bg-light: rgba(255, 255, 255, 0.6);
+  
+  /* Button Colors */
+  --button-bg: var(--primary-green);
+  --button-bg-hover: var(--primary-green-hover);
+  --button-text: white;
+  
+  /* Result Display Colors */
+  --result-bg: var(--primary-green);
+  --result-text: white;
+  --result-border: var(--primary-green);
+  --result-border-light: var(--primary-green-dark);
+  
+  /* Warning Colors */
+  --warning-color: #e74c3c;
+}
+
 /* Global container for all pages */
 .app-container {
   background-image: url('./images/huns.jpg');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* Gradient overlay for dark mode */
+.app-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.95) 10%,
+    rgba(8,8,8,0.9) 17%,
+    rgba(0,0,0,0.80) 27%,
+    rgba(0,0,0,0.90) 43%,
+    rgba(0,0,0,0.91) 59%,
+    rgba(0,0,0,0.92) 85%,
+    rgba(0,0,0,0.99) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Gradient overlay for light mode */
+.app-container.light::before {
+  background: linear-gradient(
+    90deg,
+    rgba(250,250,250,1) 0%,
+    rgba(250,250,250,0.95) 10%,
+    rgba(248,248,248,0.9) 17%,
+    rgba(250,250,250,0.80) 27%,
+    rgba(250,250,250,0.90) 43%,
+    rgba(250,250,250,0.80) 59%,
+    rgba(250,250,250,0.92) 85%,
+    rgba(250,250,250,0.99) 100%
+  );
+}
+
+/* Ensure content is above the gradient overlay */
+.app-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Global Scrollbar Styling */
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.light * {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 @media (max-width: 900px) {
   .app-container {
     background-position: calc(50% + 300px) center; /* shift to the right on mobile */
+    background-attachment: scroll; /* Better performance on mobile */
   }
 }
