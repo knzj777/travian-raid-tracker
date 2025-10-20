@@ -5,18 +5,17 @@ import Graph from "./Components/Graph";
 import LeaderboardTable from "./Components/LeaderboardTable";
 import Report from "./Components/reports/Report";
 import "./Components/reports/Report.css";
-import Feed from "./Components/Feed";
 import "./RaidTracker.css";
-import Modal from "./Components/Modal";
+import Modal from "./Components/modals/Modal";
+import SaveModal from "./Components/modals/SaveModal";
 import woodImage from "./images/resources/wood.png";
 import clayImage from "./images/resources/clay.png";
 import ironImage from "./images/resources/iron.png";
 import cropImage from "./images/resources/crop.png";
 
-export default function RaidDiffCalculator({ settings, onSettingsOpen }) {
+export default function RaidDiffCalculator({ settings, onSettingsOpen, timerState, darkMode, setDarkMode }) {
   const [input, setInput] = useState("");
   const [players, setPlayers] = useState([]);
-  const [darkMode, setDarkMode] = useState(true);
   const [raidStart, setRaidStart] = useState("00:30");
   const [raidEnd, setRaidEnd] = useState("01:30");
   const [appliedRange, setAppliedRange] = useState("");
@@ -38,19 +37,18 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen }) {
   const [currentReportIndex, setCurrentReportIndex] = useState(0);
   const [cardsPerRow, setCardsPerRow] = useState(3); // 2, 3, 4, 6
   const [typeFilter, setTypeFilter] = useState('all'); // 'all', 'attacks', 'raids', 'scouts'
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const todayDate = new Date()
     .toLocaleDateString("hr-HR")
     .replace(/\//g, ".")
-    .replace(/\.$/, "");
+    .replace(/\.$/, "")
+    .replace(/\s/g, "");
 
-  // Load saved data and theme/time
+  // Load saved data and time
   useEffect(() => {
     const saved = localStorage.getItem("raidData");
     if (saved) setPlayers(JSON.parse(saved));
-
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) setDarkMode(savedTheme === "dark");
 
     const savedTimeRange = localStorage.getItem("raidTimeRange");
     if (savedTimeRange) {
@@ -68,14 +66,10 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen }) {
     }
   }, []);
 
-  // Save data/theme/time
+  // Save data/time
   useEffect(() => {
     localStorage.setItem("raidData", JSON.stringify(players));
   }, [players]);
-
-  useEffect(() => {
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
 
   useEffect(() => {
     const display = `${raidStart} - ${raidEnd}`;
@@ -263,13 +257,8 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen }) {
     history.push(newSnapshot);
     localStorage.setItem("history", JSON.stringify(history));
   
-    setModal({
-      open: true,
-      title: "Saved",
-      message: "Snapshot saved to history.",
-      variant: "info",
-      onConfirm: () => setModal((m) => ({ ...m, open: false })),
-    });
+    // Show save notification
+    setShowSaveModal(true);
   };
   
 
@@ -350,6 +339,7 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen }) {
         darkMode={darkMode} 
         setDarkMode={setDarkMode}
         onSettingsOpen={onSettingsOpen}
+        timerState={timerState}
       />
 
       <div className="content" style={{ flex: "1" }}>
@@ -599,6 +589,15 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen }) {
         cancelText={"Cancel"}
         onConfirm={modal.onConfirm}
         onCancel={modal.onCancel}
+      />
+
+      {/* Save Notification */}
+      <SaveModal
+        isVisible={showSaveModal}
+        onClose={() => setShowSaveModal(false)}
+        message="Snapshot saved to History"
+        position="bottom-left"
+        duration={3000}
       />
     </div>
   );

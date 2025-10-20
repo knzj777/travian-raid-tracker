@@ -513,9 +513,16 @@ const Report = ({
             })()}
           </div>
           
-          {renderUnitTable(defender.units, `Defender ${index + 1}`, defender.tribe?.toLowerCase())}
+          {/* Show unit table for defenders with units, or empty message for empty defenders */}
+          {(defender.isEmpty || (Object.keys(defender.units).length === 0 && !defender.player)) ? (
+            <div className="empty-defender-message">
+              <span>No units</span>
+            </div>
+          ) : (
+            renderUnitTable(defender.units, `Defender ${index + 1}`, defender.tribe?.toLowerCase())
+          )}
         </div>
-      )        )}
+      ))}
 
         {/* Resources (for scouting reports) */}
         {reportData.resources && (

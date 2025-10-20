@@ -5,7 +5,7 @@ import RaidDiffCalculator from "./RaidDiffCalculator";
 import HowToUse from "./Pages/HowToUse";
 import History from "./Pages/History";
 import Timer from "./Pages/Timer";
-import TimeCalculator from "./Pages/TimeCalculator";
+import TimingTools from "./Pages/TimingTools";
 import CreateReport from "./Pages/CreateReport";
 import Attacks from "./Pages/Attacks";
 import Scouts from "./Pages/Scouts";
@@ -14,7 +14,7 @@ import ScrollToTop from "./Components/ScrollToTop";
 
 function App() {
   const [settings, setSettings] = useState({
-    lightReportOnDarkTheme: false,
+    lightReportOnDarkTheme: true,
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
@@ -65,6 +65,11 @@ function App() {
       }
     }
   }, []);
+
+  // Persist theme to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   // Timer tick function
   const timerTick = () => {
@@ -274,6 +279,9 @@ function App() {
             <RaidDiffCalculator
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -283,6 +291,9 @@ function App() {
             <HowToUse
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -292,6 +303,9 @@ function App() {
             <History
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -304,15 +318,20 @@ function App() {
               timerState={timerState}
               onTimerStateChange={handleTimerStateChange}
               playSound={playSound}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
         <Route
           path="/time-calculator"
           element={
-            <TimeCalculator
+            <TimingTools
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -322,6 +341,9 @@ function App() {
             <CreateReport
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -331,6 +353,9 @@ function App() {
             <Attacks
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -340,6 +365,9 @@ function App() {
             <Scouts
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
+              timerState={timerState}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
             />
           }
         />
@@ -350,6 +378,7 @@ function App() {
         onSettingsChange={handleSettingsChange}
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
+        darkMode={darkMode}
       />
 
       <ScrollToTop darkMode={darkMode} />

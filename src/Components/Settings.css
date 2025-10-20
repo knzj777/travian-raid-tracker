@@ -13,8 +13,12 @@
   padding: 20px;
 }
 
+.light.settings-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 .settings-modal {
-  background: rgba(40,40,40,0.95); /* Less transparent - increased from 0.7 to 0.95 */
+  background: #282828; /* Solid dark background */
   border-radius: 4px; /* Match app border radius */
   border: 1px solid rgba(255,255,255,0.15); /* Match app border */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Match app shadow */
@@ -38,7 +42,7 @@
 }
 
 .light .settings-modal {
-  background: rgba(255,255,255,0.8); /* Match app light background */
+  background: #ffffff; /* Solid light background */
   border-color: rgba(0,0,0,0.12); /* Match app light border */
 }
 

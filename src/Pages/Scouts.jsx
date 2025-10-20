@@ -8,8 +8,7 @@ import Feed from '../Components/Feed';
 import '../RaidTracker.css';
 import './Scouts.css';
 
-const Scouts = ({ settings, onSettingsOpen }) => {
-  const [darkMode, setDarkMode] = useState(true);
+const Scouts = ({ settings, onSettingsOpen, timerState, darkMode, setDarkMode }) => {
   const [savedReports, setSavedReports] = useState({
     raids: [],
     attacks: [],
@@ -20,16 +19,7 @@ const Scouts = ({ settings, onSettingsOpen }) => {
   const [sortOrder, setSortOrder] = useState('newest');
   const [cardsPerRow, setCardsPerRow] = useState(3);
 
-  // Load saved theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) setDarkMode(savedTheme === "dark");
-  }, []);
-
-  // Save theme
-  useEffect(() => {
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  // Theme is managed globally in App
 
   // Load saved reports
   useEffect(() => {
@@ -83,7 +73,7 @@ const Scouts = ({ settings, onSettingsOpen }) => {
 
   return (
     <div className={`app-container ${darkMode ? "dark" : "light"}`}>
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} timerState={timerState} />
       
       <div className="content" style={{ flex: "1" }}>
         <Feed

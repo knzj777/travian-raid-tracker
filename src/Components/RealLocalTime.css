@@ -1,0 +1,68 @@
+.real-local-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  margin: 20px 0;
+ 
+}
+
+.time-label {
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+}
+
+.time-display {
+  font-size: 100px;
+  font-weight: bold;
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  letter-spacing: 2px;
+  width: 500px;
+  margin: 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Light mode styles */
+.light .real-local-time {
+ 
+  border-color: rgba(0,0,0,0.12);
+}
+
+.light .time-label {
+  color: rgba(0,0,0,0.6);
+}
+
+.light .time-display {
+  color: #222;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .time-display {
+    font-size: 70px;
+    letter-spacing: 1px;
+    width: 350px;
+  }
+  
+  .time-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-display {
+    font-size: 50px;
+    letter-spacing: 0.5px;
+    width: 250px;
+  }
+  
+  .real-local-time {
+    padding: 15px;
+    margin: 15px 0;
+  }
+}

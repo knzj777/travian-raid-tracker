@@ -9,7 +9,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 4px;
     position: relative; /* allow pseudo elements to position */
     padding-top: 10px;  /* room for the line above */
   }
@@ -125,7 +125,7 @@
     background: transparent;
     color: inherit;
   }
-  
+
   .footer strong {
     color: var(--button-bg);
   }
@@ -142,5 +142,10 @@
     font-weight: 300;
     letter-spacing: 0.5px;
   }
-  
+
+  .light .version {
+    color: black;
+    opacity: 0.85;
+  }
+    
   

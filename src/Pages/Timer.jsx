@@ -3,13 +3,9 @@ import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import "./Timer.css";
 
-export default function Timer({ settings, onSettingsOpen, timerState, onTimerStateChange, playSound }) {
-  const [darkMode, setDarkMode] = React.useState(true);
+export default function Timer({ settings, onSettingsOpen, timerState, onTimerStateChange, playSound, darkMode, setDarkMode }) {
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) setDarkMode(savedTheme === "dark");
-    
     // Update page title
     document.title = "Timer - Raid Tracker";
     
@@ -147,7 +143,7 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
     <div
       className={`app-container ${darkMode ? "dark" : "light"}`}
     >
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} timerState={timerState} />
 
       <div className={`content timer-content ${timerState.running ? 'timer-running' : ''}`} style={{ flex: 1 }}>
         <h1>Timer</h1>

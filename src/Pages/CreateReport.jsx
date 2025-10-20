@@ -2,32 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Report from '../Components/reports/Report';
+import SaveModal from '../Components/modals/SaveModal';
 import { parseAttackReport, validateAttackReport } from '../utils/attackReportParser';
 import '../RaidTracker.css';
 import './CreateReport.css';
 
-const CreateReport = ({ settings, onSettingsOpen }) => {
+const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkMode }) => {
   const [inputText, setInputText] = useState('');
   const [reportData, setReportData] = useState(null);
   const [error, setError] = useState('');
-  const [darkMode, setDarkMode] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [savedReportInfo, setSavedReportInfo] = useState(null);
-  const [autoCloseTimer, setAutoCloseTimer] = useState(null);
-  const [progressWidth, setProgressWidth] = useState(100);
-  const [isClosing, setIsClosing] = useState(false);
-  const [isDuplicate, setIsDuplicate] = useState(false);
 
-  // Load saved theme
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) setDarkMode(savedTheme === "dark");
-  }, []);
-
-  // Save theme
-  useEffect(() => {
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  // Theme is managed globally in App
 
   const handleParseReport = async () => {
     try {
@@ -172,52 +159,14 @@ const CreateReport = ({ settings, onSettingsOpen }) => {
     }
   };
 
-  const closeSaveModal = () => {
-    if (autoCloseTimer) {
-      clearTimeout(autoCloseTimer);
-      setAutoCloseTimer(null);
-    }
-    setIsClosing(true);
-    
-    // Wait for animation to complete before hiding
-    setTimeout(() => {
-      setShowSaveModal(false);
-      setSavedReportInfo(null);
-      setProgressWidth(100);
-      setIsClosing(false);
-      setIsDuplicate(false);
-    }, 300); // Match CSS transition duration
-  };
-
   const showNotification = (reportInfo, isDuplicateReport = false) => {
-    setSavedReportInfo(reportInfo);
+    setSavedReportInfo({...reportInfo, isDuplicate: isDuplicateReport});
     setShowSaveModal(true);
-    setProgressWidth(100);
-    setIsClosing(false);
-    setIsDuplicate(isDuplicateReport);
-    
-    // Progress bar animation
-    const progressInterval = setInterval(() => {
-      setProgressWidth(prev => {
-        if (prev <= 0) {
-          clearInterval(progressInterval);
-          return 0;
-        }
-        return prev - (100 / 30); // 3 seconds = 30 intervals of 100ms
-      });
-    }, 100);
-    
-    // Auto-close after 3 seconds
-    const timer = setTimeout(() => {
-      clearInterval(progressInterval);
-      closeSaveModal();
-    }, 3000);
-    setAutoCloseTimer(timer);
   };
 
   return (
     <div className={`app-container ${darkMode ? "dark" : "light"}`}>
-      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} />
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} timerState={timerState} />
 
       <div className="content" style={{ flex: "1" }}>
         <h1>Create Report</h1>
@@ -275,30 +224,23 @@ const CreateReport = ({ settings, onSettingsOpen }) => {
       <Footer />
 
       {/* Save Notification */}
-      {showSaveModal && savedReportInfo && (
-        <div className={`save-notification ${isClosing ? 'closing' : ''}`}>
-          <div className="notification-content">
-            <span className="notification-text">
-              {isDuplicate 
+      <SaveModal
+        isVisible={showSaveModal && savedReportInfo}
+        onClose={() => {
+          setShowSaveModal(false);
+          setSavedReportInfo(null);
+        }}
+        message={
+          savedReportInfo 
+            ? (savedReportInfo.isDuplicate 
                 ? `This report is already saved in ${savedReportInfo.type === 'scout' ? 'Scouts' : 'Attacks'}`
-                : `Report saved to ${savedReportInfo.type === 'scout' ? 'Scouts' : 'Attacks'}`
-              }
-            </span>
-            <button className="notification-close" onClick={closeSaveModal}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-          </div>
-          <div className="notification-progress">
-            <div 
-              className={`progress-bar ${isDuplicate ? 'duplicate' : ''}`}
-              style={{ width: `${progressWidth}%` }}
-            ></div>
-          </div>
-        </div>
-      )}
+                : `Report saved to ${savedReportInfo.type === 'scout' ? 'Scouts' : 'Attacks'}`)
+            : "Saved successfully"
+        }
+        position="bottom-left"
+        duration={3000}
+        progressColor={savedReportInfo?.isDuplicate ? "#dc3545" : "#527230"}
+      />
     </div>
   );
 };

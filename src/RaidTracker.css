@@ -133,6 +133,7 @@
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 12px;
+  font-family: "Inter", sans-serif;
 }
 
 /* Date badge */
@@ -142,7 +143,8 @@
   border: 1px solid rgba(255,255,255,0.1);
   padding: 6px 10px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: normal;
   color: #fff;
   background: rgba(40,40,40,0.6);
 }
@@ -151,6 +153,7 @@
   color: #222;
   background: rgba(255,255,255,0.6);
   border-color: rgba(0,0,0,0.1);
+  letter-spacing: normal;
 }
 
 .time-selector {
@@ -213,7 +216,7 @@
   font-weight: 600;
   line-height: 1;
   background: rgba(40,40,40,0.7);
-  color: #fff;
+  color: rgba(255,255,255,0.85); /* match faded text tone */
   white-space: nowrap;
   width: fit-content;
   transition: all 0.1s ease;
@@ -221,27 +224,14 @@
 }
 
 .light .update-time-btn {
-  color: #222;
+  color: rgba(0,0,0,0.7); /* match faded text tone */
   background: rgba(255,255,255,0.8);
   border-color: rgba(0,0,0,0.12);
 }
 
-/* Disabled state for Update Time button */
-.update-time-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: rgba(40,40,40,0.3);
-  color: rgba(255,255,255,0.5);
-}
-
-.light .update-time-btn:disabled {
-  background: rgba(255,255,255,0.3);
-  color: rgba(0,0,0,0.3);
-}
-
 /* Hover states */
 .update-time-btn:hover:not(:disabled) { 
-  background: rgba(40,40,40,0.9);
+  background: rgba(40,40,40,0.7);
   border-color: rgba(255,255,255,0.25);
 }
 .light .update-time-btn:hover:not(:disabled) {
@@ -366,6 +356,12 @@
 }
 .buttons button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Update Time button disabled state - same as save-history-btn */
+.update-time-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .buttons .paste-btn {
   background: var(--button-bg);
   border-color: #3f5b20;
@@ -441,6 +437,7 @@
     width: 100%;
     max-width: 240px;
     text-align: center;
+    letter-spacing: normal;
   }
 
   .time-selector {
@@ -486,9 +483,11 @@
   }
 
   .time-display .date {
-    font-size: 12px;
+    font-size: 13px;
     padding: 7px 12px;
     max-width: 200px;
+    font-family: "Inter", sans-serif;
+    letter-spacing: normal;
   }
 
   .time-selector input {
@@ -972,3 +971,19 @@
 }
 
 /* Report styling moved to Components/reports/Report.css */
+
+/* FINAL OVERRIDE - Update Time Button Disabled Hover */
+button.update-time-btn:disabled:hover {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(40,40,40,0.7);
+  border-color: rgba(255,255,255,0.15);
+  transform: none;
+  filter: none;
+  box-shadow: none;
+}
+
+.light button.update-time-btn:disabled:hover {
+  background: rgba(255,255,255,0.8);
+  border-color: rgba(0,0,0,0.12);
+}

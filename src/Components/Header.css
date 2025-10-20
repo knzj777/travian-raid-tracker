@@ -30,6 +30,7 @@
   gap: 10px;
   text-decoration: none;
   color: #fff;
+  white-space: nowrap; /* keep logo + title on one line */
 }
 
 .light .header-title {
@@ -54,7 +55,7 @@
   align-items: center;
   justify-content: flex-end;
   font-size: 14px;
-  gap: 8px;
+  gap: 0;
 }
 
 .nav-links {
@@ -63,6 +64,7 @@
   justify-content: center;
   font-size: 14px;
   width: 100%;
+  gap: 0;
 }
 
 .nav-link {
@@ -89,7 +91,7 @@
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 4px;
   padding: 8px 12px;
-  margin: 0 4px;
+  margin: 0;
   min-width: 80px;
   text-align: center;
   text-transform: uppercase;
@@ -167,6 +169,7 @@
   font-family: "New Rocker", system-ui;
   font-size: 18px;
   font-weight: 500;
+  padding: 3px 6px; /* smaller vertical padding */
 }
 
 .light .nav-link.new-rocker {
@@ -218,6 +221,50 @@
   color: #fff;
 }
 
+/* Timer running state - dark green gradient */
+.nav-link.timer-running {
+  background: linear-gradient(180deg, #52723000, #52723099);
+  color: #fff;
+  border-radius: 4px;
+  position: relative;
+}
+
+.light .nav-link.timer-running {
+  background: linear-gradient(180deg, #52723000, #52723050);
+  
+  color: #000;
+}
+
+/* Mobile timer running state */
+.mobile-link.timer-running {
+  background: linear-gradient(180deg, #52723000, #52723099);
+  
+  color: #fff;
+  border-radius: 4px;
+}
+
+.light .mobile-link.timer-running {
+  background: linear-gradient(180deg, #52723000, #52723050);
+ 
+  color: #fff;
+}
+
+/* Timer play icon positioning */
+.timer-play-icon {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #527230 !important; /* Custom green color */
+  opacity: 0.8; /* Add slight opacity */
+  z-index: -1;
+  pointer-events: none;
+}
+
+.mobile-link.timer-running {
+  position: relative;
+}
+
 /* Button elements using nav-link class */
 button.nav-link {
   background: none;
@@ -251,6 +298,7 @@ button.nav-link:hover {
   display: flex;
   align-items: center;
   color: #fff;
+  white-space: nowrap; /* prevent app name from wrapping */
 }
 
 .light .header h2 {
@@ -534,6 +582,82 @@ button.mobile-link:hover {
   .mobile-mode-toggle {
     font-size: 14px;
     padding: 7px 9px;
+  }
+}
+
+/* Tablet/medium screens: 975px down to 769px - tighten header typography and spacing */
+@media (max-width: 975px) and (min-width: 769px) {
+  .header {
+    padding: 8px 16px 0;
+    margin-bottom: 28px;
+  }
+
+  .header-title {
+    gap: 8px;
+  }
+
+  .header-title .logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .header h2 {
+    font-size: 18px;
+  }
+
+  .header-right {
+    gap: 0;
+  }
+
+  .nav-links,
+  .header-right .nav-links {
+    font-size: 12px;
+    gap: 0;
+  }
+
+  .nav-link {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+
+  .nav-link.new-rocker {
+    font-size: 16px;
+    padding: 3px 6px; /* even tighter on medium screens */
+  }
+
+  .nav-link.fancy-golden {
+    padding: 6px 10px;
+    font-size: 13px;
+    min-width: 72px;
+    margin: 0;
+  }
+
+  .mode-toggle {
+    min-width: 100px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+/* Desktop: add slight spacing between nav links */
+@media (min-width: 976px) {
+  .nav-links,
+  .header-right .nav-links {
+    gap: 8px;
+  }
+}
+
+/* Hide text on light/dark toggle between 815px and 769px so only icon shows */
+@media (max-width: 850px) and (min-width: 769px) {
+  .mode-toggle {
+    min-width: auto;
+    padding: 6px;
+    font-size: 0; /* hide text label */
+    gap: 0;
+  }
+  .mode-toggle svg {
+    width: 16px;
+    height: 16px;
   }
 }
 

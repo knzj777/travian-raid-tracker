@@ -21,6 +21,7 @@ const Feed = ({
   onCardsPerRowChange,
   getAllReports
 }) => {
+  console.log("Feed component loaded with new changes!");
   const getReportResources = (reportData) => {
     if (!reportData) return null;
 
@@ -159,27 +160,7 @@ const Feed = ({
                 <div className="card-content">
                   <h3 className="card-title">{report.title}</h3>
                   
-                  <div className="card-info">
-                    <div className="info-row">
-                      <span className="label">Attacker:</span>
-                      <span className="value">
-                        {report.data.attacker && report.data.attacker.player
-                          ? `[${report.data.attacker.tribe}] ${report.data.attacker.player} from ${report.data.attacker.village}`
-                          : report.data.header.attackerVillage
-                        }
-                      </span>
-                    </div>
-                    <div className="info-row">
-                      <span className="label">Defender:</span>
-                      <span className="value">
-                        {report.data.defenders && report.data.defenders.length > 0 
-                          ? `[${report.data.defenders[0].tribe}] ${report.data.defenders[0].player} from ${report.data.defenders[0].village}`
-                          : report.data.header.defenderVillage
-                        }
-                      </span>
-                    </div>
-                  </div>
-                  
+                  {/* Resources Preview - Compact Version */}
                   {resources && (
                     <div className="resources-preview">
                       <div className="resource-item">
@@ -197,6 +178,42 @@ const Feed = ({
                       <div className="resource-item">
                         <img src={require('../images/resources/crop.png')} alt="Crop" />
                         <span>{resources.crop.toLocaleString()}</span>
+                      </div>
+                      <div className="resource-total">
+                        <span className="total-label">Total:</span>
+                        <span className="total-value">{resources.total.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Attack Reports - Combat Strength and Resources Lost */}
+                  {reportTypeValue === 'attack' && report.data.statistics && (
+                    <div className="battle-stats">
+                      {report.data.statistics['Combat strength'] && (
+                        <div className="stat-row">
+                          <span className="stat-label">Combat:</span>
+                          <span className="stat-value">
+                            {report.data.statistics['Combat strength'].attacker.toLocaleString()} vs {report.data.statistics['Combat strength'].defender.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+                      {report.data.statistics['Resources lost'] && (
+                        <div className="stat-row">
+                          <span className="stat-label">Lost:</span>
+                          <span className="stat-value">
+                            {report.data.statistics['Resources lost'].attacker.toLocaleString()} vs {report.data.statistics['Resources lost'].defender.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Scout Reports - Raidable Resources */}
+                  {reportTypeValue === 'scout' && resources && (
+                    <div className="raidable-resources">
+                      <div className="raidable-header">
+                        <span className="raidable-label">Raidable:</span>
+                        <span className="raidable-total">{resources.total.toLocaleString()}</span>
                       </div>
                     </div>
                   )}

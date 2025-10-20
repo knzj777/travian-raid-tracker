@@ -346,6 +346,10 @@
 
 .delete-btn {
   background: #d9534f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .delete-btn:hover {

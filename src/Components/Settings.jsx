@@ -1,7 +1,7 @@
 import React from 'react';
 import './Settings.css';
 
-const Settings = ({ settings, onSettingsChange, isOpen, onClose }) => {
+const Settings = ({ settings, onSettingsChange, isOpen, onClose, darkMode }) => {
   if (!isOpen) return null;
 
   const handleSettingChange = (key, value) => {
@@ -12,7 +12,7 @@ const Settings = ({ settings, onSettingsChange, isOpen, onClose }) => {
   };
 
   return (
-    <div className="settings-overlay" onClick={onClose}>
+    <div className={`settings-overlay ${darkMode ? 'dark' : 'light'}`} onClick={onClose}>
       <div className="settings-modal" onClick={(e) => e.stopPropagation()}>
         <div className="settings-header">
           <h3>Settings</h3>
@@ -29,7 +29,7 @@ const Settings = ({ settings, onSettingsChange, isOpen, onClose }) => {
               <label className="setting-label">
                 <input
                   type="checkbox"
-                  checked={settings.lightReportOnDarkTheme || false}
+                  checked={settings.lightReportOnDarkTheme !== false}
                   onChange={(e) => handleSettingChange('lightReportOnDarkTheme', e.target.checked)}
                 />
                 <span className="setting-text">Use light reports on dark theme</span>

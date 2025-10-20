@@ -168,13 +168,6 @@ const detectTribeFromUnits = (units) => {
     }
   }
 
-  // Debug logging for Hero detection
-  if (unitNames.includes("Hero")) {
-    console.log(`DEBUG: Hero detected in units: ${unitNames.join(", ")}`);
-    console.log(`DEBUG: Tribe scores:`, tribeScores);
-    console.log(`DEBUG: Best tribe: ${bestTribe} (score: ${bestScore})`);
-  }
-
   // Only return tribe if we have a reasonable confidence (at least 2 matches, or 1 if it's Hero)
   const hasOnlyHero = unitNames.length === 1 && unitNames[0] === "Hero";
   return bestScore >= (hasOnlyHero ? 1 : 2) ? bestTribe : null;
@@ -182,11 +175,7 @@ const detectTribeFromUnits = (units) => {
 
 // Validation function for attack reports
 export function validateAttackReport(text) {
-  console.log("=== VALIDATION DEBUG START ===");
-  console.log("Text length:", text.length);
-
   if (!text || typeof text !== "string") {
-    console.log("Validation failed: Invalid text input");
     return false;
   }
 
@@ -197,10 +186,6 @@ export function validateAttackReport(text) {
     text.includes(" raids ");
   const hasAttacker = text.includes("Attacker");
   const hasDefender = text.includes("Defender");
-
-  console.log("hasReportTitle:", hasReportTitle);
-  console.log("hasAttacker:", hasAttacker);
-  console.log("hasDefender:", hasDefender);
 
   // For attack reports, check for Statistics
   // For scouting reports, check for Resources
@@ -221,33 +206,21 @@ export function validateAttackReport(text) {
       text.includes("troops have returned")) &&
     !hasStatistics;
 
-  console.log("hasStatistics:", hasStatistics);
-  console.log("hasResources:", hasResources);
-  console.log("isDefensiveScout:", isDefensiveScout);
-  console.log("isDeadTroopsReport:", isDeadTroopsReport);
-
   const isValid =
     hasReportTitle &&
     hasAttacker &&
     hasDefender &&
     (hasStatistics || hasResources || isDefensiveScout || isDeadTroopsReport);
 
-  console.log("=== VALIDATION RESULT:", isValid, "===");
-
   return isValid;
 }
 
 export function parseAttackReport(text) {
   try {
-    console.log("=== PARSER DEBUG START ===");
-    console.log("Parser function called with text length:", text.length);
     const lines = text
       .split("\n")
       .map((line) => line.trim())
       .filter((line) => line.length > 0);
-
-    console.log("Total lines to process:", lines.length);
-    console.log("First 10 lines:", lines.slice(0, 10));
 
     const report = {
       header: {},
@@ -272,11 +245,9 @@ export function parseAttackReport(text) {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      console.log(`DEBUG: Processing line ${i}: "${line}"`);
 
       // Skip empty lines
       if (!line) {
-        console.log(`DEBUG: Skipping empty line ${i}`);
         continue;
       }
 
@@ -286,8 +257,6 @@ export function parseAttackReport(text) {
         line.includes(" scouts ") ||
         line.includes(" raids ")
       ) {
-        console.log("DEBUG: Found report title:", line);
-
         // Store original title for display
         report.header.originalTitle = line;
 
@@ -310,15 +279,6 @@ export function parseAttackReport(text) {
           } else {
             report.header.type = "attack"; // Both attacks and raids are processed as attacks
           }
-
-          console.log(
-            "DEBUG: Parsed title - Type:",
-            report.header.type,
-            "Attacker:",
-            report.header.attackerVillage,
-            "Defender:",
-            report.header.defenderVillage
-          );
         }
 
         // Look for date/time on next line
@@ -334,15 +294,14 @@ export function parseAttackReport(text) {
 
       // Parse attacker section
       if (line === "Attacker") {
-        console.log("DEBUG: *** FOUND ATTACKER SECTION ***");
         currentSection = "attacker";
         unitHeaders = [];
         unitData = [];
         continue;
       }
 
-      // Parse defender section
-      if (line === "Defender") {
+      // Parse defender section (handle both "Defender" and "DEFENDER 1", "DEFENDER 2", etc.)
+      if (line === "Defender" || line.match(/^DEFENDER \d+$/)) {
         currentSection = "defender";
 
         // Create new defender object
@@ -365,11 +324,11 @@ export function parseAttackReport(text) {
       if (
         currentSection === "defender" &&
         (line === "Attacker" ||
-          line === "Reinforcement" ||
           line === "Statistics" ||
           line === "Bounty" ||
           line === "Information" ||
           line === "Resources" ||
+          line.match(/^DEFENDER \d+$/) ||
           line.includes("Population:") ||
           line.includes("Loyalty:") ||
           line.includes("Villages") ||
@@ -417,21 +376,17 @@ export function parseAttackReport(text) {
 
       // Parse information section
       if (line === "Information") {
-        console.log("DEBUG: Found Information section");
         currentSection = "information";
         continue;
       }
 
       // Parse "Resources lost" values and stop parsing
       if (line === "Resources lost") {
-        console.log("Found Resources lost line!");
         // Look for the values on the next line
         if (i + 1 < lines.length) {
           const valuesLine = lines[i + 1];
-          console.log("Next line:", valuesLine);
           if (valuesLine.match(/\d/)) {
             const parts = valuesLine.split("\t");
-            console.log("Split parts:", parts);
             if (parts.length >= 2) {
               const attackerValue = parts[0].trim();
               const defenderValue = parts[1].trim();
@@ -440,10 +395,6 @@ export function parseAttackReport(text) {
                 attacker: parseInt(attackerValue.replace(/[^\d]/g, "")) || 0,
                 defender: parseInt(defenderValue.replace(/[^\d]/g, "")) || 0,
               };
-              console.log(
-                "Added Resources lost:",
-                report.statistics["Resources lost"]
-              );
               i++; // Skip the values line
             } else if (parts.length === 1) {
               // Handle case where there's only one value on first line
@@ -455,7 +406,6 @@ export function parseAttackReport(text) {
               let defenderNum = 0;
               if (i + 2 < lines.length) {
                 const secondLine = lines[i + 2];
-                console.log("Second line for defender value:", secondLine);
                 if (secondLine.match(/\d/)) {
                   defenderNum = parseInt(secondLine.replace(/[^\d]/g, "")) || 0;
                   i++; // Skip the second values line too
@@ -466,10 +416,6 @@ export function parseAttackReport(text) {
                 attacker: attackerNum,
                 defender: defenderNum,
               };
-              console.log(
-                "Added Resources lost (two lines):",
-                report.statistics["Resources lost"]
-              );
               i++; // Skip the first values line
             }
           }
@@ -480,7 +426,6 @@ export function parseAttackReport(text) {
 
       // Alternative: Look for pattern of two large numbers (Resources lost values)
       if (line.match(/^\d{1,3}(,\d{3})*\t\d{1,3}(,\d{3})*$/)) {
-        console.log("Found potential Resources lost values:", line);
         const parts = line.split("\t");
         if (parts.length === 2) {
           const attackerValue = parts[0].trim();
@@ -497,13 +442,23 @@ export function parseAttackReport(text) {
               attacker: attackerNum,
               defender: defenderNum,
             };
-            console.log(
-              "Added Resources lost from pattern:",
-              report.statistics["Resources lost"]
-            );
             break; // Stop parsing after finding Resources lost
           }
         }
+      }
+
+      // Handle empty defender sections (e.g., "[] from village") - check this FIRST
+      if (
+        currentSection === "defender" &&
+        currentDefender &&
+        line === "[] from village"
+      ) {
+        // This is an empty defender section, mark it as such
+        currentDefender.player = "";
+        currentDefender.village = "";
+        currentDefender.alliance = "";
+        currentDefender.isEmpty = true;
+        continue;
       }
 
       // Parse player info (tribe, player, village)
@@ -527,7 +482,8 @@ export function parseAttackReport(text) {
             report.attacker.player = player;
             report.attacker.village = village;
             // Don't set tribe yet - it will be detected from units
-          } else if (currentDefender) {
+          } else if (currentDefender && !currentDefender.isEmpty) {
+            // Only set player info if this is not an empty defender
             // Store the original bracket content as alliance
             currentDefender.alliance = tribe;
             currentDefender.player = player;
@@ -648,7 +604,11 @@ export function parseAttackReport(text) {
               if (detectedTribe) {
                 report.attacker.tribe = detectedTribe;
               }
-            } else if (currentSection === "defender" && currentDefender) {
+            } else if (
+              (currentSection === "defender" ||
+                currentSection === "reinforcement") &&
+              currentDefender
+            ) {
               currentDefender.units = units;
               // Detect tribe from units and override the bracket tribe
               const detectedTribe = detectTribeFromUnits(units);
@@ -689,16 +649,13 @@ export function parseAttackReport(text) {
           continue;
         }
       } else {
-        console.log(
-          `DEBUG: Not processing units - currentSection: ${currentSection}`
-        );
+        // Not processing units - currentSection doesn't match
       }
 
       // Parse bounty data
       if (currentSection === "bounty") {
         // Clean the line of Unicode characters that might interfere with parsing
         const cleanLine = line.replace(/[\u202C\u202D\u202E]/g, "").trim();
-        console.log("DEBUG: Bounty line:", line, "cleaned:", cleanLine);
 
         if (cleanLine.match(/^\d+$/) && !cleanLine.includes("/")) {
           // This is a single resource value
@@ -711,31 +668,12 @@ export function parseAttackReport(text) {
           }
           const resourceValue = parseInt(cleanLine) || 0;
           report.bounty.resources.push(resourceValue);
-          console.log(
-            "DEBUG: Added bounty resource:",
-            resourceValue,
-            "total resources:",
-            report.bounty.resources.length
-          );
         } else if (cleanLine.includes("/") && report.bounty) {
           // This is the total/capacity line
-          const match = cleanLine.match(/(\d+)\/(\d+)/);
+          const match = cleanLine.match(/(\d+)\s*\/\s*(\d+)/);
           if (match) {
             report.bounty.total = parseInt(match[1]) || 0;
             report.bounty.capacity = parseInt(match[2]) || 0;
-            console.log(
-              "DEBUG: Set bounty total/capacity:",
-              report.bounty.total,
-              "/",
-              report.bounty.capacity,
-              "from line:",
-              cleanLine
-            );
-          } else {
-            console.log(
-              "DEBUG: Failed to parse bounty total/capacity from line:",
-              cleanLine
-            );
           }
         }
         continue;
@@ -751,12 +689,6 @@ export function parseAttackReport(text) {
             report.resources = [];
           }
           report.resources.push(value);
-          console.log(
-            "Added resource value:",
-            value,
-            "total resources:",
-            report.resources.length
-          );
         }
         continue;
       }
@@ -777,8 +709,6 @@ export function parseAttackReport(text) {
             line.includes("troops have returned")
           ) {
             report.attacker.allTroopsDead = true;
-            console.log("DEBUG: *** ALL ATTACKER TROOPS DEAD DETECTED ***");
-            console.log("DEBUG: Information line:", line);
           }
         }
         continue;
@@ -786,11 +716,8 @@ export function parseAttackReport(text) {
 
       // Parse statistics
       if (currentSection === "statistics") {
-        console.log("Processing statistics line:", line);
-
         // Skip the "Attacker	Defender" header row
         if (line === "Attacker\tDefender" || line === "Attacker	Defender") {
-          console.log("Skipping header row");
           continue;
         }
 
@@ -798,34 +725,18 @@ export function parseAttackReport(text) {
         if (!line.match(/\d/) && line.trim()) {
           // This is a stat name, look for values on next lines
           const statName = line.trim();
-          console.log("Found stat name:", statName);
 
           if (i + 2 < lines.length) {
             const attackerValue = lines[i + 1].trim();
             const defenderValue = lines[i + 2].trim();
-
-            console.log("Attacker value:", attackerValue);
-            console.log("Defender value:", defenderValue);
 
             if (attackerValue.match(/\d/) && defenderValue.match(/\d/)) {
               report.statistics[statName] = {
                 attacker: parseInt(attackerValue.replace(/[^\d]/g, "")) || 0,
                 defender: parseInt(defenderValue.replace(/[^\d]/g, "")) || 0,
               };
-              console.log(
-                "Added statistic:",
-                statName,
-                "attacker:",
-                attackerValue,
-                "defender:",
-                defenderValue
-              );
               i += 2; // Skip the next two lines (attacker and defender values)
-            } else {
-              console.log("Values don't match number pattern");
             }
-          } else {
-            console.log("Not enough lines remaining for values");
           }
         } else if (
           line.match(/\d/) &&
@@ -845,23 +756,15 @@ export function parseAttackReport(text) {
             const attackerValue = parts[1].trim();
             const defenderValue = parts[2].trim();
 
-            console.log(
-              "Found separated stat:",
-              statName,
-              attackerValue,
-              defenderValue
-            );
-
             if (attackerValue.match(/\d/) && defenderValue.match(/\d/)) {
               report.statistics[statName] = {
                 attacker: parseInt(attackerValue.replace(/[^\d]/g, "")) || 0,
                 defender: parseInt(defenderValue.replace(/[^\d]/g, "")) || 0,
               };
-              console.log("Added separated statistic:", statName);
             }
           }
         } else {
-          console.log("Line doesn't match stat name pattern:", line);
+          // Line doesn't match stat name pattern, skip it
         }
         continue;
       }
@@ -869,9 +772,6 @@ export function parseAttackReport(text) {
 
     // Process any remaining unit data that wasn't processed during the loop
     if (unitData.length >= 2 && unitHeaders.length > 0) {
-      console.log(
-        `DEBUG: Processing remaining unit data with ${unitData.length} rows for section: ${currentSection}`
-      );
       const units = {};
       const currentUnitData = unitData;
       let hasHospitalData = false;
@@ -911,18 +811,12 @@ export function parseAttackReport(text) {
 
       // Add hospital data flag to the units object
       units._hasHospitalData = hasHospitalData;
-      console.log(
-        `DEBUG: Final hospital data detected: ${hasHospitalData} for ${currentSection}`
-      );
 
       if (currentSection === "attacker") {
         report.attacker.units = units;
         // Detect tribe from units and override the bracket tribe
         const detectedTribe = detectTribeFromUnits(units);
         if (detectedTribe) {
-          console.log(
-            `DEBUG: Detected attacker tribe from units (final): ${detectedTribe} (was: ${report.attacker.tribe})`
-          );
           report.attacker.tribe = detectedTribe;
         }
       } else if (currentDefender) {
@@ -930,9 +824,6 @@ export function parseAttackReport(text) {
         // Detect tribe from units and override the bracket tribe
         const detectedTribe = detectTribeFromUnits(units);
         if (detectedTribe) {
-          console.log(
-            `DEBUG: Detected defender tribe from units (final): ${detectedTribe} (was: ${currentDefender.tribe})`
-          );
           currentDefender.tribe = detectedTribe;
         }
       }
@@ -978,13 +869,10 @@ export function parseAttackReport(text) {
       });
     }
 
-    console.log("Final report:", JSON.stringify(report, null, 2));
+    // Final processing complete
     return report;
   } catch (error) {
-    console.error("=== PARSER ERROR ===");
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-    console.error("Text being parsed:", text);
+    console.error("Error parsing attack report:", error.message);
     throw error;
   }
 }
