@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from '../Components/Header';
 import Footer from '../Components/Footer';
 import Report from '../Components/reports/Report';
@@ -28,7 +28,6 @@ const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkM
         }
       } catch (clipboardErr) {
         // If clipboard access fails, continue with existing text
-        console.log("Clipboard access failed, using existing text");
       }
 
       if (!textToParse) {
@@ -37,7 +36,7 @@ const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkM
       }
 
       if (!validateAttackReport(textToParse)) {
-        setError('Invalid report format. Please ensure the text contains Attacker, Defender, and Statistics sections.');
+        setError('Invalid report format. Only English version of the reports is supported for now.');
         return;
       }
 
@@ -45,7 +44,6 @@ const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkM
       setReportData(parsed);
       setError('');
     } catch (err) {
-      console.error("Failed to process input: ", err);
       setError('Error processing report: ' + err.message);
     }
   };
@@ -100,7 +98,6 @@ const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkM
         timestamp: newReport.timestamp
       }, false); // false = not duplicate
     } catch (err) {
-      console.error('Error saving report:', err);
       setError('Error saving report: ' + err.message);
     }
   };
@@ -154,7 +151,6 @@ const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkM
         return true;
       });
     } catch (err) {
-      console.error('Error checking for duplicates:', err);
       return false;
     }
   };

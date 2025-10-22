@@ -62,7 +62,7 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
       if (AC) {
         const ctx = new AC();
         if (ctx.state === 'suspended') {
-          ctx.resume().catch(e => console.log('Failed to resume audio context:', e));
+          ctx.resume().catch(() => {});
         }
       }
     }

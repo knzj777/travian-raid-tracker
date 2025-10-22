@@ -55,7 +55,6 @@ const AttackPlanner = () => {
   const [editingId, setEditingId] = useState(null);
   const [isFormBlinking, setIsFormBlinking] = useState(false);
   const [originalValues, setOriginalValues] = useState(null);
-  const [initialEditValues, setInitialEditValues] = useState(null);
   const [isEditDirty, setIsEditDirty] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -81,7 +80,7 @@ const AttackPlanner = () => {
         const parsedAttacks = JSON.parse(savedAttacks);
         setAttacks(parsedAttacks);
       } catch (error) {
-        console.warn('Failed to load saved attacks:', error);
+        // Failed to load saved attacks
       }
     }
   }, []);
@@ -91,7 +90,7 @@ const AttackPlanner = () => {
     if (!selectedDate) {
       setSelectedDate(getTodayDate());
     }
-  }, []);
+  }, [selectedDate]);
 
   // Save form values to localStorage whenever they change
   useEffect(() => {
@@ -267,14 +266,6 @@ const AttackPlanner = () => {
     setVillageName(attack.villageName || '');
     setSelectedDate(attack.date || getTodayDate());
     setTravianLink(attack.travianLink || '');
-    setInitialEditValues({
-      travelTime: { ...attack.travelTime },
-      arrivalTime: { ...attack.arrivalTime },
-      attackType: attack.attackType,
-      villageName: attack.villageName || '',
-      selectedDate: attack.date || getTodayDate(),
-      travianLink: attack.travianLink || ''
-    });
     setIsEditDirty(false);
     
     // Trigger blink effect - keep it active while in edit mode

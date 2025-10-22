@@ -29,18 +29,6 @@ function findUnitByName(unitName) {
           (prettyNorm.includes(needleNorm) || needleNorm.includes(prettyNorm)));
 
       if (isExact || isFuzzy) {
-        // eslint-disable-next-line no-console
-        console.log(
-          isExact
-            ? "[DefenseCalc] Exact unit match:"
-            : "[DefenseCalc] Fuzzy unit match:",
-          {
-            input: unitName,
-            tribe: tribeKey,
-            matchedKey: key,
-            matchedPretty: unit?.name,
-          }
-        );
         return unit;
       }
     }
@@ -51,16 +39,7 @@ function findUnitByName(unitName) {
 
 export function calculateDefenseTotals(reportData) {
   try {
-    // eslint-disable-next-line no-console
-    console.log("[DefenseCalc] Start", {
-      hasData: !!reportData,
-      defendersType: typeof reportData?.defenders,
-    });
     if (!reportData || !Array.isArray(reportData.defenders)) {
-      // eslint-disable-next-line no-console
-      console.log("[DefenseCalc] Missing or invalid defenders array", {
-        defenders: reportData?.defenders,
-      });
       return null; // Unknown
     }
 
@@ -113,20 +92,6 @@ export function calculateDefenseTotals(reportData) {
 
     const tryExtractUnitsFromAnyTable = (defender) => {
       const arrays = collectArrays(defender);
-      // Debug: show a summary of arrays found
-      // eslint-disable-next-line no-console
-      console.log(
-        "[DefenseCalc] Arrays found in defender:",
-        arrays.map((a) => ({
-          path: a.path,
-          len: a.value.length,
-          type: isStringArray(a.value)
-            ? "strings"
-            : isNumberArray(a.value)
-            ? "numbers"
-            : "other",
-        }))
-      );
 
       // Candidate headers: arrays of strings with many known unit names
       const headerCandidates = arrays
@@ -158,12 +123,6 @@ export function calculateDefenseTotals(reportData) {
         if (!match)
           match = countCandidates.find((c) => c.nums && c.nums.length === len);
         if (match) {
-          // eslint-disable-next-line no-console
-          console.log("[DefenseCalc] Heuristic table match", {
-            headerPath: header.path,
-            countsPath: match.path,
-            columns: len,
-          });
           return header.names.map((name, i) => ({
             name,
             count: match.nums[i] || 0,
@@ -175,8 +134,6 @@ export function calculateDefenseTotals(reportData) {
 
     // Try to extract units when defenders are stored as a table-like structure
     const extractUnitsFromTable = (defender) => {
-      // eslint-disable-next-line no-console
-      console.log("[DefenseCalc] Attempt table extraction");
       const table =
         defender?.["unit-data"] ||
         defender?.unitData ||
@@ -226,10 +183,6 @@ export function calculateDefenseTotals(reportData) {
       const countsArr = toNumberArray(counts);
 
       if (headerArr && countsArr && headerArr.length === countsArr.length) {
-        // eslint-disable-next-line no-console
-        console.log("[DefenseCalc] Table extraction success", {
-          columns: headerArr.length,
-        });
         return headerArr.map((name, idx) => ({
           name,
           count: countsArr[idx] || 0,
@@ -252,10 +205,6 @@ export function calculateDefenseTotals(reportData) {
 
       // NEW: handle object-shaped units produced by parser (unitName -> { initial, lost, ... })
       if (!Array.isArray(units) && units && typeof units === "object") {
-        // eslint-disable-next-line no-console
-        console.log(
-          "[DefenseCalc] Detected object-shaped units, converting to list"
-        );
         const asList = [];
         for (const [unitName, unitObj] of Object.entries(units)) {
           if (unitName.startsWith("_")) continue; // skip meta fields like _hasHospitalData
@@ -274,15 +223,7 @@ export function calculateDefenseTotals(reportData) {
       }
 
       if (!Array.isArray(units)) {
-        // Attempt several extraction strategies
-        const extractedA =
-          defender &&
-          (defender["unit-data"] ||
-            defender.unitData ||
-            defender.unitsTable ||
-            defender.table)
-            ? null
-            : null;
+        // Attempt extraction strategies
         let extracted = extractUnitsFromTable?.(defender); // previous heuristic (if defined in earlier version)
         if (!Array.isArray(extracted))
           extracted = tryExtractUnitsFromAnyTable(defender);
@@ -290,15 +231,8 @@ export function calculateDefenseTotals(reportData) {
           units = extracted;
         }
       }
-      // eslint-disable-next-line no-console
-      console.log("[DefenseCalc] Defender group", {
-        unitsCount: Array.isArray(units) ? units.length : "invalid",
-      });
+
       if (!Array.isArray(units)) {
-        // eslint-disable-next-line no-console
-        console.log("[DefenseCalc] Units not array, marking unknown", {
-          units,
-        });
         unknown = true;
         continue;
       }
@@ -307,19 +241,11 @@ export function calculateDefenseTotals(reportData) {
         const name = u?.name ?? u?.unit ?? u?.type;
         const count = Number(u?.count ?? u?.qty ?? u?.amount ?? 0);
         if (!name || !Number.isFinite(count)) {
-          // eslint-disable-next-line no-console
-          console.log("[DefenseCalc] Bad unit entry", {
-            u,
-            parsedName: name,
-            parsedCount: count,
-          });
           unknown = true;
           continue;
         }
         const unitData = findUnitByName(name);
         if (!unitData) {
-          // eslint-disable-next-line no-console
-          console.log("[DefenseCalc] No unit data found for", { name });
           unknown = true;
           continue;
         }
@@ -338,35 +264,16 @@ export function calculateDefenseTotals(reportData) {
             unitData?.def_cav ??
             0
         );
-        // eslint-disable-next-line no-console
-        console.log("[DefenseCalc] Add unit", {
-          name,
-          count,
-          defInf,
-          defCav,
-          addInf: defInf * count,
-          addCav: defCav * count,
-        });
         infantry += defInf * count;
         cavalry += defCav * count;
       }
     }
 
     if (infantry === 0 && cavalry === 0 && unknown) {
-      // eslint-disable-next-line no-console
-      console.log("[DefenseCalc] Result unknown", {
-        infantry,
-        cavalry,
-        unknown,
-      });
       return null; // no reliable data
     }
-    // eslint-disable-next-line no-console
-    console.log("[DefenseCalc] Result totals", { infantry, cavalry, unknown });
     return { infantry, cavalry };
   } catch {
-    // eslint-disable-next-line no-console
-    console.log("[DefenseCalc] Exception thrown, returning null");
     return null;
   }
 }

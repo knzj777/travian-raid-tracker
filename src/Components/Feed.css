@@ -102,7 +102,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 280px; /* Fixed height for consistency */
+  height: 100%;
+  width: 100%;
 }
 
 .card-clickable-area {
@@ -258,12 +259,6 @@
 }
 
 /* Unified extras */
-.defense-line {
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
 .information-section {
   background: rgba(30,30,30,0.3);
   border-radius: 4px;
@@ -299,89 +294,129 @@
 .resource-item {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   margin-bottom: 2px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .resource-item img {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.resource-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
-  padding-top: 4px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.light .resource-total {
-  border-top-color: rgba(0,0,0,0.1);
-}
-
 .total-label {
-  color: #ccc;
+  color: #fff;
 }
 
 .light .total-label {
-  color: #444;
+  color: #222;
 }
 
 .total-value {
-  color: #527230 !important; /* Primary green color */
-  font-weight: 700;
+  color: #fff;
 }
 
-/* Battle Stats */
-.battle-stats {
-  background: rgba(30,30,30,0.3);
-  border-radius: 4px;
-  padding: 6px;
-  margin-bottom: 6px;
-  flex-shrink: 0;
+.light .total-value {
+  color: #222;
 }
+
+.raidable-total .total-value {
+  color: #00ff88;
+}
+
+.light .raidable-total .total-value {
+  color: #1976D2;
+}
+
+/* Unified stats styling - all consistent */
+.defense-line,
+.resource-total,
+.raidable-total,
+.battle-stats .stat-row {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 4px 0;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.light .defense-line,
+.light .resource-total,
+.light .raidable-total,
+.light .battle-stats {
+  color: #222;
+}
+
+.defense-line {
+  text-align: left;
+}
+
+.resource-total,
+.raidable-total {
+  padding: 4px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.light .resource-total,
+.light .raidable-total {
+  border-top-color: rgba(0,0,0,0.1);
+}
+
+
 
 .light .battle-stats {
   background: rgba(240,240,240,0.6);
 }
 
-.stat-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3px;
-  font-size: 11px;
+
+/* Ensure label left, value right explicitly */
+.total-label,
+.resource-total .total-label,
+.defense-line .stat-label,
+.defense-line .total-label,
+.battle-stats .stat-label,
+.battle-stats .total-label {
+  margin-right: auto;
 }
 
-.stat-row:last-child {
-  margin-bottom: 0;
+.total-value,
+.resource-total .total-value,
+.defense-line .stat-value,
+.defense-line .total-value,
+.battle-stats .stat-value,
+.battle-stats .total-value {
+  margin-left: auto;
+  text-align: right;
+  min-width: 60px; /* Ensure consistent width for alignment */
 }
 
 .stat-label {
-  color: #ccc;
+  color: #fff;
   font-weight: 500;
 }
 
 .light .stat-label {
-  color: #444;
+  color: #222;
 }
 
 .stat-value {
   color: #fff;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .light .stat-value {
-  color: #000;
+  color: #222;
 }
+
+
+.battle-stats .total-label { color: inherit; font-weight: 500; }
+.battle-stats .total-value { color: inherit; font-weight: 600; }
 
 /* Raidable Resources for Scout Reports */
 .raidable-resources {
@@ -413,8 +448,12 @@
 }
 
 .raidable-total {
-  color: #527230 !important; /* Primary green color */
+  color: #00ff88 !important; /* Dark theme raidable color */
   font-weight: 700;
+}
+
+.light .raidable-total {
+  color: #1976D2 !important; /* Light theme raidable color */
 }
 
 /* Card Actions */

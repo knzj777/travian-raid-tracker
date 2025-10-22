@@ -5,26 +5,31 @@ import woodImage from '../images/resources/wood.png';
 import clayImage from '../images/resources/clay.png';
 import ironImage from '../images/resources/iron.png';
 import cropImage from '../images/resources/crop.png';
+import attackReportIcon from '../images/combat/attack-report-icon.png';
+import scoutReportIcon from '../images/combat/scout-report-icon.png';
+import scoutReportIconLight from '../images/combat/scout-report-icon-light.png';
 
-const TypeIcon = ({ type }) => {
+const TypeIcon = ({ type, darkMode }) => {
   if (type === 'attack') {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-        <path d="M2 17l10 5 10-5"/>
-        <path d="M2 12l10 5 10-5"/>
-        <path d="M8 8l8 8"/>
-        <path d="M16 8l-8 8"/>
-        <circle cx="12" cy="12" r="2"/>
-      </svg>
+      <img 
+        src={attackReportIcon} 
+        alt="Attack Report" 
+        width="16" 
+        height="16"
+        style={{ objectFit: 'contain' }}
+      />
     );
   }
   if (type === 'scout') {
     return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+      <img 
+        src={darkMode ? scoutReportIcon : scoutReportIconLight} 
+        alt="Scout Report" 
+        width="16" 
+        height="16"
+        style={{ objectFit: 'contain' }}
+      />
     );
   }
   if (type === 'raid') {
@@ -78,21 +83,18 @@ export default function ReportCard({ report, darkMode, settings, onOpenReportOve
   const capacity = bounty?.capacity ?? bounty?.totalCapacity ?? null;
 
   const defenseTotals = type === 'scout' ? calculateDefenseTotals(report.data) : null;
-  const defenseLine = type === 'scout'
-    ? (defenseTotals ? `Defense: ${format(defenseTotals.infantry)} | ${format(defenseTotals.cavalry)}` : 'Defense: Unknown')
+  const defenseValue = type === 'scout'
+    ? (defenseTotals ? `${format(defenseTotals.infantry)} | ${format(defenseTotals.cavalry)}` : 'Unknown')
     : null;
 
-  if (type === 'scout') {
-    // eslint-disable-next-line no-console
-    console.log('[ReportCard] defenders payload (first group keys):', Array.isArray(report.data?.defenders) && report.data.defenders[0] ? Object.keys(report.data.defenders[0]) : 'n/a');
-  }
+  // Removed debug logging
 
   return (
     <div className={`feed-card ${type}-card`}>
       <div className="card-clickable-area" onClick={() => onOpenReportOverlay && onOpenReportOverlay(report)}>
         <div className="card-header">
           <div className="card-type">
-            <TypeIcon type={type} />
+            <TypeIcon type={type} darkMode={darkMode} />
             <span>{type.charAt(0).toUpperCase() + type.slice(1)}</span>
           </div>
           <div className="card-attack-time">{header.dateTime}</div>
@@ -118,17 +120,9 @@ export default function ReportCard({ report, darkMode, settings, onOpenReportOve
                 <div className="battle-stats">
                   {report.data.statistics['Combat strength'] && (
                     <div className="stat-row">
-                      <span className="stat-label">Combat:</span>
-                      <span className="stat-value">
+                      <span className="total-label">Combat strength:</span>
+                      <span className="total-value">
                         {format(report.data.statistics['Combat strength'].attacker)} vs {format(report.data.statistics['Combat strength'].defender)}
-                      </span>
-                    </div>
-                  )}
-                  {report.data.statistics['Resources lost'] && (
-                    <div className="stat-row">
-                      <span className="stat-label">Lost:</span>
-                      <span className="stat-value">
-                        {format(report.data.statistics['Resources lost'].attacker)} vs {format(report.data.statistics['Resources lost'].defender)}
                       </span>
                     </div>
                   )}
@@ -139,7 +133,10 @@ export default function ReportCard({ report, darkMode, settings, onOpenReportOve
 
           {type === 'scout' && (
             <>
-              <div className="defense-line">{defenseLine}</div>
+              <div className="defense-line">
+                <span className="stat-label">Defense:</span>
+                <span className="stat-value">{defenseValue}</span>
+              </div>
 
               {resourcesObj && (
                 <>

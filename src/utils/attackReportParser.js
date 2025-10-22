@@ -872,7 +872,6 @@ export function parseAttackReport(text) {
     // Final processing complete
     return report;
   } catch (error) {
-    console.error("Error parsing attack report:", error.message);
     throw error;
   }
 }

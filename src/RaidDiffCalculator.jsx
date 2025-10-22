@@ -8,10 +8,6 @@ import "./Components/reports/Report.css";
 import "./RaidTracker.css";
 import Modal from "./Components/modals/Modal";
 import SaveModal from "./Components/modals/SaveModal";
-import woodImage from "./images/resources/wood.png";
-import clayImage from "./images/resources/clay.png";
-import ironImage from "./images/resources/iron.png";
-import cropImage from "./images/resources/crop.png";
 import ReportCard from './Components/ReportCard';
 
 export default function RaidDiffCalculator({ settings, onSettingsOpen, timerState, darkMode, setDarkMode }) {
@@ -146,7 +142,6 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
       const display = `${raidStart} - ${raidEnd}`;
       setAppliedRange(display);
     } catch (err) {
-      console.error("Failed to read clipboard or process input: ", err);
       setModal({
         open: true,
         title: "Paste failed",
@@ -158,15 +153,20 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
   };
 
   const handleDeleteReport = (type, id) => {
-    const storageKey = `saved${type.charAt(0).toUpperCase() + type.slice(1)}`;
-    const reports = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    const updatedReports = reports.filter(report => report.id !== id);
-    localStorage.setItem(storageKey, JSON.stringify(updatedReports));
+    // Use the same storage format as other pages
+    const saved = localStorage.getItem("savedReports");
+    const allReports = saved ? JSON.parse(saved) : { raids: [], attacks: [], scouts: [] };
+    
+    // Update the specific report type
+    allReports[type] = allReports[type].filter(report => report.id !== id);
+    
+    // Save back to localStorage
+    localStorage.setItem("savedReports", JSON.stringify(allReports));
     
     // Update state
     setSavedReports(prev => ({
       ...prev,
-      [type]: updatedReports
+      [type]: allReports[type]
     }));
   };
 

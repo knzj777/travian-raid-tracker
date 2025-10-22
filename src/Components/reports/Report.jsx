@@ -235,7 +235,6 @@ const Report = ({
         throw new Error('Clipboard API not supported');
       }
     } catch (error) {
-      console.error('Screenshot capture failed:', error);
       alert('Failed to capture screenshot. Please try again.');
       setCaptureStatus('idle');
     } finally {
@@ -328,10 +327,6 @@ const Report = ({
     
     // Don't render statistics when all attacker troops are dead
     if (reportData.attacker && reportData.attacker.allTroopsDead) return null;
-    
-    console.log("Statistics data:", reportData.statistics);
-    console.log("Statistics entries:", Object.entries(reportData.statistics));
-    console.log("Statistics keys:", Object.keys(reportData.statistics));
 
     return (
       <div className="statistics-section">
@@ -344,16 +339,14 @@ const Report = ({
             <div className="stat-value attacker">Attacker</div>
             <div className="stat-value defender">Defender</div>
           </div>
-          {Object.entries(reportData.statistics).map(([statType, values]) => {
-            console.log(`Stat: ${statType}, Values:`, values);
-            return (
+          {Object.entries(reportData.statistics).map(([statType, values]) => (
+            
               <div key={statType} className="statistics-row">
                 <div className="stat-name">{statType}</div>
                 <div className="stat-value attacker">{formatNumber(values.attacker)}</div>
                 <div className="stat-value defender">{formatNumber(values.defender)}</div>
               </div>
-            );
-          })}
+          ))}
         </div>
       </div>
     );

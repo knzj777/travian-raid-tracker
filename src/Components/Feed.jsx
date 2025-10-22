@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Feed.css';
 import ReportCard from './ReportCard';
+import attackReportIcon from '../images/combat/attack-report-icon.png';
+import scoutReportIcon from '../images/combat/scout-report-icon.png';
+import scoutReportIconLight from '../images/combat/scout-report-icon-light.png';
 
 const Feed = ({ 
   reports, 
@@ -22,7 +25,6 @@ const Feed = ({
   onCardsPerRowChange,
   getAllReports
 }) => {
-  console.log("Feed component loaded with new changes!");
   const getReportResources = (reportData) => {
     if (!reportData) return null;
 
@@ -55,21 +57,23 @@ const Feed = ({
   const getCardIcon = (type) => {
     if (type === 'attack') {
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-          <path d="M2 17l10 5 10-5"/>
-          <path d="M2 12l10 5 10-5"/>
-          <path d="M8 8l8 8"/>
-          <path d="M16 8l-8 8"/>
-          <circle cx="12" cy="12" r="2"/>
-        </svg>
+        <img 
+          src={attackReportIcon} 
+          alt="Attack Report" 
+          width="16" 
+          height="16"
+          style={{ objectFit: 'contain' }}
+        />
       );
     } else if (type === 'scout') {
       return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>
+        <img 
+          src={darkMode ? scoutReportIcon : scoutReportIconLight} 
+          alt="Scout Report" 
+          width="16" 
+          height="16"
+          style={{ objectFit: 'contain' }}
+        />
       );
     } else if (type === 'raid') {
       return (
