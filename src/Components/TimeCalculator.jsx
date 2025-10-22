@@ -1,17 +1,85 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 export default function TimeCalculator() {
   // base time
-  const [bh, setBh] = useState(0);
-  const [bm, setBm] = useState(0);
-  const [bs, setBs] = useState(0);
+  const [bh, setBh] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_baseHours');
+      return saved !== null ? parseInt(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [bm, setBm] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_baseMinutes');
+      return saved !== null ? parseInt(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [bs, setBs] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_baseSeconds');
+      return saved !== null ? parseInt(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   // delta time
-  const [dh, setDh] = useState(0);
-  const [dm, setDm] = useState(0);
-  const [ds, setDs] = useState(0);
+  const [dh, setDh] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_deltaHours');
+      return saved !== null ? parseInt(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [dm, setDm] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_deltaMinutes');
+      return saved !== null ? parseInt(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const [ds, setDs] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_deltaSeconds');
+      return saved !== null ? parseInt(saved) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  });
 
-  const [op, setOp] = useState("add"); // 'add' | 'sub'
+  const [op, setOp] = useState(() => {
+    try {
+      const saved = localStorage.getItem('timeCalculator_operation');
+      return saved || 'add';
+    } catch {
+      return 'add';
+    }
+  }); // 'add' | 'sub'
+
+  // Save base time values to localStorage
+  useEffect(() => {
+    localStorage.setItem('timeCalculator_baseHours', String(bh));
+    localStorage.setItem('timeCalculator_baseMinutes', String(bm));
+    localStorage.setItem('timeCalculator_baseSeconds', String(bs));
+  }, [bh, bm, bs]);
+
+  // Save delta time values to localStorage
+  useEffect(() => {
+    localStorage.setItem('timeCalculator_deltaHours', String(dh));
+    localStorage.setItem('timeCalculator_deltaMinutes', String(dm));
+    localStorage.setItem('timeCalculator_deltaSeconds', String(ds));
+  }, [dh, dm, ds]);
+
+  // Save operation to localStorage
+  useEffect(() => {
+    localStorage.setItem('timeCalculator_operation', op);
+  }, [op]);
 
   const baseTotal = useMemo(() => Math.max(0, (parseInt(bh) || 0) * 3600 + (parseInt(bm) || 0) * 60 + (parseInt(bs) || 0)), [bh, bm, bs]);
   const deltaTotal = useMemo(() => Math.max(0, (parseInt(dh) || 0) * 3600 + (parseInt(dm) || 0) * 60 + (parseInt(ds) || 0)), [dh, dm, ds]);

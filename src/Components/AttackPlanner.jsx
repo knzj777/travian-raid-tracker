@@ -2,19 +2,64 @@ import React, { useState, useEffect, useRef } from 'react';
 import './AttackPlanner.css';
 
 const AttackPlanner = () => {
-  const [travelTime, setTravelTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
-  const [arrivalTime, setArrivalTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
-  const [attackType, setAttackType] = useState('Fake');
-  const [villageName, setVillageName] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [travianLink, setTravianLink] = useState('');
+  const [travelTime, setTravelTime] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_travelTime');
+      return saved ? JSON.parse(saved) : { hours: 0, minutes: 0, seconds: 0 };
+    } catch {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+  });
+  const [arrivalTime, setArrivalTime] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_arrivalTime');
+      return saved ? JSON.parse(saved) : { hours: 0, minutes: 0, seconds: 0 };
+    } catch {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+  });
+  const [attackType, setAttackType] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_attackType');
+      return saved || 'Fake';
+    } catch {
+      return 'Fake';
+    }
+  });
+  const [villageName, setVillageName] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_villageName');
+      return saved || '';
+    } catch {
+      return '';
+    }
+  });
+  const [selectedDate, setSelectedDate] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_selectedDate');
+      return saved || '';
+    } catch {
+      return '';
+    }
+  });
+  const [travianLink, setTravianLink] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_travianLink');
+      return saved || '';
+    } catch {
+      return '';
+    }
+  });
   const [attacks, setAttacks] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isFormBlinking, setIsFormBlinking] = useState(false);
   const [originalValues, setOriginalValues] = useState(null);
+  const [initialEditValues, setInitialEditValues] = useState(null);
+  const [isEditDirty, setIsEditDirty] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const dateInputRef = useRef(null);
 
   // Helper function to get today's date
@@ -41,10 +86,37 @@ const AttackPlanner = () => {
     }
   }, []);
 
-  // Set date to today's date on component mount
+  // Set date to today's date on component mount if not already set
   useEffect(() => {
-    setSelectedDate(getTodayDate());
+    if (!selectedDate) {
+      setSelectedDate(getTodayDate());
+    }
   }, []);
+
+  // Save form values to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('attackPlanner_travelTime', JSON.stringify(travelTime));
+  }, [travelTime]);
+
+  useEffect(() => {
+    localStorage.setItem('attackPlanner_arrivalTime', JSON.stringify(arrivalTime));
+  }, [arrivalTime]);
+
+  useEffect(() => {
+    localStorage.setItem('attackPlanner_attackType', attackType);
+  }, [attackType]);
+
+  useEffect(() => {
+    localStorage.setItem('attackPlanner_villageName', villageName);
+  }, [villageName]);
+
+  useEffect(() => {
+    localStorage.setItem('attackPlanner_selectedDate', selectedDate);
+  }, [selectedDate]);
+
+  useEffect(() => {
+    localStorage.setItem('attackPlanner_travianLink', travianLink);
+  }, [travianLink]);
 
   // Save attacks to localStorage whenever attacks change
   useEffect(() => {
@@ -75,7 +147,7 @@ const AttackPlanner = () => {
   const calculateCountdown = (travelTime, arrivalTime, date) => {
     // Get current atomic time (using the same offset as RealLocalTime)
     const now = new Date();
-    const atomicOffset = -1900; // Same offset as RealLocalTime
+    const atomicOffset = parseFloat(localStorage.getItem('userTimeOffsetMs')) || 0;
     const atomicTime = new Date(now.getTime() + atomicOffset);
     
     // Calculate send time (arrival - travel time) using the specified date
@@ -168,7 +240,6 @@ const AttackPlanner = () => {
     setTravelTime({ hours: 0, minutes: 0, seconds: 0 });
     setAttackType('Fake');
     setTravianLink('');
-    setSelectedDate(getTodayDate());
   };
 
   const handleSent = (id) => {
@@ -196,6 +267,15 @@ const AttackPlanner = () => {
     setVillageName(attack.villageName || '');
     setSelectedDate(attack.date || getTodayDate());
     setTravianLink(attack.travianLink || '');
+    setInitialEditValues({
+      travelTime: { ...attack.travelTime },
+      arrivalTime: { ...attack.arrivalTime },
+      attackType: attack.attackType,
+      villageName: attack.villageName || '',
+      selectedDate: attack.date || getTodayDate(),
+      travianLink: attack.travianLink || ''
+    });
+    setIsEditDirty(false);
     
     // Trigger blink effect - keep it active while in edit mode
     setIsFormBlinking(true);
@@ -203,6 +283,22 @@ const AttackPlanner = () => {
 
   const handleDelete = (id) => {
     setAttacks(prev => prev.filter(attack => attack.id !== id));
+  };
+
+  const handleDeleteAll = () => {
+    setShowDeleteAllModal(true);
+  };
+
+  const confirmDeleteAll = () => {
+    setAttacks([]);
+    setEditMode(false);
+    setEditingId(null);
+    setIsEditDirty(false);
+    setShowDeleteAllModal(false);
+  };
+
+  const cancelDeleteAll = () => {
+    setShowDeleteAllModal(false);
   };
 
   const handleSaveEdit = () => {
@@ -245,6 +341,7 @@ const AttackPlanner = () => {
     setEditMode(false);
     setEditingId(null);
     setIsFormBlinking(false); // Stop the blinking effect
+    setIsEditDirty(false);
     
     // Restore original values
     if (originalValues) {
@@ -270,6 +367,7 @@ const AttackPlanner = () => {
     setEditMode(false);
     setEditingId(null);
     setIsFormBlinking(false); // Stop the blinking effect
+    setIsEditDirty(false);
     
     // Restore original values
     if (originalValues) {
@@ -356,8 +454,8 @@ const AttackPlanner = () => {
     <div className="attack-content">
       <div className="important-note"> <p> The attack planner needs to be tested. Please perform test attacks beforehand.</p></div>
       
-      <h1 className="new-rocker">Attack planner</h1>
-      <div className="attack-planner">
+      <h1 className="new-rocker">Attack Planner</h1>
+      <div className={`attack-planner ${editingId ? 'editing' : ''}`}>
         <div className={`attack-form ${isFormBlinking ? 'blinking' : ''}`}>
         
         {/* Row 1: Village Name and Date */}
@@ -366,7 +464,7 @@ const AttackPlanner = () => {
             <input
               type="text"
               value={villageName}
-              onChange={(e) => setVillageName(e.target.value)}
+              onChange={(e) => { setVillageName(e.target.value); if (editMode) setIsEditDirty(true); }}
               placeholder="Your village name"
               className="village-input"
             />
@@ -382,7 +480,7 @@ const AttackPlanner = () => {
                 ref={dateInputRef}
                 type="date"
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                onChange={(e) => { setSelectedDate(e.target.value); if (editMode) setIsEditDirty(true); }}
                 className="date-input-hidden"
               />
               <div className="date-display">
@@ -408,7 +506,7 @@ const AttackPlanner = () => {
                 min="0"
                 max="23"
                 value={travelTime.hours}
-                onChange={(e) => setTravelTime(prev => ({ ...prev, hours: parseInt(e.target.value) || 0 }))}
+                onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, hours: val })); setIsEditDirty(true); }}
                 placeholder="HH"
                 style={{ appearance: 'textfield' }}
               />
@@ -418,7 +516,7 @@ const AttackPlanner = () => {
                 min="0"
                 max="59"
                 value={travelTime.minutes}
-                onChange={(e) => setTravelTime(prev => ({ ...prev, minutes: parseInt(e.target.value) || 0 }))}
+                onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, minutes: val })); setIsEditDirty(true); }}
                 placeholder="MM"
                 style={{ appearance: 'textfield' }}
               />
@@ -428,7 +526,7 @@ const AttackPlanner = () => {
                 min="0"
                 max="59"
                 value={travelTime.seconds}
-                onChange={(e) => setTravelTime(prev => ({ ...prev, seconds: parseInt(e.target.value) || 0 }))}
+                onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, seconds: val })); setIsEditDirty(true); }}
                 placeholder="SS"
                 style={{ appearance: 'textfield' }}
               />
@@ -443,7 +541,7 @@ const AttackPlanner = () => {
                  min="0"
                  max="23"
                  value={arrivalTime.hours}
-                 onChange={(e) => setArrivalTime(prev => ({ ...prev, hours: parseInt(e.target.value) || 0 }))}
+                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setArrivalTime(prev => ({ ...prev, hours: val })); setIsEditDirty(true); }}
                  placeholder="HH"
                  style={{ appearance: 'textfield' }}
                />
@@ -453,7 +551,7 @@ const AttackPlanner = () => {
                  min="0"
                  max="59"
                  value={arrivalTime.minutes}
-                 onChange={(e) => setArrivalTime(prev => ({ ...prev, minutes: parseInt(e.target.value) || 0 }))}
+                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setArrivalTime(prev => ({ ...prev, minutes: val })); setIsEditDirty(true); }}
                  placeholder="MM"
                  style={{ appearance: 'textfield' }}
                />
@@ -463,7 +561,7 @@ const AttackPlanner = () => {
                  min="0"
                  max="59"
                  value={arrivalTime.seconds}
-                 onChange={(e) => setArrivalTime(prev => ({ ...prev, seconds: parseInt(e.target.value) || 0 }))}
+                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setArrivalTime(prev => ({ ...prev, seconds: val })); setIsEditDirty(true); }}
                  placeholder="SS"
                  style={{ appearance: 'textfield' }}
                />
@@ -477,25 +575,25 @@ const AttackPlanner = () => {
             <div className="type-buttons-grid">
               <button
                 className={`type-btn ${attackType === 'Fake' ? 'active' : ''}`}
-                onClick={() => setAttackType('Fake')}
+                onClick={() => { setAttackType('Fake'); if (editMode) setIsEditDirty(true); }}
               >
                 Fake
               </button>
               <button
                 className={`type-btn ${attackType === 'Pre-conquer' ? 'active' : ''}`}
-                onClick={() => setAttackType('Pre-conquer')}
+                onClick={() => { setAttackType('Pre-conquer'); if (editMode) setIsEditDirty(true); }}
               >
                 Pre-conquer
               </button>
               <button
                 className={`type-btn ${attackType === 'Attack' ? 'active' : ''}`}
-                onClick={() => setAttackType('Attack')}
+                onClick={() => { setAttackType('Attack'); if (editMode) setIsEditDirty(true); }}
               >
                 Attack
               </button>
               <button
                 className={`type-btn ${attackType === 'Conquer' ? 'active' : ''}`}
-                onClick={() => setAttackType('Conquer')}
+                onClick={() => { setAttackType('Conquer'); if (editMode) setIsEditDirty(true); }}
               >
                 Conquer
               </button>
@@ -509,14 +607,14 @@ const AttackPlanner = () => {
             <input
               type="url"
               value={travianLink}
-              onChange={(e) => setTravianLink(e.target.value)}
+              onChange={(e) => { setTravianLink(e.target.value); if (editMode) setIsEditDirty(true); }}
               placeholder="Paste target link"
               className="link-input"
             />
           </div>
           {editMode ? (
             <>
-              <button className="add-attack-btn" onClick={handleSaveEdit}>
+              <button className={`add-attack-btn ${!isEditDirty ? 'disabled' : ''}`} onClick={handleSaveEdit} disabled={!isEditDirty}>
                 Save
               </button>
               <button className="cancel-btn" onClick={handleCancelEdit}>
@@ -532,7 +630,7 @@ const AttackPlanner = () => {
                >
                  Add Attack
                </button>
-              <button className="edit-btn" onClick={() => setEditMode(true)}>
+              <button className="edit-btn" onClick={() => { setEditMode(true); setIsEditDirty(false); setEditingId(null); }}>
                 Edit Mode
               </button>
             </>
@@ -603,12 +701,6 @@ const AttackPlanner = () => {
                           className="delete-btn"
                           onClick={() => handleDelete(attack.id)}
                         >
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="3,6 5,6 21,6"/>
-                            <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
-                            <line x1="10" y1="11" x2="10" y2="17"/>
-                            <line x1="14" y1="11" x2="14" y2="17"/>
-                          </svg>
                           Delete
                         </button>
                       </div>
@@ -620,6 +712,14 @@ const AttackPlanner = () => {
           </table>
         </div>
       )}
+      
+      {editMode && attacks.length > 0 && (
+        <div className="delete-all-container">
+          <button className="delete-all-btn" onClick={handleDeleteAll}>
+            Delete All Attacks
+          </button>
+        </div>
+      )}
       </div>
       
       {/* Error Modal */}
@@ -628,15 +728,6 @@ const AttackPlanner = () => {
           <div className="error-modal" onClick={(e) => e.stopPropagation()}>
             <div className="error-modal-header">
               <h3>Invalid Input</h3>
-              <button 
-                className="error-modal-close"
-                onClick={() => setShowErrorModal(false)}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
             </div>
             <div className="error-modal-content">
               <p>{errorMessage}</p>
@@ -647,6 +738,34 @@ const AttackPlanner = () => {
                 onClick={() => setShowErrorModal(false)}
               >
                 OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete All Confirmation Modal */}
+      {showDeleteAllModal && (
+        <div className="error-modal-overlay" onClick={cancelDeleteAll}>
+          <div className="error-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="error-modal-header">
+              <h3>Delete All Attacks</h3>
+            </div>
+            <div className="error-modal-content">
+              <p>Are you sure you want to delete all attacks? This action cannot be undone.</p>
+            </div>
+            <div className="error-modal-footer">
+              <button 
+                className="error-modal-btn cancel-btn"
+                onClick={cancelDeleteAll}
+              >
+                Cancel
+              </button>
+              <button 
+                className="error-modal-btn delete-btn"
+                onClick={confirmDeleteAll}
+              >
+                Delete All
               </button>
             </div>
           </div>

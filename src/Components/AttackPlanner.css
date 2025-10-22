@@ -30,20 +30,21 @@
 /* Container */
 .attack-content {
   width: 90%;
-  margin: 0 auto;
+  margin: 0;
+  padding: 3px;
 }
 
 .attack-content h1 {
   font-family: "New Rocker", system-ui;
   font-weight: 400;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   color: #fff;
 }
 
 .attack-planner {
   margin-bottom: 100px;
-  padding: 8px;
+  padding: 4px;
   background: rgba(40,40,40,0.7);
   border-radius: 4px;
   border: 1px solid rgba(255,255,255,0.2);
@@ -53,10 +54,31 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 15px;
-  padding-top: 4px;
+  gap: 12px;
+  padding: 4px;
   justify-content: center;
+}
+
+/* Edit mode visual cue: match editing row background */
+.editing .attack-form {
+  background: rgb(15, 15, 15);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.editing .form-buttons {
+  background: rgb(15, 15, 15);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.light .editing .attack-form {
+  background: rgba(0,0,0,0.12);
+}
+.light .editing .form-buttons {
+  background: rgba(0,0,0,0.12);
 }
 
 .form-row {
@@ -224,7 +246,7 @@
   color: inherit;
   cursor: pointer;
   font-size: 12px;
-  transition: all 0.2s ease;
+  transition: none;
   height: 32px;
   display: flex;
   align-items: center;
@@ -233,8 +255,16 @@
 }
 
 .type-btn:hover {
-  background: var(--button-bg);
-  border-color: var(--button-bg);
+  background: var(--button-bg-hover);
+  border-color: var(--button-bg-hover);
+  color: var(--button-text);
+}
+
+/* Ensure hover wins over .active (placed later for precedence) */
+.type-buttons-grid .type-btn:hover,
+.type-buttons-grid .type-btn.active:hover {
+  background: var(--button-bg-hover);
+  border-color: var(--button-bg-hover);
   color: var(--button-text);
 }
 
@@ -249,7 +279,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
+  padding-bottom: 8px;
+  padding-top: 8px;
 }
 
 .add-attack-btn {
@@ -261,7 +292,7 @@
   cursor: pointer;
   font-size: 11px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: none;
   width: 110px;
   text-align: center;
   white-space: nowrap;
@@ -295,7 +326,7 @@
   cursor: pointer;
   font-size: 11px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: none;
   width: 110px;
   height: 32px;
   text-align: center;
@@ -308,14 +339,38 @@
 }
 
 .light .edit-btn {
-  background: rgba(0,0,0,0.1);
-  border-color: rgba(0,0,0,0.2);
-  color: rgba(0,0,0,0.8);
+  background: #fff;
+  border: 1px solid rgba(0,0,0);
+  color: rgba(0,0,0,0.7);
+  border-radius: 4px;
 }
 
 .light .edit-btn:hover {
-  background: rgba(0,0,0,0.15);
-  border-color: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0);
+}
+
+/* Light mode Add Attack button (match backup primary style) */
+.light .add-attack-btn {
+  background: var(--button-bg);
+  border-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.light .add-attack-btn:hover {
+  background: var(--button-bg-hover);
+  border-color: var(--button-bg-hover);
+}
+
+.light .add-attack-btn.disabled {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.15);
+  color: rgba(0,0,0,0.3);
+}
+
+.light .add-attack-btn.disabled:hover {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.15);
 }
 
 /* Remove number input arrows */
@@ -428,7 +483,7 @@
   background: rgba(255,255,255,0.05);
   border-radius: 4px;
   overflow: hidden;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .attacks-table th {
@@ -452,6 +507,9 @@
   color: #00ff88;
   font-weight: 600;
 }
+.light .attacks-table td:nth-child(3) {
+  color: #1976D2; /* blue from backup for light mode */
+}
 
 /* Link input styling */
 .link-input-group {
@@ -460,14 +518,14 @@
 }
 
 .link-input {
-  width: 120px;
+  width: 110px;
   height: 32px;
   padding: 4px 8px;
   border: 1px solid var(--border-input);
   border-radius: 4px;
   background: var(--bg-input-dark);
   color: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-family: "Inter", sans-serif;
 }
 
@@ -496,10 +554,10 @@
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: none;
 }
 
 .link-btn:hover {
@@ -528,15 +586,15 @@
 }
 
 .sent-btn {
-  padding: 4px 8px;
+  padding: 2px 6px;
   background: #527230;
   border: 1px solid #527230;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #fff;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: none;
 }
 
 .sent-btn:hover {
@@ -547,6 +605,106 @@
 .sent-text {
   color: rgba(255,255,255,0.4);
   font-style: italic;
+}
+
+/* Error Modal Styles */
+.error-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.error-modal {
+  width: min(92vw, 420px);
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(40,40,40,0.95);
+  color: #fff;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.error-modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.error-modal-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+}
+
+.error-modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: none;
+}
+
+.error-modal-close:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.error-modal-content {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-modal-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.error-modal-btn {
+  background: #527230;
+  color: #fff;
+  border: 1px solid #3f5b20;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: none;
+}
+
+.error-modal-btn:hover {
+  background: #3f5b20;
+}
+
+/* Light mode styles for error modal */
+.light .error-modal {
+  background: rgba(255,255,255,0.95);
+  color: #222;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+.light .error-modal-title {
+  color: #222;
+}
+
+.light .error-modal-close {
+  color: #222;
+}
+
+.light .error-modal-close:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+.light .error-modal-content {
+  color: #222;
 }
 
 /* Light mode styles */
@@ -614,198 +772,44 @@
 }
 
 /* ========================================
-   RESPONSIVE MEDIA QUERIES
+   RESPONSIVE DESIGN - SIMPLIFIED
    ======================================== */
 
-/* Medium Desktop - 685px to 600px */
-@media (max-width: 685px) and (min-width: 600px) {
-  .attack-content {
-    width: 90%;
-    margin: 0 auto;
-    padding: 8px;
-  }
-
-  .attack-content h1 {
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .attack-planner {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .attack-planner .attack-form {
-    width: 100%;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .attack-planner .form-row {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .attack-planner .form-row:nth-child(3) {
-    align-items: center;
-    justify-content: center;
-  }
-
-  .attack-planner .form-row:nth-child(3) .form-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
-  .attack-planner .column-group {
-    flex-direction: row;
-    gap: 8px;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .attack-planner .village-input,
-  .attack-planner .date-input-wrapper {
-    width: 140px;
-    height: 32px;
-    font-size: 12px;
-  }
-
-  .attack-planner .time-label {
-    font-size: 12px;
-    margin-right: 6px;
-  }
-
-  .attack-planner .time-inputs {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .attack-planner .time-inputs input {
-    width: 50px;
-    height: 32px;
-    font-size: 12px;
-    padding: 4px;
-  }
-
-  .attack-planner .type-buttons-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 200px;
-  }
-
-  .attack-planner .type-btn {
-    padding: 6px 8px;
-    font-size: 11px;
-    height: 32px;
-    min-width: 80px;
-  }
-
-  .attack-planner .form-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .attack-planner .link-input {
-    width: 120px;
-    height: 32px;
-    font-size: 12px;
-    padding: 6px 8px;
-  }
-
-  .attack-planner .add-attack-btn,
-  .attack-planner .edit-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-    width: 100px;
-    height: 32px;
-  }
-
-  /* Table responsive */
-  .attack-planner .attacks-table {
-    width: 100%;
-    margin-top: 12px;
-  }
-
-  .attack-planner .attacks-table table {
-    width: 100%;
-    font-size: 10px;
-    table-layout: fixed;
-  }
-
-  .attack-planner .attacks-table th,
-  .attack-planner .attacks-table td {
-    padding: 2px 1px;
-    font-size: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .attack-planner .attacks-table .action-buttons {
-    gap: 4px;
-  }
-
-  .attack-planner .attacks-table .action-buttons button {
-    padding: 3px 6px;
-    font-size: 10px;
-    min-width: 35px;
-  }
-
-  /* Set specific column widths for better fit */
-  .attack-planner .attacks-table th:nth-child(1),
-  .attack-planner .attacks-table td:nth-child(1) { width: 15%; } /* Village */
-  .attack-planner .attacks-table th:nth-child(2),
-  .attack-planner .attacks-table td:nth-child(2) { width: 10%; } /* Date */
-  .attack-planner .attacks-table th:nth-child(3),
-  .attack-planner .attacks-table td:nth-child(3) { width: 12%; } /* Send At */
-  .attack-planner .attacks-table th:nth-child(4),
-  .attack-planner .attacks-table td:nth-child(4) { width: 12%; } /* Travel Time */
-  .attack-planner .attacks-table th:nth-child(5),
-  .attack-planner .attacks-table td:nth-child(5) { width: 12%; } /* Arrival */
-  .attack-planner .attacks-table th:nth-child(6),
-  .attack-planner .attacks-table td:nth-child(6) { width: 12%; } /* Countdown */
-  .attack-planner .attacks-table th:nth-child(7),
-  .attack-planner .attacks-table td:nth-child(7) { width: 10%; } /* Type */
-  .attack-planner .attacks-table th:nth-child(8),
-  .attack-planner .attacks-table td:nth-child(8) { width: 8%; } /* Sent? */
-  .attack-planner .attacks-table th:nth-child(9),
-  .attack-planner .attacks-table td:nth-child(9) { width: 9%; } /* Link */
+/* Table scrolling - always allow horizontal scroll for tables */
+.attack-planner .attacks-table {
+  width: 100%;
+  margin-top: 12px;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
-/* Ultra Responsive Design - 685px and below */
+/* Custom scrollbar styling for tables */
+.attack-planner .attacks-table::-webkit-scrollbar {
+  height: 8px;
+}
+
+.attack-planner .attacks-table::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+.attack-planner .attacks-table::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.3);
+  border-radius: 4px;
+}
+
+.attack-planner .attacks-table::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+/* Firefox scrollbar */
+.attack-planner .attacks-table {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+
+/* Form wrapping starts at 685px - proper 3 rows layout */
 @media (max-width: 685px) {
-  .attack-content {
-    width: 90%;
-    margin: 0 auto;
-    padding: 8px;
-  }
-
-  .attack-content h1 {
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
   .attack-planner {
     width: 100%;
     display: flex;
@@ -901,7 +905,7 @@
   }
 
   .attack-planner .link-input {
-    width: 120px;
+    width: 110px;
     height: 32px;
     font-size: 12px;
     padding: 6px 8px;
@@ -911,362 +915,540 @@
   .attack-planner .edit-btn {
     padding: 6px 12px;
     font-size: 12px;
-    width: 100px;
+    width: 110px;
     height: 32px;
   }
 
-  /* Table responsive */
-  .attack-planner .attacks-table {
-    width: 100%;
-    margin-top: 12px;
+  .edit-btn {
+    font-size: 8px;
   }
-
-  .attack-planner .attacks-table table {
-    width: 100%;
-    font-size: 10px;
-    table-layout: fixed;
-  }
-
-  .attack-planner .attacks-table th,
-  .attack-planner .attacks-table td {
-    padding: 2px 1px;
-    font-size: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .attack-planner .attacks-table .action-buttons {
-    gap: 4px;
-  }
-
-  .attack-planner .attacks-table .action-buttons button {
-    padding: 3px 6px;
-    font-size: 10px;
-    min-width: 35px;
+  
+  .attack-planner .form-buttons .cancel-btn {
+    width: 110px;
+    height: 28px;
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }
 
-/* Medium Mobile - 480px and below */
-@media (max-width: 480px) {
+/* Mobile responsive - minimal changes */
+@media (max-width: 768px) {
   .attack-content {
-    width: 90%;
-    padding: 6px;
+    padding: 2px;
   }
-
+  
   .attack-content h1 {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
   }
-
+  
   .attack-planner {
-    gap: 10px;
-  }
-
-  .attack-planner .attack-form {
-    gap: 10px;
-  }
-
-  .attack-planner .form-row {
+    padding: 2px;
     gap: 6px;
   }
-
-  .attack-planner .form-row:nth-child(3) {
-    align-items: center;
-    justify-content: center;
+  
+  .attack-form {
+    gap: 6px;
+    padding: 2px;
   }
+  
+  /* More compact table */
+  .attack-planner .attacks-table table {
+    font-size: 8px;
+  }
+  
+  .attack-planner .attacks-table th,
+  .attack-planner .attacks-table td {
+    padding: 1px;
+    font-size: 8px;
+  }
+  
+  .attack-planner .attacks-table {
+    margin-top: 8px;
+  }
+  
+  /* Village column ellipsis and table buttons smaller */
+  .attack-planner .attacks-table th:nth-child(1),
+  .attack-planner .attacks-table td:nth-child(1) {
+    width: 15%;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Smaller table buttons */
+  .attack-planner .attacks-table .action-buttons .edit-row-btn,
+  .attack-planner .attacks-table .action-buttons .delete-btn {
+    padding: 1px 4px;
+    font-size: 8px;
+    border-radius: 2px;
+    min-width: 0;
+  }
+  
+  .attack-planner .attacks-table .sent-btn,
+  .attack-planner .attacks-table .ok-btn {
+    padding: 1px 4px;
+    font-size: 8px;
+    border-radius: 2px;
+    min-width: 0;
+  }
+}
 
-  .attack-planner .form-row:nth-child(3) .form-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+@media (max-width: 480px) {
+  .attack-content {
+    padding: 1px;
+  }
+  
+  .attack-content h1 {
+    font-size: 16px;
+    margin-bottom: 3px;
+  }
+  
+  .attack-planner {
+    padding: 1px;
+    gap: 4px;
+  }
+  
+  .attack-form {
+    gap: 4px;
+    padding: 1px;
+  }
+  
+  .form-buttons {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  /* Even more compact table */
+  .attack-planner .attacks-table table {
+    font-size: 7px;
+  }
+  
+  .attack-planner .attacks-table th,
+  .attack-planner .attacks-table td {
+    padding: 0;
+    font-size: 7px;
+  }
+  
+  .attack-planner .attacks-table {
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 430px) {
+  .attack-content {
     width: 100%;
+    padding: 1px;
   }
-
-  .attack-planner .column-group {
+  
+  .attack-content h1 {
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  
+  .attack-planner {
+    padding: 1px;
+    gap: 4px;
+  }
+  
+  .attack-form {
     gap: 6px;
+    padding: 1px;
   }
-
+  
+  /* Scale down form elements */
   .attack-planner .village-input,
   .attack-planner .date-input-wrapper {
-    width: 120px;
-    height: 30px;
+    width: 100px;
+    height: 28px;
     font-size: 11px;
   }
-
+  
   .attack-planner .time-label {
     font-size: 11px;
     margin-right: 4px;
   }
-
-  .attack-planner .time-inputs input {
-    width: 45px;
-    height: 30px;
-    font-size: 11px;
-    padding: 3px;
-  }
-
-  .attack-planner .type-buttons-grid {
-    gap: 6px;
-    max-width: 180px;
-  }
-
-  .attack-planner .type-btn {
-    padding: 5px 6px;
-    font-size: 10px;
-    height: 30px;
-    min-width: 70px;
-  }
-
-  .attack-planner .form-buttons {
-    gap: 6px;
-  }
-
-  .attack-planner .link-input {
-    width: 100px;
-    height: 30px;
-    font-size: 11px;
-    padding: 5px 8px;
-  }
-
-  .attack-planner .add-attack-btn,
-  .attack-planner .edit-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-    width: 90px;
-    height: 30px;
-  }
-
-  .attack-planner .attacks-table table {
-    min-width: 500px;
-    font-size: 10px;
-  }
-
-  .attack-planner .attacks-table th,
-  .attack-planner .attacks-table td {
-    padding: 3px 1px;
-    font-size: 10px;
-  }
-
-  .attack-planner .attacks-table .action-buttons button {
-    padding: 2px 4px;
-    font-size: 9px;
-    min-width: 30px;
-  }
-}
-
-/* Small Mobile - 360px and below */
-@media (max-width: 360px) {
-  .attack-content {
-    width: 90%;
-    padding: 4px;
-  }
-
-  .attack-content h1 {
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-
-  .attack-planner {
-    gap: 8px;
-  }
-
-  .attack-planner .attack-form {
-    gap: 8px;
-  }
-
-  .attack-planner .form-row {
-    gap: 4px;
-  }
-
-  .attack-planner .form-row:nth-child(3) {
-    align-items: center;
-    justify-content: center;
-  }
-
-  .attack-planner .form-row:nth-child(3) .form-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
-  .attack-planner .column-group {
-    gap: 4px;
-  }
-
-  .attack-planner .village-input,
-  .attack-planner .date-input-wrapper {
-    width: 100px;
-    height: 28px;
-    font-size: 10px;
-  }
-
-  .attack-planner .time-label {
-    font-size: 10px;
-    margin-right: 3px;
-  }
-
+  
   .attack-planner .time-inputs input {
     width: 40px;
     height: 28px;
-    font-size: 10px;
-    padding: 2px;
+    font-size: 11px;
+    padding: 3px;
   }
-
+  
   .attack-planner .type-buttons-grid {
-    gap: 4px;
+    gap: 6px;
     max-width: 160px;
   }
-
+  
   .attack-planner .type-btn {
-    padding: 4px 5px;
-    font-size: 9px;
-    height: 28px;
-    min-width: 60px;
-  }
-
-  .attack-planner .form-buttons {
-    gap: 4px;
-  }
-
-  .attack-planner .link-input {
-    width: 80px;
-    height: 28px;
+    padding: 4px 6px;
     font-size: 10px;
+    height: 28px;
+    min-width: 70px;
+  }
+  
+  .attack-planner .link-input {
+    width: 110px;
+    height: 28px;
+    font-size: 11px;
     padding: 4px 6px;
   }
-
+  
   .attack-planner .add-attack-btn,
   .attack-planner .edit-btn {
     padding: 4px 8px;
-    font-size: 10px;
-    width: 80px;
+    font-size: 11px;
+    width: 110px;
     height: 28px;
   }
-
-  .attack-planner .attacks-table table {
-    min-width: 450px;
-    font-size: 9px;
+  
+  .attack-planner .form-buttons .cancel-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    width: 110px;
+    height: 28px;
   }
-
+  
+  /* More compact table */
+  .attack-planner .attacks-table table {
+    font-size: 7px;
+  }
+  
   .attack-planner .attacks-table th,
   .attack-planner .attacks-table td {
-    padding: 2px 1px;
-    font-size: 9px;
+    padding: 0;
+    font-size: 7px;
   }
-
-  .attack-planner .attacks-table .action-buttons button {
-    padding: 2px 3px;
-    font-size: 8px;
-    min-width: 25px;
+  
+  .attack-planner .attacks-table {
+    margin-top: 6px;
   }
 }
 
-/* Ultra Small Mobile - 320px and below */
-@media (max-width: 320px) {
+@media (max-width: 330px) {
   .attack-content {
-    width: 90%;
-    padding: 2px;
+    padding: 0;
   }
-
+  
   .attack-content h1 {
     font-size: 14px;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
   }
-
+  
   .attack-planner {
-    gap: 6px;
+    padding: 0;
+    gap: 2px;
   }
-
-  .attack-planner .attack-form {
-    gap: 6px;
-  }
-
-  .attack-planner .form-row {
+  
+  .attack-form {
     gap: 3px;
+    padding: 0;
   }
-
-  .attack-planner .form-row:nth-child(3) {
-    align-items: center;
-    justify-content: center;
+  
+  /* Ultra compact table */
+  .attack-planner .attacks-table table {
+    font-size: 6px;
   }
-
-  .attack-planner .form-row:nth-child(3) .form-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+  
+  .attack-planner .attacks-table th,
+  .attack-planner .attacks-table td {
+    padding: 0;
+    font-size: 6px;
   }
-
-  .attack-planner .column-group {
-    gap: 3px;
+  
+  .attack-planner .attacks-table {
+    margin-top: 4px;
   }
-
-  .attack-planner .village-input,
-  .attack-planner .date-input-wrapper {
-    width: 85px;
-    height: 26px;
-    font-size: 9px;
+  
+  /* Village column even smaller and table buttons ultra compact */
+  .attack-planner .attacks-table th:nth-child(1),
+  .attack-planner .attacks-table td:nth-child(1) {
+    width: 12%;
+    max-width: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-
-  .attack-planner .time-label {
-    font-size: 9px;
-    margin-right: 2px;
+  
+  /* Ultra compact table buttons */
+  .attack-planner .attacks-table .action-buttons .edit-row-btn,
+  .attack-planner .attacks-table .action-buttons .delete-btn {
+    padding: 0px 3px;
+    font-size: 7px;
+    border-radius: 2px;
+    min-width: 0;
   }
-
-  .attack-planner .time-inputs input {
-    width: 35px;
-    height: 26px;
-    font-size: 9px;
-    padding: 1px;
+  
+  .attack-planner .attacks-table .sent-btn,
+  .attack-planner .attacks-table .ok-btn {
+    padding: 0px 3px;
+    font-size: 7px;
+    border-radius: 2px;
+    min-width: 0;
   }
-
-  .attack-planner .type-buttons-grid {
-    gap: 3px;
-    max-width: 140px;
-  }
-
-  .attack-planner .type-btn {
-    padding: 3px 4px;
-    font-size: 8px;
-    height: 26px;
-    min-width: 50px;
-  }
-
-  .attack-planner .form-buttons {
-    gap: 3px;
-  }
-
+  
   .attack-planner .link-input {
-    width: 70px;
+    width: 110px;
     height: 26px;
     font-size: 9px;
-    padding: 3px 5px;
+    padding: 3px 6px;
   }
-
+  
   .attack-planner .add-attack-btn,
   .attack-planner .edit-btn {
     padding: 3px 6px;
     font-size: 9px;
-    width: 70px;
+    width: 110px;
     height: 26px;
   }
-
-  .attack-planner .attacks-table table {
-    min-width: 400px;
-    font-size: 8px;
+  
+  .attack-planner .form-buttons .cancel-btn {
+    padding: 3px 6px;
+    font-size: 9px;
+    width: 110px;
+    height: 26px;
   }
+}
+/* Highlight editing row */
+.attacks-table tbody tr.editing {
+  background: rgb(22, 22, 22);
+  transition: none;
+}
+.light .attacks-table tbody tr.editing {
+  background: rgba(0,0,0,0.12);
+}
+.attacks-table tbody tr.editing.sent {
+  background: rgba(255,255,255,0.10);
+}
+.light .attacks-table tbody tr.editing.sent {
+  background: rgba(0,0,0,0.10);
+}
 
-  .attack-planner .attacks-table th,
-  .attack-planner .attacks-table td {
-    padding: 1px;
-    font-size: 8px;
-  }
+/* Action buttons wrapper inside table rows */
+.attacks-table .action-buttons {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-top: 0px;
+}
 
-  .attack-planner .attacks-table .action-buttons button {
-    padding: 1px 2px;
-    font-size: 7px;
-    min-width: 20px;
-  }
+/* Row action buttons */
+.edit-row-btn,
+.delete-btn {
+  padding: 4px 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.9);
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: none;
+}
+.edit-row-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* Delete emphasis */
+.delete-btn {
+  background: rgba(255,0,0,0.2);
+  border-color: rgba(255,0,0,0.35);
+  color: #fff;
+}
+.delete-btn:hover {
+  background: rgba(255,0,0,0.3);
+  border-color: rgba(255,0,0,0.45);
+}
+
+/* Cancel emphasis */
+
+/* Light mode variants */
+.light .edit-row-btn {
+  background: rgba(0,0,0,0.05);
+  border-color: rgba(0,0,0,0.15);
+  color: rgba(0,0,0,0.8);
+}
+.light .edit-row-btn:hover {
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.2);
+}
+.light .delete-btn {
+  background: rgba(255,0,0,0.1);
+  border-color: rgba(255,0,0,0.2);
+  color: #222;
+}
+.light .delete-btn:hover {
+  background: rgba(255,0,0,0.15);
+  border-color: rgba(255,0,0,0.3);
+}
+.light .cancel-btn {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.light .cancel-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* ================================
+   Form action buttons sizing/consistency
+   ================================ */
+/* Make Cancel same size as Edit Mode button - exact copy */
+.attack-planner .form-buttons .cancel-btn {
+  padding: 4px 8px;
+  background: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  transition: none;
+  width: 110px;
+  height: 32px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.form-buttons .cancel-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+.light .attack-planner .form-buttons .cancel-btn {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
+/* ================================
+   Row Edit/Delete buttons in table
+   ================================ */
+.attacks-table .action-buttons .edit-row-btn,
+.attacks-table .action-buttons .delete-btn {
+  min-width: 0; /* compact like .sent-btn */
+  padding: 2px 6px; /* more compact */
+  font-size: 9px;  /* smaller font */
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;     /* vertical center */
+  justify-content: center; /* horizontal center */
+  gap: 4px; /* smaller gap between icon and text */
+}
+
+/* Delete button solid red with hover */
+.attacks-table .action-buttons .delete-btn {
+  background: #dc3545;
+  border: 1px solid #dc3545;
+  color: #fff;
+}
+.attacks-table .action-buttons .delete-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+.light .attacks-table .action-buttons .delete-btn {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+.light .attacks-table .action-buttons .delete-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* Ensure delete icon scales nicely */
+.attacks-table .action-buttons .delete-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Delete All button container */
+.delete-all-container {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 5px 0;
+}
+
+.delete-all-btn {
+  padding: 4px 8px;
+  background: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: none;
+  width: fit-content;
+}
+
+.delete-all-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* Light mode */
+.light .delete-all-btn {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
+.light .delete-all-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* Delete All Modal Button Styles */
+.error-modal-btn.cancel-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.8);
+  margin-right: 15px;
+  font-size: 12px;
+
+}
+
+.error-modal-btn.cancel-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.error-modal-btn.delete-btn {
+  background: #dc3545;
+  border: 1px solid #dc3545;
+  color: #fff;
+  font-size: 12px;
+}
+
+.error-modal-btn.delete-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* Light mode modal buttons */
+.light .error-modal-btn.cancel-btn {
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.15);
+  color: rgba(0,0,0,0.7);
+}
+
+.light .error-modal-btn.cancel-btn:hover {
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0,0.2);
+}
+
+.light .error-modal-btn.delete-btn {
+  background: #dc3545;
+  border: 1px solid #dc3545;
+  color: #fff;
+}
+
+.light .error-modal-btn.delete-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
 }

@@ -86,6 +86,11 @@
   color: var(--text-light);
 }
 
+.light h1,
+.light .new-rocker {
+  color: #222;
+}
+
 
 /* Header */
 .header {

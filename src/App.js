@@ -38,7 +38,15 @@ function App() {
   // Load settings from localStorage
   useEffect(() => {
     const savedSettings = localStorage.getItem("appSettings");
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    if (savedSettings) {
+      const parsedSettings = JSON.parse(savedSettings);
+      // Ensure lightReportOnDarkTheme is always true by default
+      setSettings({
+        lightReportOnDarkTheme: true,
+        ...parsedSettings,
+        lightReportOnDarkTheme: parsedSettings.lightReportOnDarkTheme !== false,
+      });
+    }
 
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) setDarkMode(savedTheme === "dark");

@@ -29,7 +29,7 @@ const Settings = ({ settings, onSettingsChange, isOpen, onClose, darkMode }) => 
               <label className="setting-label">
                 <input
                   type="checkbox"
-                  checked={settings.lightReportOnDarkTheme !== false}
+                  checked={settings.lightReportOnDarkTheme === true}
                   onChange={(e) => handleSettingChange('lightReportOnDarkTheme', e.target.checked)}
                 />
                 <span className="setting-text">Use light reports on dark theme</span>

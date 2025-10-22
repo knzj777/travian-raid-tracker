@@ -52,6 +52,12 @@
   position: relative;
 }
 
+/* Prevent layout shift by always reserving scrollbar space */
+html {
+  overflow-y: scroll; /* Always show scrollbar space */
+  scrollbar-gutter: stable; /* Reserve space for scrollbar */
+}
+
 /* Gradient overlay for dark mode */
 .app-container::before {
   content: '';
@@ -94,51 +100,6 @@
 .app-container > * {
   position: relative;
   z-index: 1;
-}
-
-/* Global Scrollbar Styling */
-/* Webkit browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-/* Light mode scrollbar */
-.light ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.light ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-/* Firefox scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-}
-
-.light * {
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 @media (max-width: 900px) {

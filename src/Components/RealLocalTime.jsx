@@ -1,141 +1,90 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RealLocalTime.css';
 
 const RealLocalTime = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isSynced, setIsSynced] = useState(false);
-  const [syncOffset, setSyncOffset] = useState(0);
-  const intervalRef = useRef(null);
-  const startTimeRef = useRef(null);
-  const lastSyncRef = useRef(null);
-
-  // Enhanced persistence with timestamp
-  const saveSyncData = (offset, timestamp) => {
-    const syncData = {
-      offset: offset,
-      timestamp: timestamp,
-      version: '1.0'
-    };
-    localStorage.setItem('timeSyncData', JSON.stringify(syncData));
-  };
-
-  // Load sync data with validation
-  const loadSyncData = () => {
+  const [offsetMs, setOffsetMs] = useState(() => {
     try {
-      const saved = localStorage.getItem('timeSyncData');
-      if (saved) {
-        const syncData = JSON.parse(saved);
-        // Check if data is recent (within 24 hours)
-        const now = Date.now();
-        const dataAge = now - syncData.timestamp;
-        const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-        
-        if (dataAge < maxAge && syncData.version === '1.0') {
-          return syncData.offset;
-        }
-      }
-    } catch (error) {
-      console.warn('Failed to load sync data:', error);
+      const saved = localStorage.getItem('userTimeOffsetMs');
+      return saved !== null ? parseFloat(saved) || '' : '';
+    } catch {
+      return '';
     }
-    return -1900; // Default offset
-  };
+  });
 
-
-  // Enhanced NTP-like synchronization with drift compensation
-  const syncWithSystemTime = () => {
-    try {
-      // Get system time (already NTP synchronized)
-      const systemTime = new Date();
-      const performanceTime = performance.now();
-      
-      // Load validated sync data
-      const offset = loadSyncData();
-      
-      // Calculate drift compensation if we have previous sync data
-      let driftCompensation = 0;
-      if (lastSyncRef.current) {
-        const timeSinceLastSync = systemTime.getTime() - lastSyncRef.current.systemTime;
-        const expectedTimeSinceLastSync = performanceTime - lastSyncRef.current.performanceTime;
-        driftCompensation = timeSinceLastSync - expectedTimeSinceLastSync;
-        
-        // Only apply small drift corrections to avoid jumps
-        if (Math.abs(driftCompensation) < 100) {
-          console.log(`Drift compensation: ${driftCompensation.toFixed(2)}ms`);
-        } else {
-          driftCompensation = 0; // Ignore large drifts
-        }
-      }
-      
-      // Store the reference point with persistent offset and drift compensation
-      startTimeRef.current = {
-        systemTime: systemTime.getTime() + offset + driftCompensation,
-        performanceTime: performanceTime
-      };
-      
-      // Store sync reference for drift calculation
-      lastSyncRef.current = {
-        systemTime: systemTime.getTime(),
-        performanceTime: performanceTime
-      };
-      
-      setIsSynced(true);
-      setSyncOffset(offset);
-      saveSyncData(offset, systemTime.getTime());
-      
-    } catch (error) {
-      console.warn('Enhanced sync failed:', error);
-      setIsSynced(false);
-    }
-  };
-
-  // Main useEffect for component initialization
   useEffect(() => {
-    // Clear old localStorage data to use new offset
-    localStorage.removeItem('timeSyncData');
-    localStorage.removeItem('timeOffset'); // Remove old format too
-    
-    // Initial sync with system time
-    syncWithSystemTime();
-    
-    // Re-sync every 5 minutes for better accuracy
-    const syncInterval = setInterval(syncWithSystemTime, 300000);
-
-    // High-precision time update every 100ms for smoother display
-    intervalRef.current = setInterval(() => {
-      if (startTimeRef.current) {
-        // Calculate elapsed time since sync using performance.now()
-        const elapsed = performance.now() - startTimeRef.current.performanceTime;
-        
-        // Add elapsed time to the reference system time
-        const currentTime = new Date(startTimeRef.current.systemTime + elapsed);
-        
-        setCurrentTime(currentTime);
-      } else {
-        // Fallback to regular Date if sync failed
-        setCurrentTime(new Date());
-      }
-    }, 100); // Update every 100ms for smoother display
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (syncInterval) clearInterval(syncInterval);
+    const tick = () => {
+      const offsetMsValue = Math.round(parseFloat(offsetMs) || 0);
+      setCurrentTime(new Date(Date.now() + offsetMsValue));
     };
-  }, []); // Empty dependency array for initialization only
+    tick();
+    const id = setInterval(tick, 250);
+    return () => clearInterval(id);
+  }, [offsetMs]);
+
+  const handleOffsetChange = (e) => {
+    setOffsetMs(e.target.value);
+  };
+
+  const persistOffset = () => {
+    const normalized = parseFloat(offsetMs) || 0;
+    localStorage.setItem('userTimeOffsetMs', String(normalized));
+    setOffsetMs(normalized);
+  };
 
   const formatTime = (date) => {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
     const seconds = date.getSeconds().toString().padStart(2, '0');
-    
     return `${hours}:${minutes}:${seconds}`;
   };
 
   return (
     <div className="real-local-time">
-      <div className="time-label">
-        Real local time {isSynced ? '(atomic clock synced)' : '(local only)'}
-      </div>
+      <div className="time-label">Local time</div>
       <div className="time-display">{formatTime(currentTime)}</div>
+
+      <div className="time-controls" style={{ marginTop: '8px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>Offset (ms):</span>
+          <input
+            type="number"
+            step="1"
+            value={offsetMs}
+            onChange={handleOffsetChange}
+            onBlur={persistOffset}
+            placeholder="-1200"
+          />
+        </label>
+        <div className="link-and-info">
+          <a href="https://time.is/" target="_blank" rel="noopener noreferrer">
+            Check your offset here
+          </a>
+          <div className="info-icon-container">
+            <svg 
+              className="info-icon" 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+            <div className="info-tooltip">
+              Always check your offset!<br/>
+              If the time ticking is not the same try refreshing page.<br/>
+              If your time is ahead e.g 1.2s input -1200 into field.<br/>
+              If its behind put e.g. 1.2s input 1200 into field.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
