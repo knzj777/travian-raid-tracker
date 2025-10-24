@@ -589,7 +589,7 @@
   padding: 2px 6px;
   background: #527230;
   border: 1px solid #527230;
-  border-radius: 3px;
+    border-radius: 4px;
   color: #fff;
   cursor: pointer;
   font-size: 9px;
@@ -982,7 +982,7 @@
   .attack-planner .attacks-table .action-buttons .delete-btn {
     padding: 1px 4px;
     font-size: 8px;
-    border-radius: 2px;
+    border-radius: 4px;
     min-width: 0;
   }
   
@@ -990,7 +990,7 @@
   .attack-planner .attacks-table .ok-btn {
     padding: 1px 4px;
     font-size: 8px;
-    border-radius: 2px;
+    border-radius: 4px;
     min-width: 0;
   }
 }
@@ -1177,7 +1177,7 @@
   .attack-planner .attacks-table .action-buttons .delete-btn {
     padding: 0px 3px;
     font-size: 7px;
-    border-radius: 2px;
+    border-radius: 4px;
     min-width: 0;
   }
   
@@ -1185,7 +1185,7 @@
   .attack-planner .attacks-table .ok-btn {
     padding: 0px 3px;
     font-size: 7px;
-    border-radius: 2px;
+    border-radius: 4px;
     min-width: 0;
   }
   
@@ -1333,7 +1333,7 @@
   min-width: 0; /* compact like .sent-btn */
   padding: 2px 6px; /* more compact */
   font-size: 9px;  /* smaller font */
-  border-radius: 3px;
+    border-radius: 4px;
   display: inline-flex;
   align-items: center;     /* vertical center */
   justify-content: center; /* horizontal center */

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import RaidDiffCalculator from "./RaidDiffCalculator";
+import RaidTracker from "./RaidTracker";
 import HowToUse from "./Pages/HowToUse";
 import History from "./Pages/History";
 import Timer from "./Pages/Timer";
@@ -11,6 +11,11 @@ import Attacks from "./Pages/Attacks";
 import Scouts from "./Pages/Scouts";
 import Settings from "./Components/Settings";
 import ScrollToTop from "./Components/ScrollToTop";
+import FloatingRaidTracker from "./Components/raid-tracker/FloatingRaidTracker";
+import RaidTrackerOverlay from "./Components/raid-tracker/RaidTrackerOverlay";
+import LeaderboardOverlay from "./Components/raid-tracker/LeaderboardOverlay";
+import Modal from "./Components/modals/Modal";
+import SaveModal from "./Components/modals/SaveModal";
 
 function App() {
   const [settings, setSettings] = useState({
@@ -18,6 +23,30 @@ function App() {
   });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+
+  // Global overlay states
+  const [showRaidTrackerOverlay, setShowRaidTrackerOverlay] = useState(false);
+  const [showLeaderboardOverlay, setShowLeaderboardOverlay] = useState(false);
+
+  // Global raid tracker data (shared across all pages)
+  const [raidTrackerData, setRaidTrackerData] = useState({
+    input: "",
+    players: [],
+    raidStart: "00:30",
+    raidEnd: "01:30",
+    appliedRange: "",
+  });
+
+  // Global raid tracker state management
+  const [raidTrackerModal, setRaidTrackerModal] = useState({
+    open: false,
+    title: "",
+    message: "",
+    variant: "info",
+    onConfirm: null,
+    onCancel: null,
+  });
+  const [raidTrackerSaveModal, setRaidTrackerSaveModal] = useState(false);
 
   // Timer state - moved to App level for persistence
   const [timerState, setTimerState] = useState({
@@ -72,12 +101,47 @@ function App() {
         console.error("Failed to parse saved timer state:", e);
       }
     }
+
+    // Load raid tracker data from localStorage
+    const savedRaidData = localStorage.getItem("raidData");
+    if (savedRaidData) {
+      try {
+        const players = JSON.parse(savedRaidData);
+        setRaidTrackerData((prev) => ({ ...prev, players }));
+      } catch (e) {
+        console.error("Failed to parse saved raid data:", e);
+      }
+    }
+
+    // Load raid time range from localStorage
+    const savedTimeRange = localStorage.getItem("raidTimeRange");
+    if (savedTimeRange) {
+      const parts = savedTimeRange.split("-");
+      if (parts.length === 2) {
+        setRaidTrackerData((prev) => ({
+          ...prev,
+          raidStart: parts[0].trim(),
+          raidEnd: parts[1].trim(),
+        }));
+      }
+    }
   }, []);
 
   // Persist theme to localStorage when it changes
   useEffect(() => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
+
+  // Persist raid tracker data to localStorage
+  useEffect(() => {
+    localStorage.setItem("raidData", JSON.stringify(raidTrackerData.players));
+  }, [raidTrackerData.players]);
+
+  // Persist raid time range to localStorage
+  useEffect(() => {
+    const display = `${raidTrackerData.raidStart} - ${raidTrackerData.raidEnd}`;
+    localStorage.setItem("raidTimeRange", display);
+  }, [raidTrackerData.raidStart, raidTrackerData.raidEnd]);
 
   // Timer tick function
   const timerTick = () => {
@@ -278,18 +342,220 @@ function App() {
     localStorage.setItem("timerState", JSON.stringify(newTimerState));
   };
 
+  // Raid Tracker Functions
+  const parseData = (text) => {
+    const lines = text.trim().split("\n");
+    const content = lines.filter(
+      (l) => !l.toLowerCase().includes("no.") && l.trim() !== ""
+    );
+    return content.map((line) => {
+      const parts = line.split(/\t+/);
+      const player = parts[1]?.trim();
+      const resources = Number((parts[2] || "").replace(/[^\d]/g, ""));
+      return { player, resources };
+    });
+  };
+
+  const handlePaste = async () => {
+    try {
+      let textToParse = raidTrackerData.input.trim();
+
+      if (!textToParse) {
+        textToParse = await navigator.clipboard.readText();
+        if (!textToParse.trim()) {
+          setRaidTrackerModal({
+            open: true,
+            title: "Nothing to paste",
+            message: "Input box is empty and clipboard has no text.",
+            variant: "info",
+            onConfirm: () =>
+              setRaidTrackerModal((m) => ({ ...m, open: false })),
+          });
+          return;
+        }
+      }
+
+      const newData = parseData(textToParse);
+
+      if (raidTrackerData.players.length === 0) {
+        const initialized = newData.map((p) => ({
+          ...p,
+          lastHour: "Missing data",
+          diff: "Next hour data needed",
+          previousRank: null,
+          isNew: true,
+        }));
+        setRaidTrackerData((prev) => ({
+          ...prev,
+          players: initialized,
+          input: "",
+        }));
+      } else {
+        const updated = newData.map((p) => {
+          const old = raidTrackerData.players.find(
+            (x) => x.player === p.player
+          );
+          const lastHour = old ? old.resources : "Missing data";
+          const diff = old
+            ? p.resources - old.resources
+            : "Next hour data needed";
+          const previousRank = old
+            ? raidTrackerData.players.indexOf(old) + 1
+            : null;
+          const isNew = !old;
+
+          return {
+            ...p,
+            lastHour,
+            diff,
+            previousRank,
+            isNew,
+          };
+        });
+
+        const sorted = updated.sort((a, b) => b.resources - a.resources);
+        setRaidTrackerData((prev) => ({ ...prev, players: sorted, input: "" }));
+      }
+
+      const display = `${raidTrackerData.raidStart} - ${raidTrackerData.raidEnd}`;
+      setRaidTrackerData((prev) => ({ ...prev, appliedRange: display }));
+    } catch (err) {
+      setRaidTrackerModal({
+        open: true,
+        title: "Paste failed",
+        message: "Unable to access clipboard or process input.",
+        variant: "info",
+        onConfirm: () => setRaidTrackerModal((m) => ({ ...m, open: false })),
+      });
+    }
+  };
+
+  const handleReset = () => {
+    setRaidTrackerModal({
+      open: true,
+      title: "Reset data",
+      message: "Clear all saved data? This cannot be undone.",
+      variant: "confirm",
+      onCancel: () => setRaidTrackerModal((m) => ({ ...m, open: false })),
+      onConfirm: () => {
+        setRaidTrackerModal((m) => ({ ...m, open: false }));
+        setRaidTrackerData({
+          input: "",
+          players: [],
+          raidStart: "00:30",
+          raidEnd: "01:30",
+          appliedRange: "",
+        });
+        localStorage.removeItem("raidData");
+        localStorage.removeItem("raidTimeRange");
+      },
+    });
+  };
+
+  const handleSaveHistory = () => {
+    if (raidTrackerData.players.length === 0) return;
+
+    const newSnapshot = {
+      timestamp: Date.now(),
+      raidTimeRange: `${raidTrackerData.raidStart} - ${raidTrackerData.raidEnd}`,
+      players: raidTrackerData.players,
+    };
+
+    const history = JSON.parse(localStorage.getItem("history") || "[]");
+    history.push(newSnapshot);
+    localStorage.setItem("history", JSON.stringify(history));
+
+    // Show save notification
+    setRaidTrackerSaveModal(true);
+  };
+
+  // Time range functions
+  const incrementHour = () => {
+    const [sh, sm] = raidTrackerData.raidStart.split(":").map(Number);
+    const [eh, em] = raidTrackerData.raidEnd.split(":").map(Number);
+    const ns = `${((sh + 1) % 24).toString().padStart(2, "0")}:${sm
+      .toString()
+      .padStart(2, "0")}`;
+    const ne = `${((eh + 1) % 24).toString().padStart(2, "0")}:${em
+      .toString()
+      .padStart(2, "0")}`;
+    setRaidTrackerData((prev) => ({ ...prev, raidStart: ns, raidEnd: ne }));
+  };
+
+  const decrementHour = () => {
+    const [sh, sm] = raidTrackerData.raidStart.split(":").map(Number);
+    const [eh, em] = raidTrackerData.raidEnd.split(":").map(Number);
+    const ns = `${((sh - 1 + 24) % 24).toString().padStart(2, "0")}:${sm
+      .toString()
+      .padStart(2, "0")}`;
+    const ne = `${((eh - 1 + 24) % 24).toString().padStart(2, "0")}:${em
+      .toString()
+      .padStart(2, "0")}`;
+    setRaidTrackerData((prev) => ({ ...prev, raidStart: ns, raidEnd: ne }));
+  };
+
+  const handleTimeChange = (e) => {
+    const val = e.target.value;
+    if (/^[0-9:\\-\s]*$/.test(val)) {
+      const parts = val.split("-");
+      if (parts.length === 2) {
+        setRaidTrackerData((prev) => ({
+          ...prev,
+          raidStart: parts[0].trim(),
+          raidEnd: parts[1].trim(),
+        }));
+      }
+    }
+  };
+
+  const handleTimeBlur = () => {
+    const norm = (val) => {
+      const [h, m] = (val || "").split(":").map(Number);
+      if (isNaN(h) || isNaN(m)) return null;
+      return `${h.toString().padStart(2, "0")}:${m
+        .toString()
+        .padStart(2, "0")}`;
+    };
+    const s = norm(raidTrackerData.raidStart);
+    const e = norm(raidTrackerData.raidEnd);
+    if (s && e) {
+      setRaidTrackerData((prev) => ({ ...prev, raidStart: s, raidEnd: e }));
+    } else {
+      setRaidTrackerData((prev) => ({
+        ...prev,
+        raidStart: "00:30",
+        raidEnd: "01:30",
+      }));
+    }
+  };
+
+  const applyCurrentRange = () => {
+    const display = `${raidTrackerData.raidStart} - ${raidTrackerData.raidEnd}`;
+    setRaidTrackerData((prev) => ({ ...prev, appliedRange: display }));
+  };
+
   return (
     <Router basename="/travian-raid-tracker">
       <Routes>
         <Route
           path="/"
           element={
-            <RaidDiffCalculator
+            <RaidTracker
               settings={settings}
               onSettingsOpen={() => setSettingsOpen(true)}
               timerState={timerState}
               darkMode={darkMode}
               setDarkMode={setDarkMode}
+              raidTrackerData={raidTrackerData}
+              setRaidTrackerData={setRaidTrackerData}
+              handlePaste={handlePaste}
+              handleReset={handleReset}
+              handleSaveHistory={handleSaveHistory}
+              incrementHour={incrementHour}
+              decrementHour={decrementHour}
+              handleTimeChange={handleTimeChange}
+              handleTimeBlur={handleTimeBlur}
+              applyCurrentRange={applyCurrentRange}
             />
           }
         />
@@ -390,6 +656,76 @@ function App() {
       />
 
       <ScrollToTop darkMode={darkMode} />
+
+      {/* Global Floating Raid Tracker */}
+      <FloatingRaidTracker
+        onToggleRaidTracker={() =>
+          setShowRaidTrackerOverlay(!showRaidTrackerOverlay)
+        }
+        onToggleLeaderboard={() =>
+          setShowLeaderboardOverlay(!showLeaderboardOverlay)
+        }
+        onSaveData={handleSaveHistory}
+        playersLength={raidTrackerData.players.length}
+        darkMode={darkMode}
+      />
+
+      {/* Global Raid Tracker Overlay */}
+      <RaidTrackerOverlay
+        isOpen={showRaidTrackerOverlay}
+        onClose={() => setShowRaidTrackerOverlay(false)}
+        input={raidTrackerData.input}
+        setInput={(value) =>
+          setRaidTrackerData((prev) => ({ ...prev, input: value }))
+        }
+        onPaste={handlePaste}
+        onReset={handleReset}
+        onSaveHistory={handleSaveHistory}
+        playersLength={raidTrackerData.players.length}
+        todayDate={new Date()
+          .toLocaleDateString("hr-HR")
+          .replace(/\//g, ".")
+          .replace(/\.$/, "")
+          .replace(/\s/g, "")}
+        raidStart={raidTrackerData.raidStart}
+        raidEnd={raidTrackerData.raidEnd}
+        onDecrementHour={decrementHour}
+        onIncrementHour={incrementHour}
+        onTimeChange={handleTimeChange}
+        onTimeBlur={handleTimeBlur}
+        onApplyCurrentRange={applyCurrentRange}
+        darkMode={darkMode}
+      />
+
+      {/* Global Leaderboard Overlay */}
+      <LeaderboardOverlay
+        isOpen={showLeaderboardOverlay}
+        onClose={() => setShowLeaderboardOverlay(false)}
+        players={raidTrackerData.players}
+        darkMode={darkMode}
+        appliedRange={raidTrackerData.appliedRange}
+        maxWidth={800}
+      />
+
+      {/* Global Raid Tracker Modals */}
+      <Modal
+        open={raidTrackerModal.open}
+        title={raidTrackerModal.title}
+        message={raidTrackerModal.message}
+        variant={raidTrackerModal.variant}
+        confirmText={raidTrackerModal.variant === "confirm" ? "Confirm" : "OK"}
+        cancelText={"Cancel"}
+        onConfirm={raidTrackerModal.onConfirm}
+        onCancel={raidTrackerModal.onCancel}
+      />
+
+      <SaveModal
+        isVisible={raidTrackerSaveModal}
+        onClose={() => setRaidTrackerSaveModal(false)}
+        message="Snapshot saved to History"
+        position="bottom-left"
+        duration={3000}
+      />
 
       {/* Hidden audio element for timer sounds */}
       <audio ref={audioRef} style={{ display: "none" }} />

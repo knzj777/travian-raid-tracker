@@ -47,7 +47,7 @@
   width: 45px;
   padding: 2px 4px;
   border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 3px;
+  border-radius: 4px;
   background: rgba(255,255,255,0.1);
   color: #fff;
   font-size: 11px;
@@ -110,7 +110,7 @@
   background: rgba(0,0,0,0.95) !important;
   color: #fff !important;
   padding: 10px 14px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 11px;
   line-height: 1.4;
   white-space: nowrap;

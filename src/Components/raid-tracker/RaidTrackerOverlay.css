@@ -1,0 +1,133 @@
+.raid-tracker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.05s ease-out;
+}
+
+.raid-tracker-overlay-content {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideIn 0.05s ease-out;
+  width: 100%;
+  max-width: 600px;
+}
+
+.raid-tracker-overlay-content.dark {
+  background: #1a1a1a;
+  color: white;
+}
+
+.close-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.close-overlay:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.raid-tracker-overlay-content.dark .close-overlay {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.raid-tracker-overlay-content.dark .close-overlay:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.overlay-header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.raid-tracker-overlay-content.dark .overlay-header {
+  border-bottom-color: #404040;
+}
+
+.overlay-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.overlay-content {
+  padding: 24px;
+}
+
+.raid-tracker-module {
+  /* Reset any conflicting styles */
+}
+
+.raid-tracker-module h1 {
+  display: none; /* Hide title since it's in overlay header */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .raid-tracker-overlay {
+    padding: 10px;
+  }
+  
+  .raid-tracker-overlay-content {
+    max-height: 95vh;
+    max-width: 95vw;
+  }
+  
+  .overlay-header {
+    padding: 16px 16px 12px 16px;
+  }
+  
+  .overlay-header h2 {
+    font-size: 20px;
+  }
+  
+  .overlay-content {
+    padding: 16px;
+  }
+}

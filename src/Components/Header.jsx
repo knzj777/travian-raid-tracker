@@ -1,7 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import logoImage from "../images/logo.png";
 import "./Header.css";
+
+const logoImage = process.env.PUBLIC_URL + "/rt-logo.png";
 
 export default function Header({ darkMode, setDarkMode, onSettingsOpen, timerState }) {
   const [open, setOpen] = React.useState(false);
@@ -16,7 +17,7 @@ export default function Header({ darkMode, setDarkMode, onSettingsOpen, timerSta
       <div className="header-left">
         <Link to="/" className="header-title">
           <img src={logoImage} alt="Logo" className="logo" />
-          <h2>Travian Raid Tracker</h2>
+          <h2>Raid Tracker</h2>
         </Link>
       </div>
 
