@@ -70,6 +70,8 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
     onTimerStateChange({
       ...timerState,
       running: !timerState.running,
+      startTime: !timerState.running ? Date.now() : null, // Set start time when starting
+      pausedTime: timerState.running ? Date.now() : null, // Set paused time when stopping
     });
     // Prime vibration on a user gesture so later calls are more likely to be honored
     if (!timerState.running && timerState.vibration) {
@@ -93,6 +95,8 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
       ...timerState,
       seconds: timerState.initialSeconds,
       running: false,
+      startTime: null,
+      pausedTime: null,
     });
   };
 

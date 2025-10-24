@@ -3,9 +3,9 @@ import './RealLocalTime.css';
 
 const RealLocalTime = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [offsetMs, setOffsetMs] = useState(() => {
+  const [offsetSeconds, setOffsetSeconds] = useState(() => {
     try {
-      const saved = localStorage.getItem('userTimeOffsetMs');
+      const saved = localStorage.getItem('userTimeOffsetSeconds');
       return saved !== null ? parseFloat(saved) || '' : '';
     } catch {
       return '';
@@ -14,22 +14,26 @@ const RealLocalTime = () => {
 
   useEffect(() => {
     const tick = () => {
-      const offsetMsValue = Math.round(parseFloat(offsetMs) || 0);
+      const offsetSecondsValue = parseFloat(offsetSeconds) || 0;
+      const offsetMsValue = Math.round(offsetSecondsValue * 1000);
       setCurrentTime(new Date(Date.now() + offsetMsValue));
     };
     tick();
     const id = setInterval(tick, 250);
     return () => clearInterval(id);
-  }, [offsetMs]);
+  }, [offsetSeconds]);
 
   const handleOffsetChange = (e) => {
-    setOffsetMs(e.target.value);
+    let value = e.target.value;
+    // Replace all commas with dots for decimal notation
+    value = value.replace(/,/g, '.');
+    setOffsetSeconds(value);
   };
 
   const persistOffset = () => {
-    const normalized = parseFloat(offsetMs) || 0;
-    localStorage.setItem('userTimeOffsetMs', String(normalized));
-    setOffsetMs(normalized);
+    const normalized = parseFloat(offsetSeconds) || 0;
+    localStorage.setItem('userTimeOffsetSeconds', String(normalized));
+    setOffsetSeconds(normalized);
   };
 
   const formatTime = (date) => {
@@ -46,14 +50,13 @@ const RealLocalTime = () => {
 
       <div className="time-controls" style={{ marginTop: '8px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>Offset (ms):</span>
+          <span>Offset (s):</span>
           <input
-            type="number"
-            step="1"
-            value={offsetMs}
+            type="text"
+            value={offsetSeconds}
             onChange={handleOffsetChange}
             onBlur={persistOffset}
-            placeholder="-1200"
+            placeholder="-1.2"
           />
         </label>
         <div className="link-and-info">
@@ -77,10 +80,10 @@ const RealLocalTime = () => {
               <path d="M12 8h.01"/>
             </svg>
             <div className="info-tooltip">
-              Always check your offset!<br/>
+              Always check your offset because it changes or use <a href='https://time.is/' target='_blank' rel='noopener noreferrer'>time.is</a> for the best results.<br/>
               If the time ticking is not the same try refreshing page.<br/>
-              If your time is ahead e.g 1.2s input -1200 into field.<br/>
-              If its behind put e.g. 1.2s input 1200 into field.
+              If your time is ahead e.g 1.2s input -1.2 into field.<br/>
+              If its behind put e.g. 1.2s input 1.2 into field.
             </div>
           </div>
         </div>

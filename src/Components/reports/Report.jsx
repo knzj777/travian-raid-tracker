@@ -111,12 +111,12 @@ const Report = ({
     }
   };
 
-  const formatNumber = (num) => {
+  const formatNumber = (num, useCommas = false) => {
     if (num === "?") return "?";
     if (!num || num === 0 || isNaN(num)) return '0';
     
-    // Always display full numbers with commas for readability
-    return num.toLocaleString();
+    // Display numbers with or without commas based on parameter
+    return useCommas ? num.toLocaleString() : num.toString();
   };
 
   const getBountyIcon = (total, capacity) => {
@@ -336,15 +336,15 @@ const Report = ({
         <div className="statistics-table">
           <div className="statistics-row header">
             <div className="stat-name"></div>
-            <div className="stat-value attacker">Attacker</div>
-            <div className="stat-value defender">Defender</div>
+            <div className="statistics-value attacker">Attacker</div>
+            <div className="statistics-value defender">Defender</div>
           </div>
           {Object.entries(reportData.statistics).map(([statType, values]) => (
             
               <div key={statType} className="statistics-row">
                 <div className="stat-name">{statType}</div>
-                <div className="stat-value attacker">{formatNumber(values.attacker)}</div>
-                <div className="stat-value defender">{formatNumber(values.defender)}</div>
+                <div className="statistics-value attacker">{formatNumber(values.attacker, true)}</div>
+                <div className="statistics-value defender">{formatNumber(values.defender, true)}</div>
               </div>
           ))}
         </div>
@@ -428,7 +428,7 @@ const Report = ({
                   {playerInfo.alliance ? `[${playerInfo.alliance}]` : '[]'}
                 </span>
                 <span className="player">{playerInfo.playerName}</span>
-                <span className="village">from village {reportData.attacker.village}</span>
+                <span className="village">from village <span className="village-name">{reportData.attacker.village}</span></span>
               </>
             );
           })()}
@@ -500,7 +500,7 @@ const Report = ({
                     {playerInfo.alliance ? `[${playerInfo.alliance}]` : '[]'}
                   </span>
                   <span className="player">{playerInfo.playerName}</span>
-                  <span className="village">from village {defender.village}</span>
+                  <span className="village">from village <span className="village-name">{defender.village}</span></span>
                 </>
               );
             })()}

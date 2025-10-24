@@ -79,7 +79,12 @@ export default function ReportCard({ report, darkMode, settings, onOpenReportOve
     ? { wood: resourcesArray[0] || 0, clay: resourcesArray[1] || 0, iron: resourcesArray[2] || 0, crop: resourcesArray[3] || 0 }
     : null;
 
-  const resourceTotal = resourcesObj ? (resourcesObj.wood + resourcesObj.clay + resourcesObj.iron + resourcesObj.crop) : (bounty?.total || 0);
+  // For scout reports, raidable resources is the 6th element (index 5) in the resources array
+  const raidableResources = resourcesArray && Array.isArray(resourcesArray) && resourcesArray.length > 5 
+    ? resourcesArray[5] 
+    : null;
+  
+  const resourceTotal = raidableResources !== null ? raidableResources : (bounty?.total || 0);
   const capacity = bounty?.capacity ?? bounty?.totalCapacity ?? null;
 
   const defenseTotals = type === 'scout' ? calculateDefenseTotals(report.data) : null;

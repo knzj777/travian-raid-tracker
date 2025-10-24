@@ -259,18 +259,6 @@
 }
 
 /* Unified extras */
-.information-section {
-  background: rgba(30,30,30,0.3);
-  border-radius: 4px;
-  padding: 6px;
-  margin-top: 6px;
-  font-size: 11px;
-}
-
-.light .information-section {
-  background: rgba(240,240,240,0.6);
-}
-
 .info-line { margin-bottom: 2px; }
 .info-line:last-child { margin-bottom: 0; }
 
@@ -404,11 +392,6 @@
   color: #222;
 }
 
-.stat-value {
-  color: #fff;
-  font-weight: 600;
-  font-size: 12px;
-}
 
 .light .stat-value {
   color: #222;

@@ -52,14 +52,6 @@
   color: #fff;
   font-size: 11px;
   font-family: 'Inter', sans-serif;
-  appearance: textfield;
-  -moz-appearance: textfield;
-}
-
-.time-controls input::-webkit-outer-spin-button,
-.time-controls input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .time-controls input:focus {
@@ -71,7 +63,7 @@
 .time-controls a {
   font-size: 11px;
   color: rgba(255,255,255,0.7);
-  text-decoration: none;
+  text-decoration: underline;
   font-family: 'Inter', sans-serif;
 }
 

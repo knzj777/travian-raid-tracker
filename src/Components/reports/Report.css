@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  font-family: 'Inter', sans-serif;
+  font-family: Arial, 'Inter', sans-serif;
   background: rgb(27, 27, 27);
   border-radius: 4px;
   overflow: hidden;
@@ -18,6 +18,25 @@
   background: rgba(255,255,255,1);
   color: #222;
   border-color: rgba(0,0,0,0.12);
+}
+
+/* Ensure Arial font throughout all report elements */
+.attack-report,
+.attack-report *,
+.attack-report .unit-cell,
+.attack-report .unit-header,
+.attack-report .resource-value,
+.attack-report .total-capacity,
+.attack-report .stat-name,
+.attack-report .statistics-value,
+.attack-report .bounty-title,
+.attack-report .info-title,
+.attack-report .info-content,
+.attack-report .section-header,
+.attack-report .attack-title,
+.attack-report .date-time,
+.attack-report .player-info {
+  font-family: Arial, 'Inter', sans-serif;
 }
 
 /* Header */
@@ -139,7 +158,7 @@
 .player-info {
   padding: 4px 12px;
   background: transparent;
-  font-size: 9px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -151,14 +170,6 @@
   object-fit: contain;
   border-radius: 4px;
   flex-shrink: 0;
-}
-
-/* Larger icons on desktop */
-@media (min-width: 1200px) {
-  .tribe-image {
-    width: 24px;
-    height: 24px;
-  }
 }
 
 .player-info .alliance {
@@ -177,19 +188,15 @@
   opacity: 0.9;
 }
 
+.player-info .village-name {
+  font-weight: bold;
+}
+
 /* Light mode player info */
 .attack-report.light .player-info .alliance,
 .attack-report.light .player-info .player,
 .attack-report.light .player-info .village {
   color: var(--text-light);
-}
-
-/* Desktop: Larger font size for attacker and defender info */
-@media (min-width: 1200px) {
-  .player-info.attacker-info,
-  .player-info.defender-info {
-    font-size: 12px;
-  }
 }
 
 /* Unit Tables */
@@ -211,8 +218,8 @@
 }
 
 .unit-header {
-  min-width: 60px;
-  max-width: 80px;
+  min-width: 55px;
+  max-width: 65px;
   flex: 1;
   font-size: 10px;
   font-weight: bold;
@@ -301,8 +308,8 @@
 }
 
 .unit-image {
-  width: 19px;
-  height: 19px;
+  width: 17px;
+  height: 17px;
   object-fit: contain;
   border-radius: 4px;
   display: block;
@@ -321,8 +328,9 @@
   align-items: center;
   padding-left: 25px; /* Match the padding from unit-headers */
   position: relative;
-  gap: 1px;
-  margin-top: 5px;
+  gap: 0px;
+  margin-top: 1px;
+  margin-bottom: 8px;
 }
 
 .unit-row-label {
@@ -386,18 +394,18 @@
 }
 
 .unit-cell {
-  min-width: 60px;
-  max-width: 80px;
+  min-width: 40px;
+  max-width: 50px;
   flex: 1;
   padding: 0;
-  font-size: 12px;
+  font-size: 11px;
   text-align: right;
   color: #f0f0f0;
   white-space: nowrap;
   overflow: visible;
   position: relative;
   margin: 0;
-  margin-right: 4px;
+  margin-right: 0px;
 }
 
 .unit-row.initial .unit-cell:last-child,
@@ -412,6 +420,8 @@
   align-items: center;
   cursor: pointer;
   transition: opacity 0.2s ease;
+  min-width: 40px;
+  max-width: 50px;
 }
 
 .unit-image-cell:hover {
@@ -459,9 +469,14 @@
 .information-section {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 2rem;
   padding: 6px 12px;
+  margin-bottom: 8px;
   background: transparent;
+  border-radius: 4px;
+  margin-top: 6px;
+  font-size: 11px;
+  align-items: flex-start;
 }
 
 .info-title {
@@ -473,8 +488,9 @@
 
 .info-content {
   font-size: 11px;
-  color: #f0f0f0;
-  opacity: 0.9;
+  color: #000000;
+  opacity: 1;
+  background: transparent;
 }
 
 .info-item {
@@ -487,6 +503,10 @@
   color: var(--text-light);
 }
 
+.attack-report.light .information-section {
+  background: transparent;
+}
+
 /* Bounty Section */
 .bounty-section {
   display: flex;
@@ -495,6 +515,7 @@
   padding: 6px 12px;
   margin-bottom: 8px;
   background: transparent;
+  align-items: flex-start;
 }
 
 .bounty-title {
@@ -508,6 +529,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  background: transparent;
 }
 
 .resources {
@@ -516,11 +538,14 @@
   flex-wrap: wrap;
 }
 
-.resources-container {
+.bounty-section .bounty-section .resources-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 8px;
 }
 
 .resources-left,
@@ -576,37 +601,8 @@
   color: var(--text-light);
 }
 
-/* High resolution displays (1200px and above) */
-@media (min-width: 1200px) {
-  .unit-image {
-    width: 21px;
-    height: 21px;
-  }
-  
-  .tribe-image {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .resource-image {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .bounty-icon {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .row-type-icon {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .unit-row-label svg {
-    width: 18px;
-    height: 18px;
-  }
+.attack-report.light .bounty-section .bounty-section .resources-container {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* Statistics Section */
@@ -617,10 +613,23 @@
 
 .statistics-table {
   padding: 6px 12px;
+  font-size: 12px;
+}
+
+.statistics-table .stat-name,
+.statistics-table .statistics-value {
+  font-size: 12px;
+  color: #000000;
+}
+
+.statistics-row.header .statistics-value.attacker,
+.statistics-row.header .statistics-value.defender {
+  font-weight: bold;
 }
 
 .statistics-row {
   display: flex;
+  align-items: center;
   padding: 4px 0;
 }
 
@@ -632,30 +641,37 @@
 
 .stat-name {
   flex: 1;
-  font-size: 11px;
-  color: #f0f0f0;
+  font-size: 12px;
+  color: #000000;
+  font-weight: normal;
+  line-height: 1.2;
 }
 
-.stat-value {
+.statistics-value {
   flex: 1;
-  text-align: right;
-  font-size: 11px;
+  text-align: left;
+  font-size: 12px;
   font-weight: normal;
   padding: 0 8px;
-  color: #f0f0f0;
+  color: #ffffff;
+  line-height: 1.2;
 }
 
-.stat-value.attacker {
+.statistics-row .statistics-value {
+  font-weight: normal;
+}
+
+.statistics-value.attacker {
   color: #4CAF50;
 }
 
-.stat-value.defender {
+.statistics-value.defender {
   color: #F44336;
 }
 
 /* Light mode statistics */
 .attack-report.light .stat-name,
-.attack-report.light .stat-value {
+.attack-report.light .statistics-value {
   color: var(--text-light);
 }
 
@@ -670,1010 +686,11 @@
 .report-modal .unit-cell {
   min-width: 45px;
   max-width: 60px;
-  font-size: 11px;
 }
 
 .report-modal .unit-image-cell {
   min-width: 45px;
   max-width: 60px;
-}
-
-/* Responsive styling for reports in overlay */
-@media (max-width: 768px) {
-  .report-overlay {
-    padding: 10px;
-  }
-  
-  .report-modal {
-    width: 95vw !important;
-    max-width: 95vw !important;
-  }
-  
-  .report-modal .attack-report {
-    font-size: 10px;
-  }
-  
-  .report-modal .unit-cell {
-    min-width: 30px;
-    max-width: 45px;
-    font-size: 9px;
-  }
-  
-  .report-modal .unit-image-cell {
-    min-width: 30px;
-    max-width: 45px;
-  }
-  
-  .report-modal .unit-image {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .report-modal .tribe-image {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .report-modal .stat-value {
-    font-size: 8px;
-  }
-  
-  .report-modal .stat-value.attacker,
-  .report-modal .stat-value.defender {
-    font-size: 7px;
-  }
-}
-
-@media (max-width: 540px) {
-  .report-overlay {
-    padding: 5px;
-  }
-  
-  .report-modal {
-    width: 95vw !important;
-    max-width: 95vw !important;
-  }
-  
-  .report-modal .attack-report {
-    font-size: 9px;
-  }
-  
-  .report-modal .unit-cell {
-    min-width: 25px;
-    max-width: 35px;
-    font-size: 8px;
-  }
-  
-  .report-modal .unit-image-cell {
-    min-width: 25px;
-    max-width: 35px;
-  }
-  
-  .report-modal .unit-image {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .report-modal .tribe-image {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .report-modal .stat-value {
-    font-size: 7px;
-  }
-  
-  .report-modal .stat-value.attacker,
-  .report-modal .stat-value.defender {
-    font-size: 6px;
-  }
-}
-
-@media (max-width: 430px) {
-  .report-overlay {
-    padding: 2px;
-  }
-  
-  .report-modal {
-    width: 95vw !important;
-    max-width: 95vw !important;
-  }
-  
-  .report-modal .attack-report {
-    font-size: 8px;
-  }
-  
-  .report-modal .unit-cell {
-    min-width: 20px;
-    max-width: 30px;
-    font-size: 6px;
-  }
-  
-  .report-modal .unit-image-cell {
-    min-width: 20px;
-    max-width: 30px;
-  }
-  
-  .report-modal .unit-image {
-    width: 6px;
-    height: 6px;
-  }
-  
-  .report-modal .tribe-image {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .report-modal .stat-value {
-    font-size: 6px;
-  }
-  
-  .report-modal .stat-value.attacker,
-  .report-modal .stat-value.defender {
-    font-size: 5px;
-  }
-}
-
-@media (max-width: 320px) {
-  .report-overlay {
-    padding: 1px;
-  }
-  
-  .report-modal {
-    width: 95vw !important;
-    max-width: 95vw !important;
-  }
-  
-  .report-modal .attack-report {
-    font-size: 8px;
-  }
-  
-  .report-modal .unit-cell {
-    min-width: 22px;
-    max-width: 32px;
-    font-size: 7px;
-  }
-  
-  .report-modal .unit-image-cell {
-    min-width: 22px;
-    max-width: 32px;
-  }
-  
-  .report-modal .unit-image {
-    width: 7px;
-    height: 7px;
-  }
-  
-  .report-modal .tribe-image {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .report-modal .stat-value {
-    font-size: 7px;
-  }
-  
-  .report-modal .stat-value.attacker,
-  .report-modal .stat-value.defender {
-    font-size: 6px;
-  }
-}
-
-/* Responsive Design - More Compact */
-@media (min-width: 1200px) {
-  .attack-report {
-    margin: 5px auto;
-    font-size: 12px;
-  }
-  
-  .unit-image {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .tribe-image {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .unit-cell {
-    min-width: 50px;
-    max-width: 65px;
-    font-size: 11px;
-  }
-  
-  .unit-image-cell {
-    min-width: 50px;
-    max-width: 65px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .attack-report {
-    margin: 5px auto;
-    font-size: 11px;
-  }
-  
-  .unit-header,
-  .unit-cell {
-    min-width: 45px;
-    max-width: 60px;
-    font-size: 10px;
-  }
-  
-  .unit-image {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .tribe-image {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .stat-value {
-    font-size: 10px;
-  }
-  
-  .stat-value.attacker,
-  .stat-value.defender {
-    font-size: 9px;
-  }
-}
-
-@media (max-width: 768px) {
-  .attack-report {
-    margin: 3px;
-    font-size: 10px;
-  }
-  
-  .report-header {
-    flex-direction: row;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    flex-wrap: nowrap;
-  }
-  
-  .screenshot-btn {
-    font-size: 10px;
-    padding: 3px 6px;
-    align-self: center;
-  }
-  
-  .unit-headers {
-    padding-left: 18px;
-    gap: 0px;
-  }
-  
-  .unit-row {
-    padding-left: 18px;
-    gap: 0px;
-  }
-  
-  .unit-header,
-  .unit-cell {
-    min-width: 35px;
-    flex: 1;
-    padding: 1px 2px;
-    font-size: 9px;
-    white-space: nowrap;
-    overflow: visible;
-  }
-  
-  .unit-image {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .tribe-image {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .unit-row-label {
-    width: 18px;
-  }
-  
-  .row-type-icon {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .resources {
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  
-  .resources-container {
-    flex-direction: row;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .resources-left,
-  .resources-right {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .resource-item {
-    min-width: 60px;
-  }
-  
-  .resource-image {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .statistics-row {
-    gap: 2px;
-  }
-  
-  .stat-value {
-    text-align: right;
-  }
-  
-  .stat-value.attacker,
-  .stat-value.defender {
-    font-size: 8px;
-  }
-}
-
-/* Medium mobile devices (480px - 540px) */
-@media (max-width: 540px) and (min-width: 481px) {
-  .attack-report {
-    padding: 4px;
-    margin: 2px;
-    font-size: 9px;
-  }
-  
-  .section-header {
-    padding: 3px 5px;
-    font-size: 9px;
-  }
-  
-  
-  .unit-headers {
-    gap: 0px;
-    padding-left: 20px;
-  }
-  
-  .unit-header {
-    padding: 1px;
-    min-width: 30px;
-    flex: 1;
-    font-size: 6px;
-  }
-  
-  .unit-image {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .unit-row {
-    padding-left: 20px;
-  }
-  
-  .unit-row-label {
-    width: 20px;
-  }
-  
-  .unit-row-label svg {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .row-type-icon {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .unit-cell {
-    padding: 1px 2px;
-    font-size: 8px;
-    min-width: 30px;
-    flex: 1;
-    white-space: nowrap;
-    overflow: visible;
-  }
-  
-  .bounty-section {
-    margin: 3px 0;
-  }
-  
-  .bounty-title {
-    font-size: 9px;
-    padding: 3px 4px;
-  }
-  
-  .bounty-content {
-    gap: 2px;
-  }
-  
-  .resources {
-    gap: 2px;
-  }
-  
-  .resources-container {
-    flex-direction: row;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .resources-left,
-  .resources-right {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .resource-item {
-    min-width: 30px;
-    gap: 1px;
-  }
-  
-  .resource-image {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .resource-value {
-    font-size: 9px;
-  }
-  
-  .total-capacity {
-    font-size: 9px;
-    gap: 1px;
-    margin-left: 4px;
-  }
-  
-  .bounty-icon {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .statistics-section {
-    margin: 3px 0;
-  }
-  
-  .statistics-table {
-    gap: 2px;
-  }
-  
-  .statistics-row {
-    padding: 2px 3px;
-  }
-  
-  .statistics-row.header .stat-value.attacker,
-  .statistics-row.header .stat-value.defender {
-    font-size: 6px;
-  }
-  
-  .stat-name {
-    font-size: 9px;
-  }
-  
-  .stat-value {
-    font-size: 9px;
-  }
-  
-  .information-section {
-    margin: 3px 0;
-    gap: 0.6rem;
-  }
-  
-  .info-title {
-    font-size: 9px;
-    padding: 2px 3px;
-  }
-  
-  .info-item {
-    padding: 1px 3px;
-    font-size: 9px;
-  }
-}
-
-/* Small mobile devices (320px - 480px) */
-@media (max-width: 480px) {
-  .attack-report {
-    padding: 8px;
-    margin: 5px;
-    font-size: 12px;
-  }
-  
-  .section-header {
-    padding: 6px 8px;
-    font-size: 11px;
-  }
-   
-  .unit-headers {
-    gap: 2px;
-    padding-left: 30px;
-  }
-  
-  .unit-header {
-    padding: 1px;
-    min-width: 30px;
-    flex: 1;
-    font-size: 6px;
-  }
-  
-  .unit-image {
-    width: 9px;
-    height: 9px;
-  }
-  
-  .unit-cell {
-    padding: 1px 4px;
-    font-size: 7px;
-    min-width: 30px;
-    flex: 1;
-    white-space: nowrap;
-    overflow: visible;
-  }
-  
-  .unit-row-label {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .unit-row-label svg {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .row-type-icon {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .bounty-section {
-    margin: 5px 0;
-  }
-  
-  .bounty-title {
-    font-size: 11px;
-    padding: 4px 6px;
-  }
-  
-  .bounty-content {
-    gap: 4px;
-  }
-  
-  .resources {
-    gap: 4px;
-  }
-  
-  .resources-container {
-    flex-direction: row;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .resources-left,
-  .resources-right {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .resource-item {
-    min-width: 40px;
-    gap: 1px;
-  }
-  
-  .resource-image {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .resource-value {
-    font-size: 9px;
-  }
-  
-  .total-capacity {
-    font-size: 9px;
-    gap: 3px;
-    margin-left: 8px;
-  }
-  
-  .bounty-icon {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .statistics-section {
-    margin: 5px 0;
-  }
-  
-  .statistics-table {
-    gap: 4px;
-  }
-  
-  .statistics-row {
-    padding: 3px 6px;
-  }
-  
-  .statistics-row.header .stat-value.attacker,
-  .statistics-row.header .stat-value.defender {
-    font-size: 6px;
-  }
-  
-  .stat-name {
-    font-size: 9px;
-  }
-  
-  .stat-value {
-    font-size: 9px;
-  }
-  
-  .information-section {
-    margin: 5px 0;
-  }
-  
-  .info-title {
-    font-size: 11px;
-    padding: 4px 6px;
-  }
-  
-  .info-item {
-    padding: 2px 6px;
-    font-size: 9px;
-  }
-  
-  .stat-value {
-    font-size: 9px;
-  }
-  
-  .stat-value.attacker,
-  .stat-value.defender {
-    font-size: 8px;
-  }
-}
-
-/* Very small devices (320px - 430px) */
-@media (max-width: 430px) and (min-width: 321px) {
-  .attack-report {
-    padding: 2px;
-    margin: 1px;
-    font-size: 8px;
-  }
-  
-  .section-header {
-    padding: 2px 3px;
-    font-size: 8px;
-  }
-    
-  .unit-headers {
-    gap: 0px;
-    padding-left: 15px;
-  }
-  
-  .unit-header {
-    padding: 0px;
-    min-width: 20px;
-    flex: 1;
-    font-size: 4px;
-  }
-  
-  .unit-image {
-    width: 6px;
-    height: 6px;
-  }
-  
-  .unit-row {
-    padding-left: 15px;
-  }
-  
-  .unit-row-label {
-    width: 15px;
-    height: 8px;
-  }
-  
-  .unit-row-label svg {
-    width: 6px;
-    height: 6px;
-  }
-  
-  .row-type-icon {
-    width: 6px;
-    height: 6px;
-  }
-  
-  .unit-cell {
-    font-size: 6px;
-    min-width: 20px;
-    flex: 1;
-    white-space: nowrap;
-    overflow: visible;
-    padding: 0px 1px;
-  }
-  
-  .tribe-image {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .bounty-section {
-    margin: 2px 0;
-  }
-  
-  .bounty-title {
-    font-size: 8px;
-    padding: 2px 3px;
-  }
-  
-  .bounty-content {
-    gap: 1px;
-  }
-  
-  .resources {
-    gap: 1px;
-  }
-  
-  .resources-container {
-    flex-direction: row;
-    gap: 3px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .resources-left,
-  .resources-right {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .resource-item {
-    min-width: 25px;
-  }
-  
-  .resource-image {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .resource-value {
-    font-size: 7px;
-  }
-  
-  .total-capacity {
-    font-size: 7px;
-    gap: 1px;
-    margin-left: 3px;
-  }
-  
-  .bounty-icon {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .statistics-section {
-    margin: 2px 0;
-  }
-  
-  .statistics-table {
-    gap: 1px;
-  }
-  
-  .statistics-row {
-    padding: 1px 2px;
-  }
-  
-  .statistics-row.header .stat-value {
-    font-size: 5px;
-  }
-  
-  .statistics-row.header .stat-value.attacker,
-  .statistics-row.header .stat-value.defender {
-    font-size: 4px;
-  }
-  
-  .stat-name {
-    font-size: 7px;
-  }
-  
-  .stat-value {
-    font-size: 7px;
-  }
-  
-  .information-section {
-    margin: 2px 0;
-    gap: 0.4rem;
-  }
-  
-  .info-title {
-    font-size: 8px;
-    padding: 2px 3px;
-  }
-  
-  .info-item {
-    padding: 0px 2px;
-    font-size: 7px;
-  }
-  
-  .report-header {
-    padding: 2px 6px;
-    gap: 3px;
-  }
-  
-  .screenshot-btn {
-    font-size: 8px;
-    padding: 2px 4px;
-  }
-  
-  .date-time {
-    font-size: 8px;
-  }
-  
-  .attack-title {
-    font-size: 10px;
-  }
-  
-  .player-info {
-    padding: 2px 6px;
-    font-size: 8px;
-  }
-  
-  .stat-value {
-    font-size: 7px;
-  }
-  
-  .stat-value.attacker,
-  .stat-value.defender {
-    font-size: 6px;
-  }
-}
-
-/* Extra small devices (320px and below) */
-@media (max-width: 320px) {
-  .attack-report {
-    padding: 4px;
-    margin: 2px;
-    font-size: 10px;
-  }
-  
-  .section-header {
-    padding: 4px 6px;
-    font-size: 10px;
-  }
-  
-  .unit-headers {
-    gap: 1px;
-    padding-left: 20px;
-  }
-  
-  .unit-header {
-    padding: 1px;
-    min-width: 25px;
-    flex: 1;
-    font-size: 5px;
-  }
-  
-  .unit-image {
-    width: 7px;
-    height: 7px;
-  }
-  
-  .unit-row {
-    padding-left: 20px;
-  }
-  
-  .unit-cell {
-    font-size: 7px;
-    min-width: 25px;
-    flex: 1;
-    white-space: nowrap;
-    overflow: visible;
-  }
-  
-  .unit-row-label {
-    width: 20px;
-    height: 10px;
-  }
-  
-  .unit-row-label svg {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .row-type-icon {
-    width: 8px;
-    height: 8px;
-  }
-  
-  .bounty-title {
-    font-size: 10px;
-    padding: 3px 4px;
-  }
-  
-  .resources {
-    gap: 2px;
-  }
-  
-  .resources-container {
-    flex-direction: row;
-    gap: 4px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .resources-left,
-  .resources-right {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .resource-item {
-    min-width: 32px;
-  }
-  
-  .resource-image {
-    width: 12px;
-    height: 12px;
-  }
-  
-  .resource-value {
-    font-size: 8px;
-  }
-  
-  .total-capacity {
-    font-size: 8px;
-    gap: 2px;
-    margin-left: 6px;
-  }
-  
-  .bounty-icon {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .statistics-row {
-    padding: 2px 4px;
-  }
-  
-  .statistics-row.header .stat-value {
-    font-size: 6px;
-  }
-  
-  .statistics-row.header .stat-value.attacker,
-  .statistics-row.header .stat-value.defender {
-    font-size: 5px;
-  }
-  
-  .stat-name {
-    font-size: 8px;
-  }
-  
-  .stat-value {
-    font-size: 8px;
-  }
-  
-  .info-title {
-    font-size: 10px;
-    padding: 3px 4px;
-  }
-  
-  .info-item {
-    padding: 1px 4px;
-    font-size: 8px;
-  }
-  
-  .stat-value {
-    font-size: 8px;
-  }
-  
-  .stat-value.attacker,
-  .stat-value.defender {
-    font-size: 7px;
-  }
 }
 
 /* Report Container Styles - Consolidated from Pages */
@@ -1711,7 +728,7 @@
 }
 
 /* Report Overlay Modal */
-.report-overlay {
+  .report-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -1779,24 +796,9 @@
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.3);
-}
-
-/* Mobile touch scrolling */
-@media (max-width: 768px) {
-  .report-overlay {
-    padding: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
   }
   
-  .report-overlay .report-nav-btn {
-    display: none; /* Hide nav buttons on mobile */
-  }
-}
-
-.report-modal {
+  .report-modal {
   background: #0d1117; /* GitHub dark background */
   border-radius: 8px;
   border: 3px solid #21262d; /* Stronger border */
@@ -2006,44 +1008,6 @@
   border-color: rgba(0, 0, 0, 0.2);
 }
 
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .save-notification {
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-  }
-  
-  .notification-content {
-    min-width: auto;
-    max-width: none;
-    padding: 10px 14px;
-  }
-  
-  .notification-text {
-    font-size: 13px;
-  }
-  
-  .report-overlay {
-    padding: 30px;
-  }
-  
-  .report-modal {
-    max-width: 90vw; /* Adjusted for mobile */
-    max-height: 95vh; /* Adjusted for mobile */
-  }
-  
-  .reports-feed {
-    margin: 5px 0 0 0;
-    width: 80%;
-  }
-  
-  .no-reports {
-    padding: 12px 15px;
-    margin: 5px 0 0 0;
-  }
-}
-
 /* Unit Stats Modal */
 .unit-stats-overlay {
   position: fixed;
@@ -2100,7 +1064,7 @@
 
 .unit-tribe {
   margin: 1px 0 0 0;
-  font-size: 10px;
+    font-size: 10px;
   color: #aaa;
   font-style: italic;
 }
@@ -2162,10 +1126,10 @@
 }
 
 .cost-item .resource-image {
-  width: 16px;
-  height: 16px;
-}
-
+    width: 16px;
+    height: 16px;
+  }
+  
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2182,11 +1146,6 @@
 
 .stat-label {
   color: #ccc;
-}
-
-.stat-value {
-  color: #f0f0f0;
-  font-weight: 500;
 }
 
 .light .unit-stats-modal {
@@ -2327,13 +1286,7 @@
   color: #444;
 }
 
-.stat-value {
-  color: #fff;
-  font-weight: bold;
-  font-size: 13px;
-}
-
-.light .stat-value {
+.light .statistics-value {
   color: #222;
 }
 
@@ -2351,13 +1304,13 @@
   border-left-color: #e74c3c;
 }
 
-.stat-item.combat-stat .stat-value {
+.stat-item.combat-stat .statistics-value {
   color: #ff6b6b;
   font-size: 14px;
   font-weight: 900;
 }
 
-.light .stat-item.combat-stat .stat-value {
+.light .stat-item.combat-stat .statistics-value {
   color: #e74c3c;
 }
 
@@ -2375,13 +1328,13 @@
   border-left-color: #1e7e34;
 }
 
-.stat-item.defense-infantry .stat-value {
+.stat-item.defense-infantry .statistics-value {
   color: #28a745;
   font-size: 14px;
   font-weight: 900;
 }
 
-.light .stat-item.defense-infantry .stat-value {
+.light .stat-item.defense-infantry .statistics-value {
   color: #1e7e34;
 }
 
@@ -2399,17 +1352,341 @@
   border-left-color: #1a9f7a;
 }
 
-.stat-item.defense-cavalry .stat-value {
+.stat-item.defense-cavalry .statistics-value {
   color: #20c997;
   font-size: 14px;
   font-weight: 900;
 }
 
-.light .stat-item.defense-cavalry .stat-value {
+.light .stat-item.defense-cavalry .statistics-value {
   color: #1a9f7a;
 }
 
+/* ===== MEDIA QUERIES - ORDERED FROM HIGHEST TO LOWEST ===== */
+
+/* Desktop (1200px and above) */
+@media (min-width: 1200px) {
+  .tribe-image {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .player-info.attacker-info,
+  .player-info.defender-info {
+    font-size: 14px;
+  }
+  
+  .attack-report {
+    font-size: 14px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .attack-report * {
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .unit-image {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .tribe-image {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .resource-image {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .bounty-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .row-type-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .unit-row-label svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .unit-header svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .unit-cell {
+    font-size: 13px;
+    min-width: 45px;
+    max-width: 55px;
+    font-family: Arial, 'Inter', sans-serif;
+    margin-right: 0px;
+  }
+  
+  .unit-header {
+    font-size: 12px;
+    min-width: 45px;
+    max-width: 55px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .resource-value {
+    font-size: 14px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .total-capacity {
+    font-size: 14px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .statistics-table {
+    font-size: 13px;
+  }
+  
+  .statistics-table .stat-name,
+  .statistics-table .statistics-value {
+    font-size: 13px;
+    color: #000000;
+  }
+  
+  .bounty-title,
+  .info-title {
+    font-size: 12px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .info-content {
+    font-size: 12px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .section-header {
+    font-size: 12px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .attack-title {
+    font-size: 14px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .date-time {
+    font-size: 11px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .player-info {
+    font-size: 11px;
+    font-family: Arial, 'Inter', sans-serif;
+  }
+  
+  .attack-report {
+    margin: 5px auto;
+  }
+  
+  .unit-image-cell {
+    min-width: 45px;
+    max-width: 55px;
+  }
+}
+
+/* Tablet range (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .attack-report {
+    margin: 5px auto;
+    font-size: 11px;
+  }
+  
+  .statistics-table {
+    font-size: 13px;
+  }
+  
+  .statistics-table .stat-name,
+  .statistics-table .statistics-value {
+    font-size: 13px;
+    color: #000000;
+  }
+  
+  .statistics-value.attacker,
+  .statistics-value.defender {
+    font-size: 9px;
+  }
+}
+
+/* Mobile and below (768px and below) */
 @media (max-width: 768px) {
+  .report-overlay {
+    padding: 10px;
+  }
+  
+  .report-modal {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+  
+  .attack-report {
+    margin: 3px;
+    font-size: 10px;
+  }
+  
+  .report-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    flex-wrap: nowrap;
+  }
+  
+  .screenshot-btn {
+    font-size: 10px;
+    padding: 3px 6px;
+    align-self: center;
+  }
+  
+  .unit-headers {
+    padding-left: 18px;
+    gap: 0px;
+  }
+  
+  .unit-row {
+    padding-left: 18px;
+    gap: 0px;
+  }
+  
+  .unit-header,
+  .unit-cell {
+    min-width: 35px;
+    flex: 1;
+    padding: 1px 2px;
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: visible;
+  }
+  
+  .unit-image {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .tribe-image {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .unit-row-label {
+    width: 18px;
+  }
+  
+  .row-type-icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .resources {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .bounty-section .bounty-section .resources-container {
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .resources-left,
+  .resources-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .resource-item {
+    min-width: 60px;
+  }
+  
+  .resource-image {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .statistics-row {
+    gap: 2px;
+    align-items: center;
+  }
+  
+  .statistics-table {
+    font-size: 13px;
+  }
+  
+  .statistics-table .stat-name,
+  .statistics-table .statistics-value {
+    font-size: 13px;
+    color: #000000;
+  }
+  
+  .statistics-value {
+    text-align: right;
+  }
+  
+  .statistics-value.attacker,
+  .statistics-value.defender {
+    font-size: 8px;
+  }
+  
+  .report-overlay {
+    padding: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .report-overlay .report-nav-btn {
+    display: none; /* Hide nav buttons on mobile */
+  }
+  
+  .save-notification {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+  
+  .notification-content {
+    min-width: auto;
+    max-width: none;
+    padding: 10px 14px;
+  }
+  
+  .notification-text {
+    font-size: 13px;
+  }
+  
+  .report-overlay {
+    padding: 30px;
+  }
+  
+  .report-modal {
+    max-width: 90vw; /* Adjusted for mobile */
+    max-height: 95vh; /* Adjusted for mobile */
+  }
+  
+  .reports-feed {
+    margin: 5px 0 0 0;
+    width: 80%;
+  }
+  
+  .no-reports {
+    padding: 12px 15px;
+    margin: 5px 0 0 0;
+  }
+  
   .unit-stats-modal {
     margin: 8px;
     max-height: 85vh;
@@ -2438,3 +1715,477 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Medium mobile devices (540px - 480px) */
+@media (max-width: 540px) and (min-width: 481px) {
+  .attack-report {
+    padding: 4px;
+    margin: 2px;
+    font-size: 9px;
+  }
+  
+  .section-header {
+    padding: 3px 5px;
+    font-size: 9px;
+  }
+  
+  .unit-headers {
+    gap: 0px;
+    padding-left: 20px;
+  }
+  
+  .bounty-section {
+    margin-bottom: 8px;
+  }
+  
+  .bounty-title {
+    font-size: 9px;
+    padding: 3px 4px;
+  }
+  
+  .bounty-content {
+    gap: 2px;
+  }
+  
+  .resources {
+    gap: 2px;
+  }
+  
+  .bounty-section .resources-container {
+    flex-direction: row;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .resources-left,
+  .resources-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .resource-item {
+    min-width: 30px;
+    gap: 1px;
+  }
+  
+  .resource-image {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .resource-value {
+    font-size: 9px;
+  }
+  
+  .total-capacity {
+    font-size: 9px;
+    gap: 1px;
+    margin-left: 4px;
+  }
+  
+  .bounty-icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .statistics-section {
+    margin: 3px 0;
+  }
+  
+  .statistics-table {
+    gap: 2px;
+    font-size: 10px;
+  }
+  
+  .statistics-table .stat-name,
+  .statistics-table .statistics-value {
+    font-size: 10px;
+    color: #000000;
+  }
+  
+  .statistics-row {
+    padding: 2px 3px;
+    align-items: center;
+  }
+  
+  .statistics-row.header .statistics-value.attacker,
+  .statistics-row.header .statistics-value.defender {
+    font-size: 10px;
+    color: #000000;
+  }
+  
+  .statistics-table {
+    font-size: 10px;
+  }
+  
+  .information-section {
+    margin-bottom: 8px;
+  }
+  
+  .info-title {
+    font-size: 9px;
+    padding: 2px 3px;
+  }
+  
+  .info-item {
+    padding: 1px 3px;
+    font-size: 9px;
+  }
+}
+
+/* Small mobile devices (480px - 321px) */
+@media (max-width: 480px) and (min-width: 321px) {
+  .attack-report {
+    padding: 8px;
+    margin: 5px;
+    font-size: 12px;
+  }
+  
+  .section-header {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+   
+  .unit-headers {
+    gap: 2px;
+    padding-left: 30px;
+  }
+  
+  .unit-header {
+    padding: 1px;
+    min-width: 30px;
+    flex: 1;
+    font-size: 6px;
+  }
+  
+ 
+  
+  .unit-cell {
+    padding: 1px 4px;
+  
+    min-width: 30px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: visible;
+  }
+  
+  .unit-row-label {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .unit-row-label svg {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .row-type-icon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .bounty-section {
+    margin-bottom: 8px;
+  }
+  
+  .bounty-title {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+  
+  .bounty-content {
+    gap: 4px;
+  }
+  
+  .resources {
+    gap: 4px;
+  }
+  
+  .bounty-section .resources-container {
+    flex-direction: row;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .resources-left,
+  .resources-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .resource-item {
+    min-width: 40px;
+    gap: 1px;
+  }
+  
+  .resource-image {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .resource-value {
+    font-size: 9px;
+  }
+  
+  .total-capacity {
+    font-size: 9px;
+    gap: 3px;
+    margin-left: 8px;
+  }
+  
+  .bounty-icon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .statistics-section {
+    margin: 5px 0;
+  }
+  
+  .statistics-table {
+    gap: 4px;
+    font-size: 9px;
+  }
+  
+  .statistics-table .stat-name,
+  .statistics-table .statistics-value {
+    font-size: 9px;
+    color: #000000;
+  }
+  
+  .statistics-row {
+    padding: 3px 6px;
+    align-items: center;
+  }
+  
+  .statistics-row.header .statistics-value.attacker,
+  .statistics-row.header .statistics-value.defender {
+    font-size: 9px;
+    color: #000000;
+  }
+  
+  .statistics-table {
+    font-size: 9px;
+  }
+  
+  .information-section {
+    margin-bottom: 8px;
+  }
+  
+  .info-title {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+  
+  .info-item {
+    padding: 2px 6px;
+    font-size: 9px;
+  }
+  
+  
+  .statistics-value.attacker,
+  .statistics-value.defender {
+    font-size: 8px;
+  }
+}
+
+
+/* Very small devices (430px - 320px) */
+@media (max-width: 430px) and (min-width: 200px) {
+  .attack-report {
+    padding: 2px;
+    margin: 1px;
+    font-size: 8px;
+  }
+  
+  .section-header {
+    padding: 2px 3px;
+    font-size: 8px;
+  }
+    
+  .unit-headers {
+    gap: 0px;
+    padding-left: 15px;
+  }
+  
+  .unit-header {
+    padding: 0px;
+    min-width: 20px;
+    flex: 1;
+    font-size: 6px;
+  }
+  
+  .unit-image {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .unit-row {
+    padding-left: 15px;
+  }
+  
+  .unit-row-label {
+    width: 15px;
+    height: 8px;
+  }
+  
+  .unit-row-label svg {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .row-type-icon {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .unit-cell {
+    font-size: 8px;
+    min-width: 20px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: visible;
+    padding: 0px 1px;
+  }
+  
+  .tribe-image {
+    width: 12px;
+    height: 12px;
+  }
+
+  .information-section {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+  }
+  
+  .bounty-section {
+    margin-bottom: 8px;
+  }
+  
+  .bounty-title {
+    font-size: 8px;
+    padding: 2px 3px;
+  }
+  
+  .bounty-content {
+    gap: 1px;
+  }
+  
+  .resources {
+    gap: 1px;
+  }
+  
+  .bounty-section .resources-container {
+    flex-direction: row;
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .resources-left,
+  .resources-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .resource-item {
+    min-width: 25px;
+  }
+  
+  .resource-image {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .resource-value {
+    font-size: 7px;
+  }
+  
+  .total-capacity {
+    font-size: 7px;
+    gap: 1px;
+    margin-left: 3px;
+  }
+  
+  .bounty-icon {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .statistics-section {
+    margin: 2px 0;
+  }
+  
+  .statistics-table {
+    gap: 1px;
+    font-size: 8px;
+  }
+  
+  .statistics-table .stat-name,
+  .statistics-table .statistics-value {
+    font-size: 8px;
+    color: #000000;
+  }
+  
+  .statistics-row {
+    padding: 1px 2px;
+    align-items: center;
+  }
+  
+  
+  .statistics-row.header .statistics-value.attacker,
+  .statistics-row.header .statistics-value.defender {
+    font-size: 8px;
+    color: #000000;
+  }
+  
+  .statistics-table {
+    font-size: 8px;
+  }
+    
+  .info-title {
+    font-size: 8px;
+    padding: 2px 3px;
+  }
+  
+  .info-item {
+    padding: 0px 2px;
+    font-size: 7px;
+  }
+  
+  .report-header {
+    padding: 2px 6px;
+    gap: 3px;
+  }
+  
+  .screenshot-btn {
+    font-size: 8px;
+    padding: 2px 4px;
+  }
+  
+  .date-time {
+    font-size: 8px;
+  }
+  
+  .attack-title {
+    font-size: 10px;
+  }
+  
+  .player-info {
+    padding: 2px 6px;
+    font-size: 8px;
+  }
+  
+  
+  .statistics-value.attacker,
+  .statistics-value.defender {
+    font-size: 6px;
+  }
+}
+

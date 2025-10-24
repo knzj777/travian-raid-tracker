@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './SaveModal.css';
 
 const SaveModal = ({ 
@@ -12,6 +12,19 @@ const SaveModal = ({
   const [progressWidth, setProgressWidth] = useState(100);
   const [isClosing, setIsClosing] = useState(false);
   const [autoCloseTimer, setAutoCloseTimer] = useState(null);
+
+  const handleClose = useCallback(() => {
+    setIsClosing(true);
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      setAutoCloseTimer(null);
+    }
+    setTimeout(() => {
+      setIsClosing(false);
+      setProgressWidth(100);
+      onClose();
+    }, 300);
+  }, [autoCloseTimer, onClose]);
 
   useEffect(() => {
     if (isVisible) {
@@ -40,20 +53,7 @@ const SaveModal = ({
         clearInterval(progressTimer);
       };
     }
-  }, [isVisible, duration]);
-
-  const handleClose = () => {
-    setIsClosing(true);
-    if (autoCloseTimer) {
-      clearTimeout(autoCloseTimer);
-      setAutoCloseTimer(null);
-    }
-    setTimeout(() => {
-      setIsClosing(false);
-      setProgressWidth(100);
-      onClose();
-    }, 300);
-  };
+  }, [isVisible, duration, handleClose]);
 
   if (!isVisible) return null;
 

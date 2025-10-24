@@ -316,6 +316,23 @@
   border-color: rgba(255,255,255,0.2);
 }
 
+/* Cancel button base styling - matches add-attack-btn sizing */
+.attack-planner .form-buttons .cancel-btn {
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 4px;
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 110px;
+  height: 32px;
+  text-align: center;
+  white-space: nowrap;
+}
+
 /* Edit mode button - neutral styling to match app */
 .edit-btn {
   padding: 4px 8px;
@@ -463,18 +480,31 @@
 .attacks-table td.attack-type-fake {
   color: #2196F3; /* Blue */
 }
+.light .attacks-table td.attack-type-fake {
+  color: #1976D2; /* Darker blue for light mode */
+}
 
 .attacks-table td.attack-type-attack {
   color: #f44336; /* Red */
+  font-weight: bold;
+}
+.light .attacks-table td.attack-type-attack {
+  color: #d32f2f; /* Darker red for light mode */
   font-weight: bold;
 }
 
 .attacks-table td.attack-type-pre-conquer {
   color: #ff9800; /* Orange */
 }
+.light .attacks-table td.attack-type-pre-conquer {
+  color: #f57c00; /* Darker orange for light mode */
+}
 
 .attacks-table td.attack-type-conquer {
   color: #f44336; /* Red */
+}
+.light .attacks-table td.attack-type-conquer {
+  color: #d32f2f; /* Darker red for light mode */
 }
 
 .attacks-table table {
@@ -505,10 +535,86 @@
 /* Green styling for Send At column */
 .attacks-table td:nth-child(3) {
   color: #00ff88;
-  font-weight: 600;
 }
 .light .attacks-table td:nth-child(3) {
   color: #1976D2; /* blue from backup for light mode */
+}
+
+/* Expired attack styling - use actual gray colors with higher specificity */
+.attacks-table td.expired-attack,
+.attacks-table td:nth-child(3).expired-attack,
+.attacks-table td:nth-child(6).expired-attack {
+  color: #aaaaaa;
+  font-weight: normal;
+  font-style: italic;
+}
+.light .attacks-table td.expired-attack,
+.light .attacks-table td:nth-child(3).expired-attack,
+.light .attacks-table td:nth-child(6).expired-attack {
+  color: #7a7a7a;
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* Even darker gray for sent expired attacks - make them more distinct */
+.attacks-table tr.sent td.expired-attack {
+  color: #7e7e7e;
+}
+.light .attacks-table tr.sent td.expired-attack {
+  color: #555555;
+}
+
+/* Bold countdown when 30 seconds or less - high contrast colors */
+.attacks-table td.countdown-urgent {
+  font-weight: bold;
+  color: #ffffff; /* White for maximum contrast on dark */
+}
+.light .attacks-table td.countdown-urgent {
+  color: #000000; /* Black for maximum contrast on light */
+}
+
+/* Make normal countdowns darker - less light */
+.attacks-table td:nth-child(6) {
+  color: rgba(255,255,255,0.8); /* Darker - less light, override general td rule */
+}
+.light .attacks-table td:nth-child(6) {
+  color: rgba(0,0,0,0.7); /* Darker - less light, override general td rule */
+}
+
+/* Send At column styling - better contrast colors */
+.attacks-table td:nth-child(3) {
+  font-weight: normal;
+  color: var(--primary-green); /* Muted green for better contrast */
+}
+.light .attacks-table td:nth-child(3) {
+  color: var(--primary-green); /* Dark forest green for high contrast in light mode */
+}
+.attacks-table tr:has(.countdown-urgent) td:nth-child(3) {
+  font-weight: bold;
+  color: #00ff88; /* Bright cyan-green for urgent */
+}
+.light .attacks-table tr:has(.countdown-urgent) td:nth-child(3) {
+  color: #ff0000; /* Bright green for urgent in light mode */
+}
+
+/* Ensure buttons in expired rows don't inherit cursive styling */
+.attacks-table tr:has(.expired-attack) .sent-btn,
+.attacks-table tr:has(.expired-attack) .link-btn,
+.attacks-table tr:has(.expired-attack) .edit-row-btn,
+.attacks-table tr:has(.expired-attack) .delete-btn {
+  font-style: normal;
+}
+
+/* Disabled sent button styling */
+.attacks-table .sent-btn:disabled {
+  background: #666666;
+  border-color: #666666;
+  color: #cccccc;
+}
+.light .attacks-table .sent-btn:disabled {
+  background: #999999;
+  border-color: #999999;
+  color: #333333;
 }
 
 /* Link input styling */
@@ -545,6 +651,39 @@
 .light .link-input:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(82, 114, 48, 0.2);
+}
+
+/* Disabled form elements styling */
+.village-input:disabled,
+.link-input:disabled,
+.time-inputs input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255,255,255,0.05);
+}
+
+.date-input-wrapper.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.date-input-wrapper.disabled .date-display {
+  background: rgba(255,255,255,0.05);
+}
+
+.type-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.light .village-input:disabled,
+.light .link-input:disabled,
+.light .time-inputs input:disabled {
+  background: rgba(0,0,0,0.05);
+}
+
+.light .date-input-wrapper.disabled .date-display {
+  background: rgba(0,0,0,0.05);
 }
 
 /* Link button styling */
@@ -603,7 +742,7 @@
 }
 
 .sent-text {
-  color: rgba(255,255,255,0.4);
+  color: #7e7e7e;
   font-style: italic;
 }
 
@@ -918,16 +1057,16 @@
     width: 110px;
     height: 32px;
   }
+  
+  .attack-planner .form-buttons .cancel-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    width: 110px;
+    height: 32px;
+  }
 
   .edit-btn {
     font-size: 8px;
-  }
-  
-  .attack-planner .form-buttons .cancel-btn {
-    width: 110px;
-    height: 28px;
-    padding: 6px 12px;
-    font-size: 12px;
   }
 }
 
@@ -949,7 +1088,7 @@
   
   .attack-form {
     gap: 6px;
-    padding: 2px;
+    padding: 8px 2px 2px 2px;
   }
   
   /* More compact table */
@@ -998,6 +1137,8 @@
 @media (max-width: 480px) {
   .attack-content {
     padding: 1px;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
   
   .attack-content h1 {
@@ -1012,12 +1153,35 @@
   
   .attack-form {
     gap: 4px;
-    padding: 1px;
+    padding: 8px 1px 1px 1px;
   }
   
   .form-buttons {
     padding-left: 8px;
     padding-right: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .attack-planner .add-attack-btn,
+  .attack-planner .edit-btn {
+    width: calc(50% - 4px);
+    min-width: 0;
+    font-size: 10px;
+    height: 28px;
+  }
+  
+  .attack-planner .form-buttons .cancel-btn {
+    width: calc(50% - 4px);
+    min-width: 0;
+    font-size: 10px;
+    height: 28px;
+  }
+  
+  .attack-planner .link-input {
+    width: calc(100% - 16px);
+    max-width: 200px;
+    font-size: 10px;
   }
   
   /* Even more compact table */
@@ -1054,7 +1218,7 @@
   
   .attack-form {
     gap: 6px;
-    padding: 1px;
+    padding: 8px 1px 1px 1px;
   }
   
   /* Scale down form elements */
@@ -1062,7 +1226,7 @@
   .attack-planner .date-input-wrapper {
     width: 100px;
     height: 28px;
-    font-size: 11px;
+    font-size: 8.5px;
   }
   
   .attack-planner .time-label {
@@ -1144,7 +1308,7 @@
   
   .attack-form {
     gap: 3px;
-    padding: 0;
+    padding: 8px 0 0 0;
   }
   
   /* Ultra compact table */
@@ -1286,43 +1450,28 @@
   border-color: rgba(255,0,0,0.3);
 }
 .light .cancel-btn {
-  background: #dc3545;
-  border-color: #dc3545;
-  color: #fff;
+  background: #fff;
+  border: 1px solid rgba(0,0,0);
+  color: rgba(0,0,0,0.7);
 }
 .light .cancel-btn:hover {
-  background: #c82333;
-  border-color: #c82333;
+  background: rgba(0,0,0,0.08);
+  border-color: rgba(0,0,0);
 }
 
 /* ================================
    Form action buttons sizing/consistency
    ================================ */
-/* Make Cancel same size as Edit Mode button - exact copy */
-.attack-planner .form-buttons .cancel-btn {
-  padding: 4px 8px;
-  background: #dc3545;
-  border: 1px solid #dc3545;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 500;
-  transition: none;
-  width: 110px;
-  height: 32px;
-  text-align: center;
-  white-space: nowrap;
-}
 
 .form-buttons .cancel-btn:hover {
-  background: #c82333;
-  border-color: #c82333;
+  background: rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.4);
+  color: #ffffff;
 }
 .light .attack-planner .form-buttons .cancel-btn {
-  background: #dc3545;
-  border-color: #dc3545;
-  color: #fff;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.2);
+  color: rgba(0,0,0,0.8);
 }
 
 /* ================================
@@ -1451,4 +1600,36 @@
 .light .error-modal-btn.delete-btn:hover {
   background: #c82333;
   border-color: #c82333;
+}
+
+/* Modal responsive styling for smaller screens */
+@media (max-width: 480px) {
+  .error-modal-overlay {
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .error-modal {
+    width: calc(100vw - 40px);
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 330px) {
+  .error-modal {
+    width: calc(100vw - 20px);
+    padding: 12px;
+  }
+  
+  .error-modal-content {
+    font-size: 13px;
+  }
+  
+  .error-modal-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
 }

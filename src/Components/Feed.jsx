@@ -2,9 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Feed.css';
 import ReportCard from './ReportCard';
-import attackReportIcon from '../images/combat/attack-report-icon.png';
-import scoutReportIcon from '../images/combat/scout-report-icon.png';
-import scoutReportIconLight from '../images/combat/scout-report-icon-light.png';
 
 const Feed = ({ 
   reports, 
@@ -25,73 +22,6 @@ const Feed = ({
   onCardsPerRowChange,
   getAllReports
 }) => {
-  const getReportResources = (reportData) => {
-    if (!reportData) return null;
-
-    // For attack reports, get bounty from main report object
-    if (reportData.bounty && reportData.bounty.resources) {
-      const bounty = reportData.bounty.resources;
-      return {
-        wood: bounty[0] || 0,
-        clay: bounty[1] || 0,
-        iron: bounty[2] || 0,
-        crop: bounty[3] || 0,
-        total: reportData.bounty.total || 0
-      };
-    }
-
-    // For scouting reports, get resources directly
-    if (reportData.resources && Array.isArray(reportData.resources)) {
-      return {
-        wood: reportData.resources[0] || 0,
-        clay: reportData.resources[1] || 0,
-        iron: reportData.resources[2] || 0,
-        crop: reportData.resources[3] || 0,
-        total: reportData.resources.reduce((sum, val) => sum + (val || 0), 0)
-      };
-    }
-
-    return null;
-  };
-
-  const getCardIcon = (type) => {
-    if (type === 'attack') {
-      return (
-        <img 
-          src={attackReportIcon} 
-          alt="Attack Report" 
-          width="16" 
-          height="16"
-          style={{ objectFit: 'contain' }}
-        />
-      );
-    } else if (type === 'scout') {
-      return (
-        <img 
-          src={darkMode ? scoutReportIcon : scoutReportIconLight} 
-          alt="Scout Report" 
-          width="16" 
-          height="16"
-          style={{ objectFit: 'contain' }}
-        />
-      );
-    } else if (type === 'raid') {
-      return (
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2C8.5 2 6 4.5 6 8c0 1.5.5 3 1.5 4L12 20l4.5-8C17.5 11 18 9.5 18 8c0-3.5-2.5-6-6-6z"/>
-          <circle cx="12" cy="8" r="2"/>
-          <path d="M8 12h8"/>
-          <path d="M10 14h4"/>
-        </svg>
-      );
-    }
-    return null;
-  };
-
-  const getCardClass = (type) => {
-    return `${type}-card`;
-  };
-
   // Determine which reports to display
   const displayReports = showFilters && getAllReports ? getAllReports() : reports;
   const gridClass = showFilters ? `grid-${cardsPerRow}` : 'grid-3';

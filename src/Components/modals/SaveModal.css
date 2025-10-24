@@ -37,16 +37,8 @@
   transform: translateX(0);
 }
 
-/* Closing animations */
-.save-modal.bottom-right.closing,
-.save-modal.top-right.closing {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.save-modal.bottom-left.closing,
-.save-modal.top-left.closing {
-  transform: translateX(-100%);
+/* Closing animations - fade out only */
+.save-modal.closing {
   opacity: 0;
 }
 

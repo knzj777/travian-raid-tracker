@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AttackPlanner.css';
+import SaveModal from './modals/SaveModal';
 
 const AttackPlanner = () => {
   const [travelTime, setTravelTime] = useState(() => {
@@ -59,6 +60,7 @@ const AttackPlanner = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [showSaveNotification, setShowSaveNotification] = useState(false);
   const dateInputRef = useRef(null);
 
   // Helper function to get today's date
@@ -329,29 +331,13 @@ const AttackPlanner = () => {
       } : attack
     ));
     
-    setEditMode(false);
-    setEditingId(null);
-    setIsFormBlinking(false); // Stop the blinking effect
+    // Keep edit mode active and show save notification
     setIsEditDirty(false);
+    setShowSaveNotification(true);
     
-    // Restore original values
-    if (originalValues) {
-      setTravelTime(originalValues.travelTime);
-      setArrivalTime(originalValues.arrivalTime);
-      setAttackType(originalValues.attackType);
-      setVillageName(originalValues.villageName);
-      setSelectedDate(originalValues.selectedDate);
-      setTravianLink(originalValues.travianLink);
-      setOriginalValues(null);
-    } else {
-      // Fallback to default values if no original values stored
-      setTravelTime({ hours: 0, minutes: 0, seconds: 0 });
-      setArrivalTime({ hours: 0, minutes: 0, seconds: 0 });
-      setAttackType('Fake');
-      setVillageName('');
-      setSelectedDate(getTodayDate());
-      setTravianLink('');
-    }
+    // Keep the current cell editable - don't restore original values
+    // User can continue editing until they click Exit or Edit another cell
+    // Don't clear editingId - this keeps the cell in edit mode
   };
 
   const handleCancelEdit = () => {
@@ -419,13 +405,24 @@ const AttackPlanner = () => {
     return `${time.hours.toString().padStart(2, '0')}:${time.minutes.toString().padStart(2, '0')}:${time.seconds.toString().padStart(2, '0')}`;
   };
 
-  // Sort attacks by countdown (lowest countdown first)
+  // Check if countdown is urgent (30 seconds or less)
+  const isCountdownUrgent = (countdown) => {
+    if (!countdown || countdown === '00:00:00') return false;
+    const parts = countdown.split(':');
+    const hours = parseInt(parts[0]) || 0;
+    const minutes = parseInt(parts[1]) || 0;
+    const seconds = parseInt(parts[2]) || 0;
+    const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    return totalSeconds <= 30;
+  };
+
+  // Sort attacks by countdown (lowest countdown first) - expired attacks at bottom
   const sortAttacksByCountdown = (attacks) => {
     return [...attacks].sort((a, b) => {
       // Parse countdown strings (e.g., "25:15:28" or "00:00:00")
       const parseCountdown = (countdown) => {
         if (!countdown || countdown === '00:00:00') {
-          return Infinity; // Put expired attacks at the end
+          return Infinity; // Put expired attacks at the bottom
         }
         const parts = countdown.split(':');
         const hours = parseInt(parts[0]) || 0;
@@ -437,7 +434,12 @@ const AttackPlanner = () => {
       const aTime = parseCountdown(a.countdown);
       const bTime = parseCountdown(b.countdown);
       
-      return aTime - bTime; // Sort ascending (lowest first)
+      // If both are expired (both Infinity), maintain original order by ID
+      if (aTime === Infinity && bTime === Infinity) {
+        return a.id - b.id; // Sort by ID to maintain original insertion order
+      }
+      
+      return aTime - bTime; // Sort ascending (active first, expired at bottom)
     });
   };
 
@@ -458,12 +460,15 @@ const AttackPlanner = () => {
               onChange={(e) => { setVillageName(e.target.value); if (editMode) setIsEditDirty(true); }}
               placeholder="Your village name"
               className="village-input"
+              disabled={editMode && !editingId}
             />
             <div 
-              className="date-input-wrapper"
+              className={`date-input-wrapper ${editMode && !editingId ? 'disabled' : ''}`}
               onClick={() => {
-                if (dateInputRef.current) {
-                  dateInputRef.current.showPicker();
+                if (!editMode || editingId) {
+                  if (dateInputRef.current) {
+                    dateInputRef.current.showPicker();
+                  }
                 }
               }}
             >
@@ -473,6 +478,7 @@ const AttackPlanner = () => {
                 value={selectedDate}
                 onChange={(e) => { setSelectedDate(e.target.value); if (editMode) setIsEditDirty(true); }}
                 className="date-input-hidden"
+                disabled={editMode && !editingId}
               />
               <div className="date-display">
                 {formatDate(selectedDate)}
@@ -495,11 +501,11 @@ const AttackPlanner = () => {
               <input
                 type="number"
                 min="0"
-                max="23"
                 value={travelTime.hours}
                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, hours: val })); setIsEditDirty(true); }}
                 placeholder="HH"
                 style={{ appearance: 'textfield' }}
+                disabled={editMode && !editingId}
               />
               <span>:</span>
               <input
@@ -507,9 +513,15 @@ const AttackPlanner = () => {
                 min="0"
                 max="59"
                 value={travelTime.minutes}
-                onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, minutes: val })); setIsEditDirty(true); }}
+                onChange={(e) => { 
+                  const val = parseInt(e.target.value) || 0; 
+                  const clampedVal = Math.min(Math.max(val, 0), 59);
+                  setTravelTime(prev => ({ ...prev, minutes: clampedVal })); 
+                  setIsEditDirty(true); 
+                }}
                 placeholder="MM"
                 style={{ appearance: 'textfield' }}
+                disabled={editMode && !editingId}
               />
               <span>:</span>
               <input
@@ -517,9 +529,15 @@ const AttackPlanner = () => {
                 min="0"
                 max="59"
                 value={travelTime.seconds}
-                onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, seconds: val })); setIsEditDirty(true); }}
+                onChange={(e) => { 
+                  const val = parseInt(e.target.value) || 0; 
+                  const clampedVal = Math.min(Math.max(val, 0), 59);
+                  setTravelTime(prev => ({ ...prev, seconds: clampedVal })); 
+                  setIsEditDirty(true); 
+                }}
                 placeholder="SS"
                 style={{ appearance: 'textfield' }}
+                disabled={editMode && !editingId}
               />
             </div>
           </div>
@@ -532,9 +550,15 @@ const AttackPlanner = () => {
                  min="0"
                  max="23"
                  value={arrivalTime.hours}
-                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setArrivalTime(prev => ({ ...prev, hours: val })); setIsEditDirty(true); }}
+                 onChange={(e) => { 
+                   const val = parseInt(e.target.value) || 0; 
+                   const clampedVal = Math.min(Math.max(val, 0), 23);
+                   setArrivalTime(prev => ({ ...prev, hours: clampedVal })); 
+                   setIsEditDirty(true); 
+                 }}
                  placeholder="HH"
                  style={{ appearance: 'textfield' }}
+                 disabled={editMode && !editingId}
                />
                <span>:</span>
                <input
@@ -542,9 +566,15 @@ const AttackPlanner = () => {
                  min="0"
                  max="59"
                  value={arrivalTime.minutes}
-                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setArrivalTime(prev => ({ ...prev, minutes: val })); setIsEditDirty(true); }}
+                 onChange={(e) => { 
+                   const val = parseInt(e.target.value) || 0; 
+                   const clampedVal = Math.min(Math.max(val, 0), 59);
+                   setArrivalTime(prev => ({ ...prev, minutes: clampedVal })); 
+                   setIsEditDirty(true); 
+                 }}
                  placeholder="MM"
                  style={{ appearance: 'textfield' }}
+                 disabled={editMode && !editingId}
                />
                <span>:</span>
                <input
@@ -552,9 +582,15 @@ const AttackPlanner = () => {
                  min="0"
                  max="59"
                  value={arrivalTime.seconds}
-                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setArrivalTime(prev => ({ ...prev, seconds: val })); setIsEditDirty(true); }}
+                 onChange={(e) => { 
+                   const val = parseInt(e.target.value) || 0; 
+                   const clampedVal = Math.min(Math.max(val, 0), 59);
+                   setArrivalTime(prev => ({ ...prev, seconds: clampedVal })); 
+                   setIsEditDirty(true); 
+                 }}
                  placeholder="SS"
                  style={{ appearance: 'textfield' }}
+                 disabled={editMode && !editingId}
                />
             </div>
           </div>
@@ -567,24 +603,28 @@ const AttackPlanner = () => {
               <button
                 className={`type-btn ${attackType === 'Fake' ? 'active' : ''}`}
                 onClick={() => { setAttackType('Fake'); if (editMode) setIsEditDirty(true); }}
+                disabled={editMode && !editingId}
               >
                 Fake
               </button>
               <button
                 className={`type-btn ${attackType === 'Pre-conquer' ? 'active' : ''}`}
                 onClick={() => { setAttackType('Pre-conquer'); if (editMode) setIsEditDirty(true); }}
+                disabled={editMode && !editingId}
               >
                 Pre-conquer
               </button>
               <button
                 className={`type-btn ${attackType === 'Attack' ? 'active' : ''}`}
                 onClick={() => { setAttackType('Attack'); if (editMode) setIsEditDirty(true); }}
+                disabled={editMode && !editingId}
               >
                 Attack
               </button>
               <button
                 className={`type-btn ${attackType === 'Conquer' ? 'active' : ''}`}
                 onClick={() => { setAttackType('Conquer'); if (editMode) setIsEditDirty(true); }}
+                disabled={editMode && !editingId}
               >
                 Conquer
               </button>
@@ -601,6 +641,7 @@ const AttackPlanner = () => {
               onChange={(e) => { setTravianLink(e.target.value); if (editMode) setIsEditDirty(true); }}
               placeholder="Paste target link"
               className="link-input"
+              disabled={editMode && !editingId}
             />
           </div>
           {editMode ? (
@@ -609,7 +650,7 @@ const AttackPlanner = () => {
                 Save
               </button>
               <button className="cancel-btn" onClick={handleCancelEdit}>
-                Cancel
+                Exit Edit
               </button>
             </>
           ) : (
@@ -648,18 +689,37 @@ const AttackPlanner = () => {
             <tbody>
               {sortAttacksByCountdown(attacks).map(attack => (
                 <tr key={attack.id} className={`${attack.sent ? 'sent' : ''} ${editingId === attack.id ? 'editing' : ''}`}>
-                  <td>{attack.villageName || '-'}</td>
-                  <td>{formatDateWithoutYear(attack.date)}</td>
-                  <td><strong>{formatTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 })}</strong></td>
-                  <td>{formatTime(attack.travelTime)}</td>
-                  <td>{formatTime(attack.arrivalTime)}</td>
-                  <td>{attack.countdown}</td>
-                  <td className={getAttackTypeClassName(attack.attackType)}>{attack.attackType}</td>
+                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{attack.villageName || '-'}</td>
+                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{formatDateWithoutYear(attack.date)}</td>
+                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>
+                    {attack.countdown === '00:00:00' ? (
+                      formatTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 })
+                    ) : (
+                      <strong>{formatTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 })}</strong>
+                    )}
+                  </td>
+                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{formatTime(attack.travelTime)}</td>
+                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{formatTime(attack.arrivalTime)}</td>
+                  <td className={`${attack.countdown === '00:00:00' ? 'expired-attack' : ''} ${isCountdownUrgent(attack.countdown) ? 'countdown-urgent' : ''}`}>{attack.countdown}</td>
+                  <td className={`${getAttackTypeClassName(attack.attackType)} ${attack.countdown === '00:00:00' ? 'expired-attack' : ''}`}>{attack.attackType}</td>
                   <td>
                     {!attack.sent ? (
                       <button 
                         className="sent-btn"
                         onClick={() => handleSent(attack.id)}
+                        disabled={attack.countdown !== '00:00:00'}
+                        style={{
+                          opacity: attack.countdown !== '00:00:00' ? 0.5 : 1,
+                          cursor: 'default'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (attack.countdown === '00:00:00') {
+                            e.target.style.cursor = 'pointer';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.cursor = 'default';
+                        }}
                       >
                         Ok
                       </button>
@@ -762,6 +822,15 @@ const AttackPlanner = () => {
           </div>
         </div>
       )}
+      
+      {/* Save Notification */}
+      <SaveModal
+        isVisible={showSaveNotification}
+        onClose={() => setShowSaveNotification(false)}
+        message="Saved"
+        duration={2000}
+        position="bottom-left"
+      />
     </div>
   );
 };

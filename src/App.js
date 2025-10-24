@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 import RaidDiffCalculator from "./RaidDiffCalculator";
 import HowToUse from "./Pages/HowToUse";
@@ -30,6 +30,8 @@ function App() {
     volume: 0.5, // Default to 50%
     timeInput: "05:00",
     justFinished: false, // Flag to trigger sound
+    startTime: null, // Timestamp when timer started
+    pausedTime: null, // Timestamp when timer was paused
   });
 
   const timerIntervalRef = useRef(null);
@@ -42,7 +44,6 @@ function App() {
       const parsedSettings = JSON.parse(savedSettings);
       // Ensure lightReportOnDarkTheme is always true by default
       setSettings({
-        lightReportOnDarkTheme: true,
         ...parsedSettings,
         lightReportOnDarkTheme: parsedSettings.lightReportOnDarkTheme !== false,
       });
@@ -79,15 +80,28 @@ function App() {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
 
-  // Timer tick function
+  // Timer tick function - now uses timestamp-based calculation
   const timerTick = () => {
     setTimerState((prev) => {
-      if (prev.seconds <= 1) {
+      if (!prev.running || !prev.startTime) {
+        return prev;
+      }
+
+      const now = Date.now();
+      const elapsedMs = now - prev.startTime;
+      const elapsedSeconds = Math.floor(elapsedMs / 1000);
+      const remainingSeconds = Math.max(
+        0,
+        prev.initialSeconds - elapsedSeconds
+      );
+
+      if (remainingSeconds <= 0) {
         // Timer finished - add a flag to trigger sound
         if (prev.repeat) {
           return {
             ...prev,
             seconds: prev.initialSeconds,
+            startTime: now, // Reset start time for repeat
             justFinished: true, // Flag to trigger sound
           };
         }
@@ -95,12 +109,14 @@ function App() {
           ...prev,
           seconds: 0,
           running: false,
+          startTime: null,
           justFinished: true, // Flag to trigger sound
         };
       }
+
       return {
         ...prev,
-        seconds: prev.seconds - 1,
+        seconds: remainingSeconds,
         justFinished: false, // Reset flag
       };
     });
@@ -119,7 +135,7 @@ function App() {
     }
   };
 
-  const doVibrate = (pattern = [150, 100, 150, 100, 300]) => {
+  const doVibrate = useCallback((pattern = [150, 100, 150, 100, 300]) => {
     try {
       if (!supportsVibration()) return false;
       const result = navigator.vibrate(pattern);
@@ -127,84 +143,106 @@ function App() {
     } catch {
       return false;
     }
-  };
+  }, []);
 
-  const playSound = async (name) => {
-    console.log("playSound called with:", name);
-    // fallback simple <audio> element
-    if (audioRef.current) {
-      try {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      } catch {}
-    }
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) {
-      console.log("No AudioContext available");
-      return;
-    }
-    const ctx = new AC();
-
-    // Resume audio context if suspended (required for autoplay policy)
-    if (ctx.state === "suspended") {
-      try {
-        await ctx.resume();
-      } catch (e) {
-        console.log("Failed to resume audio context:", e);
+  const playSound = useCallback(
+    async (name) => {
+      console.log("playSound called with:", name);
+      // fallback simple <audio> element
+      if (audioRef.current) {
+        try {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+        } catch {}
+      }
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) {
+        console.log("No AudioContext available");
         return;
       }
-    }
+      const ctx = new AC();
 
-    const now = ctx.currentTime;
-    const master = ctx.createGain();
-    master.gain.value = Math.min(1, Math.max(0, timerState.volume));
-    master.connect(ctx.destination);
-
-    const pattern = [];
-    switch (name) {
-      case "beep":
-        // Three beeps in a row
-        pattern.push({ f: 1000, t: 0.2, d: 0 });
-        pattern.push({ f: 1000, t: 0.2, d: 0.3 });
-        pattern.push({ f: 1000, t: 0.2, d: 0.6 });
-        break;
-      case "tri":
-        pattern.push({ f: 600, t: 0.15 });
-        pattern.push({ f: 800, t: 0.15, d: 0.2 });
-        pattern.push({ f: 1000, t: 0.2, d: 0.4 });
-        break;
-      case "alarm":
-        for (let i = 0; i < 4; i++) {
-          pattern.push({ f: 880, t: 0.12, d: i * 0.18 });
-          pattern.push({ f: 660, t: 0.12, d: i * 0.18 + 0.12 });
+      // Resume audio context if suspended (required for autoplay policy)
+      if (ctx.state === "suspended") {
+        try {
+          await ctx.resume();
+        } catch (e) {
+          console.log("Failed to resume audio context:", e);
+          return;
         }
-        break;
-      default:
-        pattern.push({ f: 1000, t: 0.2 });
-    }
+      }
 
-    pattern.forEach((p) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type =
-        name === "alarm" ? "square" : name === "tri" ? "triangle" : "sine";
-      osc.frequency.value = p.f;
-      const startAt = now + (p.d || 0);
-      const endAt = startAt + p.t;
-      osc.connect(gain);
-      gain.connect(master);
-      gain.gain.setValueAtTime(0, startAt);
-      gain.gain.linearRampToValueAtTime(1, startAt + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, endAt);
-      osc.start(startAt);
-      osc.stop(endAt + 0.01);
-    });
-  };
+      const now = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.value = Math.min(1, Math.max(0, timerState.volume));
+      master.connect(ctx.destination);
+
+      const pattern = [];
+      switch (name) {
+        case "beep":
+          // Three beeps in a row
+          pattern.push({ f: 1000, t: 0.2, d: 0 });
+          pattern.push({ f: 1000, t: 0.2, d: 0.3 });
+          pattern.push({ f: 1000, t: 0.2, d: 0.6 });
+          break;
+        case "tri":
+          pattern.push({ f: 600, t: 0.15 });
+          pattern.push({ f: 800, t: 0.15, d: 0.2 });
+          pattern.push({ f: 1000, t: 0.2, d: 0.4 });
+          break;
+        case "alarm":
+          for (let i = 0; i < 4; i++) {
+            pattern.push({ f: 880, t: 0.12, d: i * 0.18 });
+            pattern.push({ f: 660, t: 0.12, d: i * 0.18 + 0.12 });
+          }
+          break;
+        default:
+          pattern.push({ f: 1000, t: 0.2 });
+      }
+
+      pattern.forEach((p) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type =
+          name === "alarm" ? "square" : name === "tri" ? "triangle" : "sine";
+        osc.frequency.value = p.f;
+        const startAt = now + (p.d || 0);
+        const endAt = startAt + p.t;
+        osc.connect(gain);
+        gain.connect(master);
+        gain.gain.setValueAtTime(0, startAt);
+        gain.gain.linearRampToValueAtTime(1, startAt + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, endAt);
+        osc.start(startAt);
+        osc.stop(endAt + 0.01);
+      });
+    },
+    [timerState.volume]
+  );
 
   // Handle timer finishing - play sound and vibrate
   useEffect(() => {
     if (timerState.justFinished) {
       console.log("Timer finished! Playing sound:", timerState.soundName);
+
+      // Request notification permission if not already granted
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+
+      // Show notification if app is in background
+      if (
+        "Notification" in window &&
+        Notification.permission === "granted" &&
+        document.hidden
+      ) {
+        new Notification("Timer Finished!", {
+          body: "Your timer has completed.",
+          icon: "/logo192.png",
+          tag: "timer-finished",
+        });
+      }
+
       if (timerState.soundName) {
         playSound(timerState.soundName);
       }
@@ -222,10 +260,31 @@ function App() {
     timerState.soundName,
     timerState.vibration,
     timerState.volume,
+    doVibrate,
+    playSound,
   ]);
 
-  // Timer interval management
+  // Timer interval management with Page Visibility API support
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Page is hidden - clear interval to save battery
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+          timerIntervalRef.current = null;
+        }
+      } else {
+        // Page is visible - restart interval if timer is running
+        if (timerState.running && !timerIntervalRef.current) {
+          timerTick(); // Update immediately when becoming visible
+          timerIntervalRef.current = setInterval(timerTick, 1000);
+        }
+      }
+    };
+
+    // Add visibility change listener
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     if (timerState.running) {
       timerIntervalRef.current = setInterval(timerTick, 1000);
     } else if (timerIntervalRef.current) {
@@ -234,6 +293,7 @@ function App() {
     }
 
     return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
         timerIntervalRef.current = null;

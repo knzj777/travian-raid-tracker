@@ -195,36 +195,6 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
     return sortReports(filtered);
   };
 
-  // Get resources from report data
-  const getReportResources = (reportData) => {
-    if (!reportData) return null;
-    
-    // For attack reports, get bounty from main report object
-    if (reportData.bounty && reportData.bounty.resources) {
-      const bounty = reportData.bounty.resources;
-      return {
-        wood: bounty[0] || 0,
-        clay: bounty[1] || 0,
-        iron: bounty[2] || 0,
-        crop: bounty[3] || 0,
-        total: reportData.bounty.total || 0
-      };
-    }
-    
-    // For scouting reports, get resources directly
-    if (reportData.resources && Array.isArray(reportData.resources)) {
-      return {
-        wood: reportData.resources[0] || 0,
-        clay: reportData.resources[1] || 0,
-        iron: reportData.resources[2] || 0,
-        crop: reportData.resources[3] || 0,
-        total: reportData.resources.reduce((sum, val) => sum + (val || 0), 0)
-      };
-    }
-    
-    return null;
-  };
-
   // Overlay functions
   const openReportOverlay = (report) => {
     const allReports = getAllReports();
