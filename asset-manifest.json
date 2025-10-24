@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/travian-raid-tracker/static/css/main.d8602329.css",
-    "main.js": "/travian-raid-tracker/static/js/main.26484971.js",
+    "main.css": "/travian-raid-tracker/static/css/main.49678163.css",
+    "main.js": "/travian-raid-tracker/static/js/main.c51eaee3.js",
     "static/js/239.ce3ff927.chunk.js": "/travian-raid-tracker/static/js/239.ce3ff927.chunk.js",
     "static/js/453.fc17bef6.chunk.js": "/travian-raid-tracker/static/js/453.fc17bef6.chunk.js",
     "static/media/huns.jpg": "/travian-raid-tracker/static/media/huns.97b95a7bc43b0f58db81.jpg",
@@ -9,6 +9,7 @@
     "static/media/senator.png": "/travian-raid-tracker/static/media/senator.5725e77c7633e5fd7d5d.png",
     "static/media/tribe-egyptians.png": "/travian-raid-tracker/static/media/tribe-egyptians.4ab1020b8a705c27642b.png",
     "static/media/tribe-spartans.png": "/travian-raid-tracker/static/media/tribe-spartans.a2a597099ff052745b52.png",
+    "static/media/mercenary.png": "/travian-raid-tracker/static/media/mercenary.c3e10735fdfc70478425.png",
     "static/media/tribe-teutons.png": "/travian-raid-tracker/static/media/tribe-teutons.aacb08d92a5f21c12eaa.png",
     "static/media/catapult-hun.png": "/travian-raid-tracker/static/media/catapult-hun.f1348c3619f08d4bfbe7.png",
     "static/media/tribe-romans.png": "/travian-raid-tracker/static/media/tribe-romans.79603fd3b033652c877b.png",
@@ -60,7 +61,6 @@
     "static/media/settler-spartans.png": "/travian-raid-tracker/static/media/settler-spartans.da000754ad5d0a38def9.png",
     "static/media/scout.png": "/travian-raid-tracker/static/media/scout.f1815bcbf4bda1ed94f0.png",
     "static/media/swordsman.png": "/travian-raid-tracker/static/media/swordsman.0ed1669333a6176606f8.png",
-    "static/media/mercenary.png": "/travian-raid-tracker/static/media/mercenary.d7e785de235656ac0977.png",
     "static/media/bounty-full.png": "/travian-raid-tracker/static/media/bounty-full.6c6d6eb410c5458359d0.png",
     "static/media/shieldsman.png": "/travian-raid-tracker/static/media/shieldsman.083086e282d71472ce9e.png",
     "static/media/legionnaire.png": "/travian-raid-tracker/static/media/legionnaire.ac652d438425944ab606.png",
@@ -90,13 +90,13 @@
     "static/media/scout-report-icon-light.png": "/travian-raid-tracker/static/media/scout-report-icon-light.21f288ae463e85c1f9b9.png",
     "static/media/windows-key-png.png": "/travian-raid-tracker/static/media/windows-key-png.f5eccb779bd25b46c1b3.png",
     "index.html": "/travian-raid-tracker/index.html",
-    "main.d8602329.css.map": "/travian-raid-tracker/static/css/main.d8602329.css.map",
-    "main.26484971.js.map": "/travian-raid-tracker/static/js/main.26484971.js.map",
+    "main.49678163.css.map": "/travian-raid-tracker/static/css/main.49678163.css.map",
+    "main.c51eaee3.js.map": "/travian-raid-tracker/static/js/main.c51eaee3.js.map",
     "239.ce3ff927.chunk.js.map": "/travian-raid-tracker/static/js/239.ce3ff927.chunk.js.map",
     "453.fc17bef6.chunk.js.map": "/travian-raid-tracker/static/js/453.fc17bef6.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d8602329.css",
-    "static/js/main.26484971.js"
+    "static/css/main.49678163.css",
+    "static/js/main.c51eaee3.js"
   ]
 }
