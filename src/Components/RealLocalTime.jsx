@@ -28,6 +28,11 @@ const RealLocalTime = () => {
     // Replace all commas with dots for decimal notation
     value = value.replace(/,/g, '.');
     setOffsetSeconds(value);
+    // Persist on each change so other components (AttackPlanner) see updates immediately
+    const normalized = parseFloat(value);
+    if (!Number.isNaN(normalized)) {
+      localStorage.setItem('userTimeOffsetSeconds', String(normalized));
+    }
   };
 
   const persistOffset = () => {

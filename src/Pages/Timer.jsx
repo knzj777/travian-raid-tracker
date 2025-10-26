@@ -193,6 +193,15 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
               />
               <span>Vibration</span>
             </div>
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                checked={!!timerState.keepAwake}
+                onChange={(e) => updateTimerSetting('keepAwake', e.target.checked)}
+                title="Prevents screen from sleeping on mobile while timer runs"
+              />
+              <span>Keep screen awake</span>
+            </div>
           </div>
           <div className="sound">
             <label>Sound</label>

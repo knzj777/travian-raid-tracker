@@ -32,6 +32,7 @@ function App() {
     justFinished: false, // Flag to trigger sound
     startTime: null, // Timestamp when timer started
     pausedTime: null, // Timestamp when timer was paused
+    keepAwake: false, // Request wake lock on mobile while running
   });
 
   const timerIntervalRef = useRef(null);
@@ -146,6 +147,12 @@ function App() {
     }
   }, []);
 
+  // Simple mobile detection for gating notifications/wake lock
+  const isMobileDevice = (() => {
+    if (typeof navigator === "undefined") return false;
+    return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+  })();
+
   const playSound = useCallback(
     async (name) => {
       console.log("playSound called with:", name);
@@ -221,32 +228,29 @@ function App() {
     [timerState.volume]
   );
 
-  // Handle timer finishing - play sound and vibrate
+  // Handle timer finishing - play sound and vibrate (no desktop notifications)
   useEffect(() => {
     if (timerState.justFinished) {
       console.log("Timer finished! Playing sound:", timerState.soundName);
 
-      // Request notification permission if not already granted
-      if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-      }
-
-      // Show notification
-      if ("Notification" in window && Notification.permission === "granted") {
-        const notification = new Notification("Timer Finished!", {
-          body: "Your timer has completed.",
-          icon: "/logo192.png",
-          badge: "/logo192.png",
-          tag: "timer-finished",
-          requireInteraction: true,
-          silent: false,
-        });
-
-        // Auto-close after 10 seconds if not clicked
-        setTimeout(() => {
-          notification.close();
-        }, 10000);
-      }
+      // Only attempt notifications on mobile devices, never on desktop
+      try {
+        if (
+          isMobileDevice &&
+          "Notification" in window &&
+          Notification.permission === "granted"
+        ) {
+          const notification = new Notification("Timer Finished!", {
+            body: "Your timer has completed.",
+            icon: "/logo192.png",
+            badge: "/logo192.png",
+            tag: "timer-finished",
+            requireInteraction: true,
+            silent: false,
+          });
+          setTimeout(() => notification.close(), 10000);
+        }
+      } catch {}
 
       if (timerState.soundName) {
         playSound(timerState.soundName);
@@ -267,23 +271,33 @@ function App() {
     timerState.volume,
     doVibrate,
     playSound,
+    isMobileDevice,
   ]);
 
-  // Timer interval management - keep running even when page is hidden
+  // Timer interval management - keep running; wake lock mobile-only and defensive
   useEffect(() => {
     const requestWakeLock = async () => {
-      if ("wakeLock" in navigator && timerState.running) {
+      if (
+        isMobileDevice &&
+        timerState.keepAwake &&
+        "wakeLock" in navigator &&
+        document.visibilityState === "visible" &&
+        timerState.running
+      ) {
         try {
           wakeLockRef.current = await navigator.wakeLock.request("screen");
           console.log("Wake Lock active");
 
-          wakeLockRef.current.addEventListener("release", () => {
-            console.log("Wake Lock released");
-            if (timerState.running && wakeLockRef.current === null) {
-              // Re-request if timer still running and lock was released
-              requestWakeLock();
-            }
-          });
+          if (
+            wakeLockRef.current &&
+            typeof wakeLockRef.current.addEventListener === "function"
+          ) {
+            wakeLockRef.current.addEventListener("release", () => {
+              console.log("Wake Lock released");
+              // Do not immediately re-request to avoid loops/bugs
+              wakeLockRef.current = null;
+            });
+          }
         } catch (err) {
           console.log("Wake Lock request failed:", err);
         }
@@ -307,6 +321,8 @@ function App() {
       if (!document.hidden && timerState.running) {
         // Page became visible - immediately update time
         timerTick();
+        // Try to reacquire wake lock when returning to visible on mobile
+        requestWakeLock();
       }
     };
 
@@ -331,7 +347,7 @@ function App() {
       }
       releaseWakeLock();
     };
-  }, [timerState.running]);
+  }, [timerState.running, timerState.keepAwake, isMobileDevice]);
 
   // Persist timer state to localStorage whenever it changes
   useEffect(() => {

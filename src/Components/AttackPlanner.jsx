@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './AttackPlanner.css';
 import SaveModal from './modals/SaveModal';
 
@@ -132,6 +132,50 @@ const AttackPlanner = () => {
     localStorage.setItem('attackPlans', JSON.stringify(attacks));
   }, [attacks]);
 
+  // Get atomic "now" using RealLocalTime offset (stored as seconds)
+  const getAtomicNow = () => {
+    const offsetSeconds = parseFloat(localStorage.getItem('userTimeOffsetSeconds')) || 0;
+    const offsetMs = Math.round(offsetSeconds * 1000);
+    return new Date(Date.now() + offsetMs);
+  };
+
+  // Create a local date (midnight in local timezone) from YYYY-MM-DD
+  const makeLocalDate = (dateString) => {
+    if (!dateString) return new Date();
+    const [y, m, d] = String(dateString).split('-').map((v) => parseInt(v, 10));
+    if (Number.isFinite(y) && Number.isFinite(m) && Number.isFinite(d)) {
+      return new Date(y, (m || 1) - 1, d || 1);
+    }
+    return new Date();
+  };
+
+
+  const calculateCountdown = useCallback((travelTime, arrivalTime, date) => {
+    // Get current atomic time (using the same offset as RealLocalTime)
+    const atomicTime = getAtomicNow();
+    
+    // Calculate send time (arrival - travel time) using the specified date
+    const arrivalDate = makeLocalDate(date);
+    arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
+    
+    const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
+    const sendDate = new Date(arrivalDate.getTime() - travelMs);
+    
+    // Calculate time until send
+    const timeUntilSend = sendDate.getTime() - atomicTime.getTime();
+    
+    if (timeUntilSend <= 0) {
+      return '00:00:00';
+    }
+    
+    const totalSeconds = Math.floor(timeUntilSend / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    return `${hours.toString().padStart(hours >= 100 ? 3 : 2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }, []);
+
   // Update countdowns every second
   useEffect(() => {
     const interval = setInterval(() => {
@@ -151,44 +195,14 @@ const AttackPlanner = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
-
-  const calculateCountdown = (travelTime, arrivalTime, date) => {
-    // Get current atomic time (using the same offset as RealLocalTime)
-    const now = new Date();
-    const atomicOffset = parseFloat(localStorage.getItem('userTimeOffsetMs')) || 0;
-    const atomicTime = new Date(now.getTime() + atomicOffset);
-    
-    // Calculate send time (arrival - travel time) using the specified date
-    const arrivalDate = new Date(date);
-    arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
-    
-    const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
-    const sendDate = new Date(arrivalDate.getTime() - travelMs);
-    
-    // Calculate time until send
-    const timeUntilSend = sendDate.getTime() - atomicTime.getTime();
-    
-    if (timeUntilSend <= 0) {
-      return '00:00:00';
-    }
-    
-    const totalSeconds = Math.floor(timeUntilSend / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    
-    return `${hours.toString().padStart(hours >= 100 ? 3 : 2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+  }, [calculateCountdown]);
 
   const validateAttackInput = (travelTime, arrivalTime, date) => {
     // Get current atomic time (using the same offset as RealLocalTime)
-    const now = new Date();
-    const atomicOffset = -1900; // Same offset as RealLocalTime
-    const atomicTime = new Date(now.getTime() + atomicOffset);
+    const atomicTime = getAtomicNow();
     
     // Calculate send time (arrival - travel time) using the specified date
-    const arrivalDate = new Date(date);
+    const arrivalDate = makeLocalDate(date);
     arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
     
     const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
@@ -218,7 +232,7 @@ const AttackPlanner = () => {
     }
     
     // Calculate send time (arrival - travel time)
-    const arrivalDate = new Date(selectedDate);
+    const arrivalDate = makeLocalDate(selectedDate);
     arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
     
     const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
@@ -313,7 +327,7 @@ const AttackPlanner = () => {
     }
     
     // Calculate new send time
-    const arrivalDate = new Date(selectedDate);
+    const arrivalDate = makeLocalDate(selectedDate);
     arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
     
     const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
