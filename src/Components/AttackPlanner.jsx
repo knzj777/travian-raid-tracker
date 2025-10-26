@@ -51,6 +51,21 @@ const AttackPlanner = () => {
       return '';
     }
   });
+  const [serverOffsetHours, setServerOffsetHours] = useState(() => {
+    try {
+      // Prefer hours; migrate old seconds if present
+      const hoursSaved = localStorage.getItem('attackPlanner_serverOffsetHours');
+      if (hoursSaved !== null) return String(hoursSaved);
+      const secondsSaved = localStorage.getItem('attackPlanner_serverOffsetSeconds');
+      if (secondsSaved !== null) {
+        const hrs = parseFloat(secondsSaved) / 3600;
+        return Number.isFinite(hrs) ? String(hrs) : '';
+      }
+      return '';
+    } catch {
+      return '';
+    }
+  });
   const [attacks, setAttacks] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -88,9 +103,16 @@ const AttackPlanner = () => {
     if (savedAttacks) {
       try {
         const parsedAttacks = JSON.parse(savedAttacks);
-        setAttacks(parsedAttacks);
+        if (Array.isArray(parsedAttacks)) {
+          setAttacks(parsedAttacks);
+        } else {
+          // Invalid shape -> clear and reset
+          localStorage.removeItem('attackPlans');
+          setAttacks([]);
+        }
       } catch (error) {
-        // Failed to load saved attacks
+        // Failed to load saved attacks -> clear invalid data
+        localStorage.removeItem('attackPlans');
       }
     }
   }, []);
@@ -126,17 +148,43 @@ const AttackPlanner = () => {
   useEffect(() => {
     localStorage.setItem('attackPlanner_travianLink', travianLink);
   }, [travianLink]);
-
-  // Save attacks to localStorage whenever attacks change
+  
   useEffect(() => {
-    localStorage.setItem('attackPlans', JSON.stringify(attacks));
+    // Persist hours as a normalized numeric string
+    const num = parseFloat(String(serverOffsetHours).replace(/,/g, '.'));
+    if (!Number.isNaN(num)) {
+      localStorage.setItem('attackPlanner_serverOffsetHours', String(num));
+    } else {
+      localStorage.removeItem('attackPlanner_serverOffsetHours');
+    }
+  }, [serverOffsetHours]);
+
+  // Save attacks to localStorage whenever attacks change (store without volatile countdown)
+  useEffect(() => {
+    try {
+      const stored = attacks.map(a => ({
+        id: a.id,
+        villageName: a.villageName || '',
+        date: a.date,
+        travelTime: a.travelTime,
+        arrivalTime: a.arrivalTime,
+        sendTime: a.sendTime,
+        attackType: a.attackType,
+        travianLink: a.travianLink || '',
+        sent: !!a.sent,
+      }));
+      localStorage.setItem('attackPlans', JSON.stringify(stored));
+    } catch {}
   }, [attacks]);
 
   // Get atomic "now" using RealLocalTime offset (stored as seconds)
   const getAtomicNow = () => {
     const offsetSeconds = parseFloat(localStorage.getItem('userTimeOffsetSeconds')) || 0;
+    const serverHours =
+      parseFloat(localStorage.getItem('attackPlanner_serverOffsetHours')) || 0;
     const offsetMs = Math.round(offsetSeconds * 1000);
-    return new Date(Date.now() + offsetMs);
+    const serverMs = Math.round((serverHours * 3600) * 1000);
+    return new Date(Date.now() + offsetMs + serverMs);
   };
 
   // Create a local date (midnight in local timezone) from YYYY-MM-DD
@@ -154,15 +202,21 @@ const AttackPlanner = () => {
     // Get current atomic time (using the same offset as RealLocalTime)
     const atomicTime = getAtomicNow();
     
-    // Calculate send time (arrival - travel time) using the specified date
-    const arrivalDate = makeLocalDate(date);
-    arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
-    
-    const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
-    const sendDate = new Date(arrivalDate.getTime() - travelMs);
+    // Build absolute timestamps using pure arithmetic to avoid DST pitfalls
+    const arrivalBase = makeLocalDate(date).getTime(); // local midnight
+    const arrivalMs =
+      arrivalBase +
+      ((parseInt(arrivalTime.hours || 0, 10) * 3600 +
+        parseInt(arrivalTime.minutes || 0, 10) * 60 +
+        parseInt(arrivalTime.seconds || 0, 10)) * 1000);
+    const travelMs =
+      ((parseInt(travelTime.hours || 0, 10) * 3600 +
+        parseInt(travelTime.minutes || 0, 10) * 60 +
+        parseInt(travelTime.seconds || 0, 10)) * 1000);
+    const sendMs = arrivalMs - travelMs;
     
     // Calculate time until send
-    const timeUntilSend = sendDate.getTime() - atomicTime.getTime();
+    const timeUntilSend = sendMs - atomicTime.getTime();
     
     if (timeUntilSend <= 0) {
       return '00:00:00';
@@ -201,15 +255,20 @@ const AttackPlanner = () => {
     // Get current atomic time (using the same offset as RealLocalTime)
     const atomicTime = getAtomicNow();
     
-    // Calculate send time (arrival - travel time) using the specified date
-    const arrivalDate = makeLocalDate(date);
-    arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
-    
-    const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
-    const sendDate = new Date(arrivalDate.getTime() - travelMs);
+    const arrivalBase = makeLocalDate(date).getTime();
+    const arrivalMs =
+      arrivalBase +
+      ((parseInt(arrivalTime.hours || 0, 10) * 3600 +
+        parseInt(arrivalTime.minutes || 0, 10) * 60 +
+        parseInt(arrivalTime.seconds || 0, 10)) * 1000);
+    const travelMs =
+      ((parseInt(travelTime.hours || 0, 10) * 3600 +
+        parseInt(travelTime.minutes || 0, 10) * 60 +
+        parseInt(travelTime.seconds || 0, 10)) * 1000);
+    const sendMs = arrivalMs - travelMs;
     
     // Calculate time until send
-    const timeUntilSend = sendDate.getTime() - atomicTime.getTime();
+    const timeUntilSend = sendMs - atomicTime.getTime();
     
     if (timeUntilSend <= 0) {
       return {
@@ -232,12 +291,18 @@ const AttackPlanner = () => {
     }
     
     // Calculate send time (arrival - travel time)
-    const arrivalDate = makeLocalDate(selectedDate);
-    arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
-    
-    const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
-    const sendDate = new Date(arrivalDate.getTime() - travelMs);
-    
+    const arrivalBase = makeLocalDate(selectedDate).getTime();
+    const arrivalMs =
+      arrivalBase +
+      ((parseInt(arrivalTime.hours || 0, 10) * 3600 +
+        parseInt(arrivalTime.minutes || 0, 10) * 60 +
+        parseInt(arrivalTime.seconds || 0, 10)) * 1000);
+    const travelMs =
+      ((parseInt(travelTime.hours || 0, 10) * 3600 +
+        parseInt(travelTime.minutes || 0, 10) * 60 +
+        parseInt(travelTime.seconds || 0, 10)) * 1000);
+    const sendMs = arrivalMs - travelMs;
+    const sendDate = new Date(sendMs);
     const sendTime = {
       hours: sendDate.getHours(),
       minutes: sendDate.getMinutes(),
@@ -327,12 +392,18 @@ const AttackPlanner = () => {
     }
     
     // Calculate new send time
-    const arrivalDate = makeLocalDate(selectedDate);
-    arrivalDate.setHours(arrivalTime.hours, arrivalTime.minutes, arrivalTime.seconds, 0);
-    
-    const travelMs = (travelTime.hours * 3600 + travelTime.minutes * 60 + travelTime.seconds) * 1000;
-    const sendDate = new Date(arrivalDate.getTime() - travelMs);
-    
+    const arrivalBase = makeLocalDate(selectedDate).getTime();
+    const arrivalMs =
+      arrivalBase +
+      ((parseInt(arrivalTime.hours || 0, 10) * 3600 +
+        parseInt(arrivalTime.minutes || 0, 10) * 60 +
+        parseInt(arrivalTime.seconds || 0, 10)) * 1000);
+    const travelMs =
+      ((parseInt(travelTime.hours || 0, 10) * 3600 +
+        parseInt(travelTime.minutes || 0, 10) * 60 +
+        parseInt(travelTime.seconds || 0, 10)) * 1000);
+    const sendMs = arrivalMs - travelMs;
+    const sendDate = new Date(sendMs);
     const sendTime = {
       hours: sendDate.getHours(),
       minutes: sendDate.getMinutes(),
@@ -696,6 +767,16 @@ const AttackPlanner = () => {
         </div>
         
         <div className={`form-buttons ${isFormCollapsed ? 'collapsed' : ''}`}>
+          <div className="server-offset-group" title="Server time offset in hours (e.g., -1)">
+            <span className="server-offset-label">Server offset (h):</span>
+            <input
+              type="text"
+              value={serverOffsetHours}
+              onChange={(e) => setServerOffsetHours(e.target.value)}
+              placeholder="-1"
+              className="server-offset-input"
+            />
+          </div>
           <div className="link-input-group">
             <input
               type="url"

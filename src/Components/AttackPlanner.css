@@ -409,6 +409,33 @@
   padding-top: 8px;
 }
 
+.server-offset-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.server-offset-label {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.server-offset-input {
+  width: 64px;
+  max-width: 80px;
+  height: 28px;
+  padding: 4px 6px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 4px;
+}
+
+.light .server-offset-input {
+  background: rgba(0,0,0,0.05);
+  color: #000;
+}
+
 .form-buttons.collapsed {
   display: none;
 }
