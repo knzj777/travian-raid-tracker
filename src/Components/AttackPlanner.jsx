@@ -197,6 +197,31 @@ const AttackPlanner = () => {
     return new Date();
   };
 
+  // Read server offset (hours) and adjust a time object (HH:MM:SS) by it
+  const getServerOffsetHours = () => {
+    return parseFloat(localStorage.getItem('attackPlanner_serverOffsetHours')) || 0;
+  };
+
+  // Convert a server-time HH:MM:SS object into local HH:MM:SS by subtracting server offset
+  const toLocalFromServerTime = (time) => {
+    if (!time || typeof time.hours === 'undefined') return time;
+    const offsetH = getServerOffsetHours();
+    if (!offsetH) return time;
+    const baseMs =
+      (parseInt(time.hours || 0, 10) * 3600 +
+        parseInt(time.minutes || 0, 10) * 60 +
+        parseInt(time.seconds || 0, 10)) * 1000;
+    const shiftedMs =
+      ((baseMs - offsetH * 3600 * 1000) % (24 * 3600 * 1000) + (24 * 3600 * 1000)) %
+      (24 * 3600 * 1000);
+    const h = Math.floor(shiftedMs / 3600_000);
+    const m = Math.floor((shiftedMs % 3600_000) / 60_000);
+    const s = Math.floor((shiftedMs % 60_000) / 1000);
+    return { hours: h, minutes: m, seconds: s };
+  };
+
+  // No longer adjusting displayed send time; keep helper removed
+
 
   const calculateCountdown = useCallback((travelTime, arrivalTime, date) => {
     // Get current atomic time (using the same offset as RealLocalTime)
@@ -316,6 +341,7 @@ const AttackPlanner = () => {
       travelTime: { ...travelTime },
       arrivalTime: { ...arrivalTime },
       sendTime: sendTime,
+      sendDate: (() => { const y = sendDate.getFullYear(); const m = String(sendDate.getMonth()+1).padStart(2,'0'); const d = String(sendDate.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; })(),
       attackType,
       travianLink: travianLink.trim(),
       countdown: calculateCountdown(travelTime, arrivalTime, selectedDate),
@@ -418,6 +444,7 @@ const AttackPlanner = () => {
         travelTime: { ...travelTime },
         arrivalTime: { ...arrivalTime },
         sendTime: sendTime,
+        sendDate: (() => { const y = sendDate.getFullYear(); const m = String(sendDate.getMonth()+1).padStart(2,'0'); const d = String(sendDate.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; })(),
         attackType,
         travianLink: travianLink.trim(),
         countdown: calculateCountdown(travelTime, arrivalTime, selectedDate)
@@ -491,6 +518,27 @@ const AttackPlanner = () => {
     return `${day}.${month}`;
   };
 
+  // Compute send date (YYYY-MM-DD) from arrival date + arrival time - travel time
+  const getSendDateString = (attack) => {
+    if (!attack) return '';
+    const arrivalBase = makeLocalDate(attack.date).getTime();
+    const arrivalMs =
+      arrivalBase +
+      ((parseInt(attack.arrivalTime?.hours || 0, 10) * 3600 +
+        parseInt(attack.arrivalTime?.minutes || 0, 10) * 60 +
+        parseInt(attack.arrivalTime?.seconds || 0, 10)) * 1000);
+    const travelMs =
+      ((parseInt(attack.travelTime?.hours || 0, 10) * 3600 +
+        parseInt(attack.travelTime?.minutes || 0, 10) * 60 +
+        parseInt(attack.travelTime?.seconds || 0, 10)) * 1000);
+    const sendMs = arrivalMs - travelMs;
+    const d = new Date(sendMs);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+  };
+
   const formatTime = (time) => {
     if (!time || typeof time.hours === 'undefined') {
       return '00:00:00';
@@ -555,7 +603,7 @@ const AttackPlanner = () => {
                 <span className="header-village new-rocker">{headerAttack.villageName || '-'}</span>
               </div>
               <div className="header-center">
-                <strong className="header-send-time">{formatTime(headerAttack.sendTime || headerAttack.launchTime || { hours: 0, minutes: 0, seconds: 0 })}</strong>
+                <strong className="header-send-time">{formatTime(toLocalFromServerTime(headerAttack.sendTime || headerAttack.launchTime || { hours: 0, minutes: 0, seconds: 0 }))}</strong>
               </div>
               <div className="header-right">
                 <span className="header-countdown">{headerAttack.countdown}</span>
@@ -833,12 +881,12 @@ const AttackPlanner = () => {
               {sortAttacksByCountdown(attacks).map(attack => (
                 <tr key={attack.id} className={`${attack.sent ? 'sent' : ''} ${editingId === attack.id ? 'editing' : ''}`}>
                   <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{attack.villageName || '-'}</td>
-                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{formatDateWithoutYear(attack.date)}</td>
+                  <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{formatDateWithoutYear(getSendDateString(attack))}</td>
                   <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>
                     {attack.countdown === '00:00:00' ? (
-                      formatTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 })
+                      formatTime(toLocalFromServerTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 }))
                     ) : (
-                      <strong>{formatTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 })}</strong>
+                      <strong>{formatTime(toLocalFromServerTime(attack.sendTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 }))}</strong>
                     )}
                   </td>
                   <td className={attack.countdown === '00:00:00' ? 'expired-attack' : ''}>{formatTime(attack.travelTime)}</td>
