@@ -3,7 +3,9 @@
     justify-content: center;
     align-items: center;
     font-size: 12px;
-    margin-bottom: 20px;
+
+    margin-top: 20px;
+    margin-bottom: 100px;
 }
 
 .important-note p {
@@ -38,16 +40,136 @@
   font-family: "New Rocker", system-ui;
   font-weight: 400;
   text-align: center;
-  margin-bottom: 4px;
   color: #fff;
+  font-size: 15px;
 }
 
 .attack-planner {
-  margin-bottom: 100px;
+  margin-bottom: 0;
   padding: 4px;
   background: rgba(40,40,40,0.7);
-  border-radius: 4px;
+  border-radius: 0px 0px 4px 4px;
   border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Collapsible header */
+.attack-planner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  background-color: rgba(54, 0, 0, 0.7);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-bottom: none;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.light .attack-planner-header {
+  background-color: rgba(255, 98, 98, 0.507);
+}
+
+.timecalc-content .attack-planner-header h1 {
+  margin: 0;
+  padding-left: 35px;
+}
+
+.attack-planner-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 0px;
+}
+
+.attack-planner-toggle:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.attack-planner-toggle.disabled,
+.attack-planner-toggle:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Header urgent content layout */
+.attack-planner-header .header-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  width: 100%;
+}
+
+.attack-planner-header .header-left {
+  display: flex;
+  align-items: center;
+}
+
+.attack-planner-header h1 {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
+  margin: 0;
+  padding: 6px 10px;
+}
+
+.light .attack-planner-header h1 {
+  color: #000;
+}
+
+.attack-planner-header .header-village {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  color: #fff;
+  font-size: 15px;
+  margin: 0;
+  padding: 6px 10px;
+}
+
+.light .attack-planner-header .header-village {
+  color: #000;
+}
+
+.attack-planner-header .header-center {
+  justify-self: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 80px;
+  margin-left: 40px;
+}
+
+.attack-planner-header .header-send-time {
+  font-weight: 700;
+  color: #fff;
+}
+
+.light .attack-planner-header .header-send-time {
+  color: #000;
+}
+
+.attack-planner-header .header-right {
+  justify-self: end;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.attack-planner-header .header-countdown {
+  font-family: "Inter", sans-serif;
+  font-weight: normal;
+  font-style: italic;
+  font-size: 12px;
+  color: #8b0000; /* dark red */
+  opacity: 0.9;
+}
+
+.light .attack-planner-toggle {
+  color: rgba(0,0,0,0.8);
 }
 
 .attack-form {
@@ -55,8 +177,12 @@
   flex-direction: row;
   align-items: flex-start;
   gap: 12px;
-  padding: 4px;
+  padding: 10px 4px 10px 4px;
   justify-content: center;
+}
+
+.attack-form.collapsed {
+  display: none;
 }
 
 /* Edit mode visual cue: match editing row background */
@@ -281,6 +407,10 @@
   gap: 8px;
   padding-bottom: 8px;
   padding-top: 8px;
+}
+
+.form-buttons.collapsed {
+  display: none;
 }
 
 .add-attack-btn {
@@ -513,7 +643,7 @@
   background: rgba(255,255,255,0.05);
   border-radius: 4px;
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 1px;
 }
 
 .attacks-table th {
@@ -922,6 +1052,22 @@
   overflow-y: visible;
 }
 
+/* When minimized, remove top spacing above table */
+.attack-planner.collapsed .attacks-table {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Darken table header only when minimized */
+.attack-planner.collapsed .attacks-table th {
+  background: rgba(255,255,255,0.06);
+  color: rgba(119, 119, 119, 0.7);
+}
+.light .attack-planner.collapsed .attacks-table th {
+  background: rgba(0,0,0,0.04);
+  color: rgba(153, 153, 153, 0.65);
+}
+
 /* Custom scrollbar styling for tables */
 .attack-planner .attacks-table::-webkit-scrollbar {
   height: 8px;
@@ -1034,7 +1180,7 @@
     min-width: 80px;
   }
 
-  .attack-planner .form-buttons {
+  .attack-planner .form-buttons:not(.collapsed) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1079,6 +1225,37 @@
   .attack-content h1 {
     font-size: 18px;
     margin-bottom: 4px;
+  }
+  
+  .attack-planner-header h1 {
+    font-size: 12px;
+  }
+  
+  .attack-planner-header .header-village {
+    font-size: 12px;
+  }
+  
+  .attack-planner-header .header-content {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  
+  .attack-planner-header .header-center {
+    min-width: 60px;
+  }
+  
+  .attack-planner-header .header-right {
+    margin-right: 6px;
+  }
+  
+  .attack-planner-header .header-send-time {
+    margin-left: 0;
+    font-size: inherit;
+  }
+  
+  .attack-planner-header .header-countdown {
+    text-align: right;
+    font-size: 11px;
   }
   
   .attack-planner {
@@ -1146,6 +1323,38 @@
     margin-bottom: 3px;
   }
   
+  .attack-planner-header h1 {
+    font-size: 10px;
+  }
+  
+  .attack-planner-header .header-village {
+    font-size: 10px;
+  }
+  
+  .attack-planner-header .header-content {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  
+  .attack-planner-header .header-center {
+    min-width: 50px;
+    margin-left: 30px;
+  }
+  
+  .attack-planner-header .header-right {
+    margin-right: 4px;
+  }
+  
+  .attack-planner-header .header-send-time {
+    margin-left: 0;
+    font-size: inherit;
+  }
+  
+  .attack-planner-header .header-countdown {
+    text-align: right;
+    font-size: 10px;
+  }
+  
   .attack-planner {
     padding: 1px;
     gap: 4px;
@@ -1156,7 +1365,7 @@
     padding: 8px 1px 1px 1px;
   }
   
-  .form-buttons {
+  .form-buttons:not(.collapsed) {
     padding-left: 8px;
     padding-right: 8px;
     flex-wrap: wrap;
@@ -1299,6 +1508,38 @@
   .attack-content h1 {
     font-size: 14px;
     margin-bottom: 2px;
+  }
+  
+  .attack-planner-header h1 {
+    font-size: 8px;
+  }
+  
+  .attack-planner-header .header-village {
+    font-size: 8px;
+  }
+  
+  .attack-planner-header .header-content {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+  }
+  
+  .attack-planner-header .header-center {
+    min-width: 40px;
+    margin-left: 20px;
+  }
+  
+  .attack-planner-header .header-right {
+    margin-right: 2px;
+  }
+  
+  .attack-planner-header .header-send-time {
+    margin-left: 0;
+    font-size: inherit;
+  }
+  
+  .attack-planner-header .header-countdown {
+    text-align: right;
+    font-size: 9px;
   }
   
   .attack-planner {

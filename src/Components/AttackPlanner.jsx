@@ -61,6 +61,14 @@ const AttackPlanner = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [showSaveNotification, setShowSaveNotification] = useState(false);
+  const [isFormCollapsed, setIsFormCollapsed] = useState(false);
+  
+  // Auto-expand form when attacks become empty
+  useEffect(() => {
+    if (attacks.length === 0 && isFormCollapsed) {
+      setIsFormCollapsed(false);
+    }
+  }, [attacks.length, isFormCollapsed]);
   const dateInputRef = useRef(null);
 
   // Helper function to get today's date
@@ -405,7 +413,7 @@ const AttackPlanner = () => {
     return `${time.hours.toString().padStart(2, '0')}:${time.minutes.toString().padStart(2, '0')}:${time.seconds.toString().padStart(2, '0')}`;
   };
 
-  // Check if countdown is urgent (30 seconds or less)
+  // Check if countdown is urgent (1 minute or less)
   const isCountdownUrgent = (countdown) => {
     if (!countdown || countdown === '00:00:00') return false;
     const parts = countdown.split(':');
@@ -413,7 +421,7 @@ const AttackPlanner = () => {
     const minutes = parseInt(parts[1]) || 0;
     const seconds = parseInt(parts[2]) || 0;
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-    return totalSeconds <= 30;
+    return totalSeconds <= 60;
   };
 
   // Sort attacks by countdown (lowest countdown first) - expired attacks at bottom
@@ -444,12 +452,52 @@ const AttackPlanner = () => {
   };
 
   return (
-    <div className="attack-content">
-      <div className="important-note"> <p> The attack planner needs to be tested. Please perform test attacks beforehand.</p></div>
+    <>
+      <div className="attack-content">
       
-      <h1 className="new-rocker">Attack Planner</h1>
-      <div className={`attack-planner ${editingId ? 'editing' : ''}`}>
-        <div className={`attack-form ${isFormBlinking ? 'blinking' : ''}`}>
+      <div className="attack-planner-header">
+        {(() => {
+          const urgentSorted = sortAttacksByCountdown(attacks).filter(a => isCountdownUrgent(a.countdown) && a.countdown !== '00:00:00');
+          const headerAttack = urgentSorted.length ? urgentSorted[0] : null;
+          if (!headerAttack) {
+            return (
+              <h1 className="new-rocker">Attack Planner</h1>
+            );
+          }
+          return (
+            <div className="header-content">
+              <div className="header-left">
+                <span className="header-village new-rocker">{headerAttack.villageName || '-'}</span>
+              </div>
+              <div className="header-center">
+                <strong className="header-send-time">{formatTime(headerAttack.sendTime || headerAttack.launchTime || { hours: 0, minutes: 0, seconds: 0 })}</strong>
+              </div>
+              <div className="header-right">
+                <span className="header-countdown">{headerAttack.countdown}</span>
+              </div>
+            </div>
+          );
+        })()}
+        <button
+          className={`attack-planner-toggle ${attacks.length === 0 ? 'disabled' : ''}`}
+          onClick={() => setIsFormCollapsed(prev => !prev)}
+          disabled={attacks.length === 0}
+          aria-label={isFormCollapsed ? 'Expand planner' : 'Collapse planner'}
+          title={isFormCollapsed ? 'Expand' : 'Collapse'}
+        >
+          {isFormCollapsed ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          )}
+        </button>
+      </div>
+      <div className={`attack-planner ${editingId ? 'editing' : ''} ${isFormCollapsed ? 'collapsed' : ''}`}>
+        <div className={`attack-form ${isFormBlinking ? 'blinking' : ''} ${isFormCollapsed ? 'collapsed' : ''}`}>
         
         {/* Row 1: Village Name and Date */}
         <div className="form-row">
@@ -633,7 +681,7 @@ const AttackPlanner = () => {
         </div>
         </div>
         
-        <div className="form-buttons">
+        <div className={`form-buttons ${isFormCollapsed ? 'collapsed' : ''}`}>
           <div className="link-input-group">
             <input
               type="url"
@@ -773,6 +821,9 @@ const AttackPlanner = () => {
       )}
       </div>
       
+      <div className="important-note"><p>The attack planner needs to be tested. Please perform test attacks beforehand.</p></div>
+      </div>
+      
       {/* Error Modal */}
       {showErrorModal && (
         <div className="error-modal-overlay" onClick={() => setShowErrorModal(false)}>
@@ -829,9 +880,9 @@ const AttackPlanner = () => {
         onClose={() => setShowSaveNotification(false)}
         message="Saved"
         duration={2000}
-        position="bottom-left"
+        position="bottom-middle"
       />
-    </div>
+    </>
   );
 };
 

@@ -473,7 +473,7 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
         isVisible={showSaveModal}
         onClose={() => setShowSaveModal(false)}
         message="Snapshot saved to History"
-        position="bottom-left"
+        position="bottom-middle"
         duration={3000}
       />
     </div>

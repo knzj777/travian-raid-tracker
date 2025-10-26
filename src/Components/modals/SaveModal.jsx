@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './SaveModal.css';
 
 const SaveModal = ({ 
@@ -6,42 +6,87 @@ const SaveModal = ({
   onClose, 
   message = "Saved successfully", 
   duration = 3000,
-  position = "bottom-right", // "bottom-right", "bottom-left", "top-right", "top-left"
+  position = "bottom-middle", // "bottom-right", "bottom-left", "bottom-middle", "top-right", "top-left", "top-middle"
   progressColor = "#527230" // Default green, can be overridden
 }) => {
   const [progressWidth, setProgressWidth] = useState(100);
   const [isClosing, setIsClosing] = useState(false);
-  const [autoCloseTimer, setAutoCloseTimer] = useState(null);
+  const [isShowing, setIsShowing] = useState(false);
+  const autoCloseTimerRef = useRef(null);
+  const progressTimerRef = useRef(null);
+  const closingTimerRef = useRef(null);
+  const showTimerRef = useRef(null);
+  const handleCloseRef = useRef(null);
 
   const handleClose = useCallback(() => {
+    // Prevent multiple close calls
+    if (isClosing) return;
+    
     setIsClosing(true);
-    if (autoCloseTimer) {
-      clearTimeout(autoCloseTimer);
-      setAutoCloseTimer(null);
+    setIsShowing(false);
+    
+    // Clear all timers
+    if (autoCloseTimerRef.current) {
+      clearTimeout(autoCloseTimerRef.current);
+      autoCloseTimerRef.current = null;
     }
-    setTimeout(() => {
+    if (progressTimerRef.current) {
+      clearInterval(progressTimerRef.current);
+      progressTimerRef.current = null;
+    }
+    if (showTimerRef.current) {
+      clearTimeout(showTimerRef.current);
+      showTimerRef.current = null;
+    }
+    
+    // Set closing animation timer
+    closingTimerRef.current = setTimeout(() => {
       setIsClosing(false);
       setProgressWidth(100);
       onClose();
+      closingTimerRef.current = null;
     }, 300);
-  }, [autoCloseTimer, onClose]);
+  }, [isClosing, onClose]);
+
+  // Store the close function in ref to avoid dependency issues
+  handleCloseRef.current = handleClose;
 
   useEffect(() => {
     if (isVisible) {
+      // Reset state
       setProgressWidth(100);
       setIsClosing(false);
       
+      // Clear any existing timers
+      if (autoCloseTimerRef.current) {
+        clearTimeout(autoCloseTimerRef.current);
+      }
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+      }
+      if (closingTimerRef.current) {
+        clearTimeout(closingTimerRef.current);
+      }
+      if (showTimerRef.current) {
+        clearTimeout(showTimerRef.current);
+      }
+      
+      // Show the modal after a brief delay to ensure smooth animation
+      showTimerRef.current = setTimeout(() => {
+        setIsShowing(true);
+      }, 10);
+      
       // Auto-close timer
-      const timer = setTimeout(() => {
-        handleClose();
+      autoCloseTimerRef.current = setTimeout(() => {
+        if (handleCloseRef.current) {
+          handleCloseRef.current();
+        }
       }, duration);
-      setAutoCloseTimer(timer);
       
       // Progress bar animation
-      const progressTimer = setInterval(() => {
+      progressTimerRef.current = setInterval(() => {
         setProgressWidth(prev => {
           if (prev <= 0) {
-            clearInterval(progressTimer);
             return 0;
           }
           return prev - (100 / (duration / 10)); // Smooth progress over duration
@@ -49,16 +94,36 @@ const SaveModal = ({
       }, 10);
 
       return () => {
-        clearTimeout(timer);
-        clearInterval(progressTimer);
+        // Cleanup function
+        if (autoCloseTimerRef.current) {
+          clearTimeout(autoCloseTimerRef.current);
+          autoCloseTimerRef.current = null;
+        }
+        if (progressTimerRef.current) {
+          clearInterval(progressTimerRef.current);
+          progressTimerRef.current = null;
+        }
+        if (closingTimerRef.current) {
+          clearTimeout(closingTimerRef.current);
+          closingTimerRef.current = null;
+        }
+        if (showTimerRef.current) {
+          clearTimeout(showTimerRef.current);
+          showTimerRef.current = null;
+        }
       };
+    } else {
+      // Reset state when not visible
+      setProgressWidth(100);
+      setIsClosing(false);
+      setIsShowing(false);
     }
-  }, [isVisible, duration, handleClose]);
+  }, [isVisible, duration]);
 
   if (!isVisible) return null;
 
   return (
-    <div className={`save-modal ${position} ${isClosing ? 'closing' : ''}`}>
+    <div className={`save-modal ${position} ${isShowing ? 'show' : ''} ${isClosing ? 'closing' : ''}`}>
       <div className="save-modal-content">
         <span className="save-modal-text">
           {message}

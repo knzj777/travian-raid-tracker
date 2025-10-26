@@ -36,6 +36,7 @@ function App() {
 
   const timerIntervalRef = useRef(null);
   const audioRef = useRef(null);
+  const wakeLockRef = useRef(null);
 
   // Load settings from localStorage
   useEffect(() => {
@@ -230,17 +231,21 @@ function App() {
         Notification.requestPermission();
       }
 
-      // Show notification if app is in background
-      if (
-        "Notification" in window &&
-        Notification.permission === "granted" &&
-        document.hidden
-      ) {
-        new Notification("Timer Finished!", {
+      // Show notification
+      if ("Notification" in window && Notification.permission === "granted") {
+        const notification = new Notification("Timer Finished!", {
           body: "Your timer has completed.",
           icon: "/logo192.png",
+          badge: "/logo192.png",
           tag: "timer-finished",
+          requireInteraction: true,
+          silent: false,
         });
+
+        // Auto-close after 10 seconds if not clicked
+        setTimeout(() => {
+          notification.close();
+        }, 10000);
       }
 
       if (timerState.soundName) {
@@ -264,32 +269,58 @@ function App() {
     playSound,
   ]);
 
-  // Timer interval management with Page Visibility API support
+  // Timer interval management - keep running even when page is hidden
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        // Page is hidden - clear interval to save battery
-        if (timerIntervalRef.current) {
-          clearInterval(timerIntervalRef.current);
-          timerIntervalRef.current = null;
-        }
-      } else {
-        // Page is visible - restart interval if timer is running
-        if (timerState.running && !timerIntervalRef.current) {
-          timerTick(); // Update immediately when becoming visible
-          timerIntervalRef.current = setInterval(timerTick, 1000);
+    const requestWakeLock = async () => {
+      if ("wakeLock" in navigator && timerState.running) {
+        try {
+          wakeLockRef.current = await navigator.wakeLock.request("screen");
+          console.log("Wake Lock active");
+
+          wakeLockRef.current.addEventListener("release", () => {
+            console.log("Wake Lock released");
+            if (timerState.running && wakeLockRef.current === null) {
+              // Re-request if timer still running and lock was released
+              requestWakeLock();
+            }
+          });
+        } catch (err) {
+          console.log("Wake Lock request failed:", err);
         }
       }
     };
 
-    // Add visibility change listener
+    const releaseWakeLock = async () => {
+      if (wakeLockRef.current) {
+        try {
+          await wakeLockRef.current.release();
+          wakeLockRef.current = null;
+          console.log("Wake Lock released");
+        } catch (err) {
+          console.log("Wake Lock release failed:", err);
+        }
+      }
+    };
+
+    // Handle visibility change - recalculate time when page becomes visible again
+    const handleVisibilityChange = () => {
+      if (!document.hidden && timerState.running) {
+        // Page became visible - immediately update time
+        timerTick();
+      }
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     if (timerState.running) {
       timerIntervalRef.current = setInterval(timerTick, 1000);
-    } else if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
+      requestWakeLock();
+    } else {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+      releaseWakeLock();
     }
 
     return () => {
@@ -298,6 +329,7 @@ function App() {
         clearInterval(timerIntervalRef.current);
         timerIntervalRef.current = null;
       }
+      releaseWakeLock();
     };
   }, [timerState.running]);
 
@@ -333,11 +365,15 @@ function App() {
   };
 
   const handleTimerStateChange = (newTimerState) => {
+    console.log("handleTimerStateChange called with:", newTimerState);
+    console.log("Previous timer state:", timerState);
     setTimerState(newTimerState);
     // Explicitly save to localStorage (also handled by useEffect, but being explicit)
     localStorage.setItem("timerState", JSON.stringify(newTimerState));
+    console.log("Timer state updated and saved to localStorage");
   };
 
+  // Use basename to match the homepage setting in package.json (applies to both dev and production)
   return (
     <Router basename="/travian-raid-tracker">
       <Routes>

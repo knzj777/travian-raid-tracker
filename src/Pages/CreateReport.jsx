@@ -233,7 +233,7 @@ const CreateReport = ({ settings, onSettingsOpen, timerState, darkMode, setDarkM
                 : `Report saved to ${savedReportInfo.type === 'scout' ? 'Scouts' : 'Attacks'}`)
             : "Saved successfully"
         }
-        position="bottom-left"
+        position="bottom-middle"
         duration={3000}
         progressColor={savedReportInfo?.isDuplicate ? "#dc3545" : "#527230"}
       />

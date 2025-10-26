@@ -9,37 +9,49 @@
   max-width: 400px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.save-modal.show {
+  opacity: 1;
+}
+
+.save-modal.closing {
+  opacity: 0;
 }
 
 /* Position variants */
 .save-modal.bottom-right {
   bottom: 20px;
   right: 20px;
-  transform: translateX(0);
 }
 
 .save-modal.bottom-left {
   bottom: 20px;
   left: 20px;
-  transform: translateX(0);
+}
+
+.save-modal.bottom-middle {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .save-modal.top-right {
   top: 20px;
   right: 20px;
-  transform: translateX(0);
 }
 
 .save-modal.top-left {
   top: 20px;
   left: 20px;
-  transform: translateX(0);
 }
 
-/* Closing animations - fade out only */
-.save-modal.closing {
-  opacity: 0;
+.save-modal.top-middle {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .save-modal-content {
@@ -76,6 +88,7 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
   overflow: hidden;
+  transition: opacity 0.2s ease;
 }
 
 .save-modal-progress-bar {
@@ -83,6 +96,11 @@
   background: #527230;
   border-radius: 2px;
   transition: width 0.1s linear;
+}
+
+/* Fade out progress bar when closing */
+.save-modal.closing .save-modal-progress {
+  opacity: 0;
 }
 
 /* Light mode styles */
@@ -122,12 +140,14 @@
   }
   
   .save-modal.bottom-right,
-  .save-modal.bottom-left {
+  .save-modal.bottom-left,
+  .save-modal.bottom-middle {
     bottom: 10px;
   }
   
   .save-modal.top-right,
-  .save-modal.top-left {
+  .save-modal.top-left,
+  .save-modal.top-middle {
     top: 10px;
   }
   
@@ -139,5 +159,11 @@
   .save-modal.bottom-left,
   .save-modal.top-left {
     left: 10px;
+  }
+  
+  .save-modal.bottom-middle,
+  .save-modal.top-middle {
+    left: 50%;
+    transform: translateX(-50%);
   }
 }

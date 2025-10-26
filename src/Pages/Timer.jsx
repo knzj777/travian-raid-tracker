@@ -91,6 +91,10 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
   };
 
   const reset = () => {
+    console.log('Reset button clicked!');
+    console.log('Current timer state:', timerState);
+    console.log('Resetting to initial seconds:', timerState.initialSeconds);
+    
     onTimerStateChange({
       ...timerState,
       seconds: timerState.initialSeconds,
@@ -98,6 +102,8 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
       startTime: null,
       pausedTime: null,
     });
+    
+    console.log('Reset function completed');
   };
 
   const updateTimerSetting = (key, value) => {
