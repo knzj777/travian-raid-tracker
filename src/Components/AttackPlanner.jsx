@@ -76,7 +76,14 @@ const AttackPlanner = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
   const [showSaveNotification, setShowSaveNotification] = useState(false);
-  const [isFormCollapsed, setIsFormCollapsed] = useState(false);
+  const [isFormCollapsed, setIsFormCollapsed] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_isCollapsed');
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
   
   // Auto-expand form when attacks become empty
   useEffect(() => {
@@ -85,6 +92,13 @@ const AttackPlanner = () => {
     }
   }, [attacks.length, isFormCollapsed]);
   const dateInputRef = useRef(null);
+
+  // Persist collapsed state
+  useEffect(() => {
+    try {
+      localStorage.setItem('attackPlanner_isCollapsed', JSON.stringify(isFormCollapsed));
+    } catch {}
+  }, [isFormCollapsed]);
 
   // Helper function to get today's date
   const getTodayDate = () => {
