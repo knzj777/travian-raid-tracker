@@ -50,10 +50,9 @@ const RealLocalTime = () => {
 
   return (
     <div className="real-local-time">
-      <div className="time-label">Local time</div>
-      <div className="time-display">{formatTime(currentTime)}</div>
-
-      <div className="time-controls" style={{ marginTop: '8px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="time-header">
+        <div className="time-label">Local time</div>
+        <div className="time-controls">
         <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>Offset (s):</span>
           <input
@@ -92,7 +91,9 @@ const RealLocalTime = () => {
             </div>
           </div>
         </div>
+        </div>
       </div>
+      <div className="time-display">{formatTime(currentTime)}</div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import Graph from "./Components/Graph";
@@ -16,6 +16,9 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
   const [raidStart, setRaidStart] = useState("00:30");
   const [raidEnd, setRaidEnd] = useState("01:30");
   const [appliedRange, setAppliedRange] = useState("");
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [captureStatus, setCaptureStatus] = useState('idle'); // 'idle' | 'capturing' | 'success'
+  const leaderboardScreenshotBtnRef = useRef(null);
   const [modal, setModal] = useState({
     open: false,
     title: "",
@@ -304,6 +307,57 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
     setAppliedRange(display);
   };
 
+  const captureLeaderboardScreenshot = async () => {
+    if (isCapturing) return;
+    setIsCapturing(true);
+    setCaptureStatus('capturing');
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const tableEl = document.querySelector('.leaderboard-table');
+      if (!tableEl) throw new Error('Leaderboard not found');
+
+      // Hide only this screenshot button during capture
+      let originalDisplay = '';
+      if (leaderboardScreenshotBtnRef.current) {
+        originalDisplay = leaderboardScreenshotBtnRef.current.style.display;
+        leaderboardScreenshotBtnRef.current.style.display = 'none';
+      }
+
+      const canvas = await html2canvas(tableEl, {
+        backgroundColor: darkMode ? '#1b1b1b' : '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        width: tableEl.scrollWidth,
+        height: tableEl.scrollHeight,
+      });
+
+      if (leaderboardScreenshotBtnRef.current) {
+        leaderboardScreenshotBtnRef.current.style.display = originalDisplay;
+      }
+
+      const blob = await new Promise((resolve) => {
+        canvas.toBlob(resolve, 'image/png', 0.95);
+      });
+
+      if (navigator.clipboard && window.ClipboardItem && blob) {
+        const item = new ClipboardItem({ 'image/png': blob });
+        await navigator.clipboard.write([item]);
+        setCaptureStatus('success');
+        setTimeout(() => setCaptureStatus('idle'), 2000);
+      } else {
+        throw new Error('Clipboard API not supported');
+      }
+    } catch (e) {
+      alert('Failed to capture leaderboard screenshot.');
+      setCaptureStatus('idle');
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
   return (
     <div className={`app-container ${darkMode ? "dark" : "light"}`}>
       <Header 
@@ -379,7 +433,24 @@ export default function RaidDiffCalculator({ settings, onSettingsOpen, timerStat
         </div>
 
         {players.length > 0 && (
-          <LeaderboardTable players={players} showMovement={true} maxWidth={900} subtitle={appliedRange || undefined} />
+          <div className="leaderboard-wrapper">
+            <div className="leaderboard-screenshot">
+              <button
+                ref={leaderboardScreenshotBtnRef}
+                className={`screenshot-btn ${captureStatus === 'success' ? 'captured' : ''}`}
+                onClick={captureLeaderboardScreenshot}
+                disabled={isCapturing}
+                title="Copy leaderboard screenshot to clipboard"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                  <circle cx="12" cy="13" r="3"/>
+                </svg>
+                {captureStatus === 'capturing' ? 'Capturing...' : captureStatus === 'success' ? '✓ Captured!' : 'Screenshot'}
+              </button>
+            </div>
+            <LeaderboardTable players={players} showMovement={true} maxWidth={900} subtitle={appliedRange || undefined} />
+          </div>
         )}
 
         {players.length > 0 && (

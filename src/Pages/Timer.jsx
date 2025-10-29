@@ -91,19 +91,16 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
   };
 
   const reset = () => {
-    console.log('Reset button clicked!');
-    console.log('Current timer state:', timerState);
-    console.log('Resetting to initial seconds:', timerState.initialSeconds);
-    
+    const defaultSeconds = 5 * 60; // 05:00
     onTimerStateChange({
       ...timerState,
-      seconds: timerState.initialSeconds,
+      initialSeconds: defaultSeconds,
+      seconds: defaultSeconds,
+      timeInput: "05:00",
       running: false,
       startTime: null,
       pausedTime: null,
     });
-    
-    console.log('Reset function completed');
   };
 
   const updateTimerSetting = (key, value) => {
@@ -185,23 +182,7 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
               />
               <span>Repeat</span>
             </div>
-            <div className="checkbox-container">
-              <input 
-                type="checkbox" 
-                checked={timerState.vibration} 
-                onChange={(e) => updateTimerSetting('vibration', e.target.checked)} 
-              />
-              <span>Vibration</span>
-            </div>
-            <div className="checkbox-container">
-              <input
-                type="checkbox"
-                checked={!!timerState.keepAwake}
-                onChange={(e) => updateTimerSetting('keepAwake', e.target.checked)}
-                title="Prevents screen from sleeping on mobile while timer runs"
-              />
-              <span>Keep screen awake</span>
-            </div>
+            {/* Vibration control hidden */}
           </div>
           <div className="sound">
             <label>Sound</label>
@@ -221,7 +202,21 @@ export default function Timer({ settings, onSettingsOpen, timerState, onTimerSta
                 }
               }}
             >
-              🔊
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ marginRight: 6 }}
+              >
+                <path d="M11 5L6 9H3v6h3l5 4V5z"/>
+                <path d="M15 9a4 4 0 0 1 0 6"/>
+                <path d="M17.5 6.5a8 8 0 0 1 0 11"/>
+              </svg>
               Test
             </button>
             <div className="volume-control">

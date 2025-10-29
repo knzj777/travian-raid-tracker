@@ -7,6 +7,14 @@
   margin: 8px 0;
 }
 
+.time-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
 .time-label {
   font-style: italic;
   font-size: 11px;
@@ -96,7 +104,7 @@
 
 .info-tooltip {
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0,0,0,0.95) !important;
@@ -110,7 +118,7 @@
   visibility: hidden;
   transition: all 0.3s ease;
   z-index: 1000;
-  margin-bottom: 8px;
+  margin-top: 8px;
   width: 320px;
   white-space: normal;
   text-align: left;
@@ -122,17 +130,17 @@
 .info-icon-container:hover .info-tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translateX(-50%) translateY(4px);
 }
 
 .info-tooltip::after {
   content: '';
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: rgba(0,0,0,0.95);
+  border-bottom-color: rgba(0,0,0,0.95);
 }
 
 /* Light mode styles */
@@ -183,7 +191,7 @@
 }
 
 .light .info-tooltip::after {
-  border-top-color: rgba(255,255,255,0.98);
+  border-bottom-color: rgba(255,255,255,0.98);
 }
 
 /* Responsive design */

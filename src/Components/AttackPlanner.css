@@ -1,38 +1,9 @@
-.important-note {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px;
-
-    margin-top: 20px;
-    margin-bottom: 100px;
-}
-
-.important-note p {
-    width: fit-content;
-    padding: 4px 10px;
-    border: 1px solid rgba(255, 0, 0, 0.479);
-    border-radius: 4px;
-    background-color: rgba(255, 0, 0, 0.212);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.important-note p::before {
-    content: '';
-    width: 18px;
-    height: 18px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff0000' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 7v5' stroke-width='2'/%3E%3Cpath d='M12 16h.01' stroke-width='2'/%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    flex-shrink: 0;
-}
+/* important-note removed */
 
 /* Container */
 .attack-content {
   width: 90%;
-  margin: 0;
+  margin: 0 0 100px 0;
   padding: 3px;
 }
 
@@ -65,12 +36,12 @@
 }
 
 .light .attack-planner-header {
-  background-color: rgba(255, 98, 98, 0.507);
+  background-color: rgba(255, 200, 200, 0.952);
 }
 
 .timecalc-content .attack-planner-header h1 {
   margin: 0;
-  padding-left: 35px;
+ 
 }
 
 .attack-planner-toggle {
@@ -78,8 +49,8 @@
   border: none;
   color: rgba(255,255,255,0.8);
   cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 0px;
+  padding: 10px 12px;
+  border-radius: 0px; 
 }
 
 .attack-planner-toggle:hover {
@@ -144,11 +115,11 @@
 
 .attack-planner-header .header-send-time {
   font-weight: 700;
-  color: #fff;
+  color: #00ff88;
 }
 
 .light .attack-planner-header .header-send-time {
-  color: #000;
+  color: #ff0000;
 }
 
 .attack-planner-header .header-right {
@@ -158,6 +129,24 @@
   align-items: center;
   margin-right: 8px;
 }
+
+/* Desktop font sizing for New Rocker elements in header/title */
+  .attack-content h1 {
+    font-size: 24px;
+  }
+  .attack-planner-header h1 {
+    font-size: 22px;
+  }
+  .attack-planner-header .header-village {
+    font-size: 22px;
+  }
+  .attack-planner-header .header-send-time {
+    font-size: 24px;
+  }
+  .attack-planner-header .header-left {
+    font-size: 18px;
+  }
+
 
 .attack-planner-header .header-countdown {
   font-family: "Inter", sans-serif;
@@ -416,8 +405,12 @@
 }
 
 .server-offset-label {
+  color: rgba(255,255,255,0.8);
   font-size: 12px;
-  opacity: 0.8;
+  font-weight: 500;
+  margin-right: 6px;
+  white-space: nowrap;
+  font-style: italic;
 }
 
 .server-offset-input {
@@ -1247,6 +1240,10 @@
 @media (max-width: 768px) {
   .attack-content {
     padding: 2px;
+  }
+
+  .attack-planner-toggle {
+    padding: 6px auto;
   }
   
   .attack-content h1 {

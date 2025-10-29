@@ -1,8 +1,41 @@
+
+.leaderboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 900px;
+  margin-top: 24px;
+}
+
+.leaderboard-screenshot {
+  height: 35px;
+}
+
 .leaderboard-table {
   width: 100%;
   display: flex;
   justify-content: center; /* center table within container */
-  margin: 24px 0; /* Add more margin at top and bottom */
+  margin: 12px 0 24px 0; /* Add more margin at top and bottom */
+}
+
+.leaderboard-screenshot button {
+  border: 1px solid #e6b000;
+  background: linear-gradient(90deg,#cfa51a54, #a7851550 100%);
+  color: #ffd240;
+  height: 35px;
+}
+
+/* Captured state - only for Raid Tracker screenshot button */
+.leaderboard-screenshot .screenshot-btn.captured {
+  background: #e6b000;
+  border-color: #e6b000;
+  color: #000;
+}
+
+.content .leaderboard-screenshot button:hover {
+  border: 1px solid #ffd753;
+  background: linear-gradient(90deg,#ebc13860, #ffc60c50 100%);
+  color: #ffe99f;
 }
 
 /* Base table style pulls from app theme but refined for readability */
@@ -111,8 +144,12 @@
 }
 
 /* Responsive tweaks */
+@media (max-width: 950px){ 
+.leaderboard-wrapper { min-width: 100%; max-width: 100%; }
+}
+
 @media (max-width: 700px) {
-  .leaderboard { max-width: 100%; }
+  .leaderboard-wrapper { min-width: 100%; }
   .col-resources, .col-last, .col-diff { width: auto; }
   .col-rank { width: 48px; }
   .leaderboard th { padding: 4px 5px; font-size: 9px; line-height: 1.05; }
@@ -122,13 +159,25 @@
   /* Smaller movement arrows and New badge on small screens */
   .leaderboard .arrow { width: 14px; height: 14px; font-size: 8px; }
   .leaderboard .arrow.new { font-size: 10px; height: 14px; line-height: 14px; padding: 0 4px; }
+  .leaderboard-screenshot {height: 30px; }
+  .leaderboard-screenshot button {height: 30px; }
+  
 }
 
-@media (max-width: 450px) {
+@media (max-width: 480px) {
   .leaderboard th { padding: 3px 5px; font-size: 8px; line-height: 1.05; }
   .leaderboard td { padding: 4px 5px; font-size: 8px; }
   .col-rank { width: 40px; }
   /* Even smaller on very small devices */
   .leaderboard .arrow { width: 12px; height: 12px; font-size: 7px; }
   .leaderboard .arrow.new { font-size: 9px; height: 12px; line-height: 12px; padding: 0 3px; }
+}
+
+@media (max-width: 395px) {
+  .leaderboard th { padding: 3px 5px; font-size: 7px; line-height: 1.05; }
+  .leaderboard td { padding: 4px 5px; font-size: 7px; }
+  .col-rank { width: 40px; }
+  /* Even smaller on very small devices */
+  .leaderboard .arrow { width: 10px; height: 10px; font-size: 6x; }
+  .leaderboard .arrow.new { font-size: 6px; height: 10px; line-height: 10px; padding: 0 3px; }
 }

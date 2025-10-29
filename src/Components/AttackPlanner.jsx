@@ -85,12 +85,7 @@ const AttackPlanner = () => {
     }
   });
   
-  // Auto-expand form when attacks become empty
-  useEffect(() => {
-    if (attacks.length === 0 && isFormCollapsed) {
-      setIsFormCollapsed(false);
-    }
-  }, [attacks.length, isFormCollapsed]);
+  // Persisted collapse state only; do not auto-expand when empty
   const dateInputRef = useRef(null);
 
   // Persist collapsed state
@@ -261,7 +256,8 @@ const AttackPlanner = () => {
       return '00:00:00';
     }
     
-    const totalSeconds = Math.floor(timeUntilSend / 1000);
+    // Use ceil to avoid early drop to zero within the last 1s
+    const totalSeconds = Math.ceil(timeUntilSend / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
@@ -269,25 +265,43 @@ const AttackPlanner = () => {
     return `${hours.toString().padStart(hours >= 100 ? 3 : 2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
-  // Update countdowns every second
+  // Update countdowns exactly on atomic second boundaries to stay in sync with RealLocalTime
   useEffect(() => {
-    const interval = setInterval(() => {
+    let timeoutId;
+    let cancelled = false;
+
+    const tick = () => {
       setAttacks(prevAttacks => 
         prevAttacks.map(attack => {
-          // Handle both old and new data structure
           const travelTime = attack.travelTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 };
           const arrivalTime = attack.arrivalTime || { hours: 0, minutes: 0, seconds: 0 };
           const attackDate = attack.date || new Date().toISOString().split('T')[0];
-          
           return {
             ...attack,
             countdown: calculateCountdown(travelTime, arrivalTime, attackDate)
           };
         })
       );
-    }, 1000);
+    };
 
-    return () => clearInterval(interval);
+    const scheduleNext = () => {
+      if (cancelled) return;
+      const now = getAtomicNow().getTime();
+      const delay = Math.max(0, 1000 - (now % 1000));
+      timeoutId = setTimeout(() => {
+        tick();
+        scheduleNext();
+      }, delay);
+    };
+
+    // initial tick and alignment
+    tick();
+    scheduleNext();
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [calculateCountdown]);
 
   const validateAttackInput = (travelTime, arrivalTime, date) => {
@@ -619,9 +633,7 @@ const AttackPlanner = () => {
               <div className="header-center">
                 <strong className="header-send-time">{formatTime(toLocalFromServerTime(headerAttack.sendTime || headerAttack.launchTime || { hours: 0, minutes: 0, seconds: 0 }))}</strong>
               </div>
-              <div className="header-right">
-                <span className="header-countdown">{headerAttack.countdown}</span>
-              </div>
+              
             </div>
           );
         })()}
@@ -977,8 +989,6 @@ const AttackPlanner = () => {
         </div>
       )}
       </div>
-      
-      <div className="important-note"><p>The attack planner needs to be tested. Please perform test attacks beforehand.</p></div>
       </div>
       
       {/* Error Modal */}

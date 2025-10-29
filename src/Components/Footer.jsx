@@ -25,7 +25,7 @@ export default function Footer() {
         provide for him. Remember, hard work always pays off, so you better
         never quit on your dreams on becoming the top 10 raider.{" "}
         <span className="heart">❤️</span>
-        <div className="version">v1.0.01</div>
+        <div className="version">v1.0.02</div>
       </footer>
     </div>
   );

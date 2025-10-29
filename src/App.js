@@ -32,12 +32,10 @@ function App() {
     justFinished: false, // Flag to trigger sound
     startTime: null, // Timestamp when timer started
     pausedTime: null, // Timestamp when timer was paused
-    keepAwake: false, // Request wake lock on mobile while running
   });
 
   const timerIntervalRef = useRef(null);
   const audioRef = useRef(null);
-  const wakeLockRef = useRef(null);
 
   // Load settings from localStorage
   useEffect(() => {
@@ -274,55 +272,11 @@ function App() {
     isMobileDevice,
   ]);
 
-  // Timer interval management - keep running; wake lock mobile-only and defensive
+  // Timer interval management - keep running
   useEffect(() => {
-    const requestWakeLock = async () => {
-      if (
-        isMobileDevice &&
-        timerState.keepAwake &&
-        "wakeLock" in navigator &&
-        document.visibilityState === "visible" &&
-        timerState.running
-      ) {
-        try {
-          wakeLockRef.current = await navigator.wakeLock.request("screen");
-          console.log("Wake Lock active");
-
-          if (
-            wakeLockRef.current &&
-            typeof wakeLockRef.current.addEventListener === "function"
-          ) {
-            wakeLockRef.current.addEventListener("release", () => {
-              console.log("Wake Lock released");
-              // Do not immediately re-request to avoid loops/bugs
-              wakeLockRef.current = null;
-            });
-          }
-        } catch (err) {
-          console.log("Wake Lock request failed:", err);
-        }
-      }
-    };
-
-    const releaseWakeLock = async () => {
-      if (wakeLockRef.current) {
-        try {
-          await wakeLockRef.current.release();
-          wakeLockRef.current = null;
-          console.log("Wake Lock released");
-        } catch (err) {
-          console.log("Wake Lock release failed:", err);
-        }
-      }
-    };
-
-    // Handle visibility change - recalculate time when page becomes visible again
     const handleVisibilityChange = () => {
       if (!document.hidden && timerState.running) {
-        // Page became visible - immediately update time
         timerTick();
-        // Try to reacquire wake lock when returning to visible on mobile
-        requestWakeLock();
       }
     };
 
@@ -330,13 +284,11 @@ function App() {
 
     if (timerState.running) {
       timerIntervalRef.current = setInterval(timerTick, 1000);
-      requestWakeLock();
     } else {
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
         timerIntervalRef.current = null;
       }
-      releaseWakeLock();
     }
 
     return () => {
@@ -345,9 +297,8 @@ function App() {
         clearInterval(timerIntervalRef.current);
         timerIntervalRef.current = null;
       }
-      releaseWakeLock();
     };
-  }, [timerState.running, timerState.keepAwake, isMobileDevice]);
+  }, [timerState.running]);
 
   // Persist timer state to localStorage whenever it changes
   useEffect(() => {
