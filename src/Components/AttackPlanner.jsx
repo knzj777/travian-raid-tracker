@@ -278,7 +278,7 @@ const AttackPlanner = () => {
 
 
   const calculateCountdown = useCallback((travelTime, arrivalTime, date) => {
-    // Get current atomic time (using the same offset as RealLocalTime)
+    // Get current atomic time from TimeIsClock (local time)
     const atomicTime = getAtomicNow();
     
     // Build absolute timestamps using pure arithmetic to avoid DST pitfalls
@@ -292,10 +292,17 @@ const AttackPlanner = () => {
       ((parseInt(travelTime.hours || 0, 10) * 3600 +
         parseInt(travelTime.minutes || 0, 10) * 60 +
         parseInt(travelTime.seconds || 0, 10)) * 1000);
-    const sendMs = arrivalMs - travelMs;
     
-    // Calculate time until send
-    const timeUntilSend = sendMs - atomicTime.getTime();
+    // sendMs is in server time (since arrivalTime and travelTime are server times)
+    const sendMsServer = arrivalMs - travelMs;
+    
+    // Convert server time to local time by subtracting server offset
+    // Negative offset means server is behind, so we subtract to convert to local
+    const serverOffsetHours = getServerOffsetHours();
+    const sendMsLocal = sendMsServer - (serverOffsetHours * 3600 * 1000);
+    
+    // Calculate time until send (both now in local time)
+    const timeUntilSend = sendMsLocal - atomicTime.getTime();
     
     if (timeUntilSend <= 0) {
       return '00:00:00';
