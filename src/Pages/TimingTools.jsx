@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import RealLocalTime from "../Components/RealLocalTime";
+import TimeIsClock from "../Components/TimeIsClock";
 import AttackPlanner from "../Components/AttackPlanner";
 import TimeCalculator from "../Components/TimeCalculator";
 import "./TimingTools.css";
@@ -21,7 +21,7 @@ export default function TimingTools({ settings, onSettingsOpen, timerState, dark
 
       <div className="content timecalc-content" style={{ flex: 1 }}>
 
-      <RealLocalTime />
+      <TimeIsClock />
       
       <AttackPlanner />
       

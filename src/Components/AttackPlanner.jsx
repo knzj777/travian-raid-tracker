@@ -186,8 +186,53 @@ const AttackPlanner = () => {
     } catch {}
   }, [attacks]);
 
-  // Get atomic "now" using RealLocalTime offset (stored as seconds)
+  // Get atomic "now" using TimeIsClock displayed time
   const getAtomicNow = () => {
+    // Get time from TimeIsClock widget
+    const timeIsClockSpan = document.getElementById('_z734');
+    if (timeIsClockSpan && timeIsClockSpan.textContent) {
+      const timeText = timeIsClockSpan.textContent.trim();
+      // Parse time string (format: HH:MM:SS)
+      const timeMatch = timeText.match(/(\d{2}):(\d{2}):(\d{2})/);
+      if (timeMatch) {
+        const hours = parseInt(timeMatch[1], 10);
+        const minutes = parseInt(timeMatch[2], 10);
+        const seconds = parseInt(timeMatch[3], 10);
+        
+        // Create a date object for today with this time
+        const now = new Date();
+        const atomicDate = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          hours,
+          minutes,
+          seconds,
+          0
+        );
+        
+        // Ensure we're using the current day (time.is widget always shows current time)
+        // If somehow the time is way off, we'll use the current date
+        const currentTime = now.getTime();
+        const atomicTime = atomicDate.getTime();
+        
+        // If atomic time is more than 12 hours in the past or future, adjust the date
+        // This handles edge cases but shouldn't normally happen with time.is widget
+        const diffMs = atomicTime - currentTime;
+        if (Math.abs(diffMs) > 12 * 60 * 60 * 1000) {
+          // Adjust by one day if needed
+          if (diffMs < -12 * 60 * 60 * 1000) {
+            atomicDate.setDate(atomicDate.getDate() + 1);
+          } else if (diffMs > 12 * 60 * 60 * 1000) {
+            atomicDate.setDate(atomicDate.getDate() - 1);
+          }
+        }
+        
+        return atomicDate;
+      }
+    }
+    
+    // Fallback to old method if TimeIsClock not available
     const offsetSeconds = parseFloat(localStorage.getItem('userTimeOffsetSeconds')) || 0;
     const serverHours =
       parseFloat(localStorage.getItem('attackPlanner_serverOffsetHours')) || 0;
@@ -265,12 +310,15 @@ const AttackPlanner = () => {
     return `${hours.toString().padStart(hours >= 100 ? 3 : 2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }, []);
 
-  // Update countdowns exactly on atomic second boundaries to stay in sync with RealLocalTime
+  // Update countdowns frequently to stay perfectly in sync with TimeIsClock
   useEffect(() => {
-    let timeoutId;
+    let intervalId;
+    let observer;
+    let updateTimeout;
     let cancelled = false;
 
     const tick = () => {
+      if (cancelled) return;
       setAttacks(prevAttacks => 
         prevAttacks.map(attack => {
           const travelTime = attack.travelTime || attack.launchTime || { hours: 0, minutes: 0, seconds: 0 };
@@ -284,23 +332,33 @@ const AttackPlanner = () => {
       );
     };
 
-    const scheduleNext = () => {
-      if (cancelled) return;
-      const now = getAtomicNow().getTime();
-      const delay = Math.max(0, 1000 - (now % 1000));
-      timeoutId = setTimeout(() => {
-        tick();
-        scheduleNext();
-      }, delay);
-    };
+    // Watch TimeIsClock for updates and trigger countdown recalculation
+    const timeIsClockSpan = document.getElementById('_z734');
+    if (timeIsClockSpan) {
+      observer = new MutationObserver(() => {
+        // Small delay to ensure we read the final adjusted time after TimeIsClock updates
+        if (updateTimeout) clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(() => {
+          tick();
+        }, 50);
+      });
+      
+      observer.observe(timeIsClockSpan, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+    }
 
-    // initial tick and alignment
-    tick();
-    scheduleNext();
+    // Also update frequently (every 250ms) as backup
+    tick(); // Initial tick
+    intervalId = setInterval(tick, 0);
 
     return () => {
       cancelled = true;
-      if (timeoutId) clearTimeout(timeoutId);
+      if (intervalId) clearInterval(intervalId);
+      if (observer) observer.disconnect();
+      if (updateTimeout) clearTimeout(updateTimeout);
     };
   }, [calculateCountdown]);
 

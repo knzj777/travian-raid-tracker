@@ -105,12 +105,13 @@
 }
 
 .attack-planner-header .header-center {
-  justify-self: center;
+  justify-self: end;
+  grid-column: 3;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   min-width: 80px;
-  margin-left: 40px;
+  margin-right: 8px;
 }
 
 .attack-planner-header .header-send-time {
@@ -141,7 +142,7 @@
     font-size: 22px;
   }
   .attack-planner-header .header-send-time {
-    font-size: 24px;
+    font-size: 24px; 
   }
   .attack-planner-header .header-left {
     font-size: 18px;
