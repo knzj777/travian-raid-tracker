@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './AttackPlanner.css';
 import SaveModal from './modals/SaveModal';
+import AttackPlannerShare from './AttackPlannerShare';
+import GetterToolsImporter from './GetterToolsImporter';
 
 const AttackPlanner = () => {
   const [travelTime, setTravelTime] = useState(() => {
@@ -84,6 +86,14 @@ const AttackPlanner = () => {
       return false;
     }
   });
+  const [isShareImportCollapsed, setIsShareImportCollapsed] = useState(() => {
+    try {
+      const saved = localStorage.getItem('attackPlanner_shareImportCollapsed');
+      return saved ? JSON.parse(saved) : true; // Default to collapsed
+    } catch {
+      return true;
+    }
+  });
   
   // Persisted collapse state only; do not auto-expand when empty
   const dateInputRef = useRef(null);
@@ -94,6 +104,13 @@ const AttackPlanner = () => {
       localStorage.setItem('attackPlanner_isCollapsed', JSON.stringify(isFormCollapsed));
     } catch {}
   }, [isFormCollapsed]);
+
+  // Persist share/import collapsed state
+  useEffect(() => {
+    try {
+      localStorage.setItem('attackPlanner_shareImportCollapsed', JSON.stringify(isShareImportCollapsed));
+    } catch {}
+  }, [isShareImportCollapsed]);
 
   // Helper function to get today's date
   const getTodayDate = () => {
@@ -383,10 +400,17 @@ const AttackPlanner = () => {
       ((parseInt(travelTime.hours || 0, 10) * 3600 +
         parseInt(travelTime.minutes || 0, 10) * 60 +
         parseInt(travelTime.seconds || 0, 10)) * 1000);
-    const sendMs = arrivalMs - travelMs;
     
-    // Calculate time until send
-    const timeUntilSend = sendMs - atomicTime.getTime();
+    // sendMs is in server time (since arrivalTime and travelTime are server times)
+    const sendMsServer = arrivalMs - travelMs;
+    
+    // Convert server time to local time by subtracting server offset
+    // Negative offset means server is behind, so we subtract to convert to local
+    const serverOffsetHours = getServerOffsetHours();
+    const sendMsLocal = sendMsServer - (serverOffsetHours * 3600 * 1000);
+    
+    // Calculate time until send (both now in local time)
+    const timeUntilSend = sendMsLocal - atomicTime.getTime();
     
     if (timeUntilSend <= 0) {
       return {
@@ -498,6 +522,45 @@ const AttackPlanner = () => {
 
   const cancelDeleteAll = () => {
     setShowDeleteAllModal(false);
+  };
+
+  const handleImportAttacks = (importedAttacks) => {
+    // Recalculate sendTime and sendDate for each imported attack
+    const processedAttacks = importedAttacks.map(attack => {
+      // Calculate send time (arrival - travel time)
+      const arrivalBase = makeLocalDate(attack.date).getTime();
+      const arrivalMs =
+        arrivalBase +
+        ((parseInt(attack.arrivalTime.hours || 0, 10) * 3600 +
+          parseInt(attack.arrivalTime.minutes || 0, 10) * 60 +
+          parseInt(attack.arrivalTime.seconds || 0, 10)) * 1000);
+      const travelMs =
+        ((parseInt(attack.travelTime.hours || 0, 10) * 3600 +
+          parseInt(attack.travelTime.minutes || 0, 10) * 60 +
+          parseInt(attack.travelTime.seconds || 0, 10)) * 1000);
+      const sendMs = arrivalMs - travelMs;
+      const sendDate = new Date(sendMs);
+      const sendTime = {
+        hours: sendDate.getHours(),
+        minutes: sendDate.getMinutes(),
+        seconds: sendDate.getSeconds()
+      };
+      
+      return {
+        ...attack,
+        sendTime: sendTime,
+        sendDate: (() => { 
+          const y = sendDate.getFullYear(); 
+          const m = String(sendDate.getMonth()+1).padStart(2,'0'); 
+          const d = String(sendDate.getDate()).padStart(2,'0'); 
+          return `${y}-${m}-${d}`; 
+        })(),
+        countdown: calculateCountdown(attack.travelTime, attack.arrivalTime, attack.date)
+      };
+    });
+    
+    // Replace all attacks with imported ones
+    setAttacks(processedAttacks);
   };
 
   const handleSaveEdit = () => {
@@ -907,12 +970,37 @@ const AttackPlanner = () => {
         
         <div className={`form-buttons ${isFormCollapsed ? 'collapsed' : ''}`}>
           <div className="server-offset-group" title="Server time offset in hours (e.g., -1)">
+            <div className="server-offset-info-container">
+              <svg 
+                className="server-offset-info-icon" 
+                width="16" 
+                height="16" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
+              <div className="server-offset-tooltip">
+                Check your Travian server time.<br/>
+                Compare it with your local time and enter the difference in hours.<br/>
+                E.g.: <br/>
+                • If your local time is 20:00 and the Travian server time is 19:00, enter -1.<br/>
+                
+                • If your local time is 20:00 and the Travian server time is 21:00, enter 1.
+              </div>
+            </div>
             <span className="server-offset-label">Server offset (h):</span>
             <input
               type="text"
               value={serverOffsetHours}
               onChange={(e) => setServerOffsetHours(e.target.value)}
-              placeholder="-1"
+              placeholder="e.g. -1"
               className="server-offset-input"
             />
           </div>
@@ -1053,6 +1141,47 @@ const AttackPlanner = () => {
           </button>
         </div>
       )}
+      </div>
+      
+      {/* Share & Import Section */}
+      <div className={`share-import-section ${isShareImportCollapsed ? 'collapsed' : ''}`}>
+        <div 
+          className="share-import-header"
+          onClick={() => setIsShareImportCollapsed(prev => !prev)}
+        >
+          <h3 className="share-import-title">Share & Import</h3>
+          <button
+            className="share-import-toggle"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsShareImportCollapsed(prev => !prev);
+            }}
+            aria-label={isShareImportCollapsed ? 'Expand share & import' : 'Collapse share & import'}
+            title={isShareImportCollapsed ? 'Expand' : 'Collapse'}
+          >
+            {isShareImportCollapsed ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+            )}
+          </button>
+        </div>
+        <div className="share-import-content">
+          {/* Share/Import Component */}
+          <AttackPlannerShare 
+            attacks={attacks} 
+            onImportAttacks={handleImportAttacks}
+          />
+          
+          {/* Getter Tools Importer */}
+          <GetterToolsImporter 
+            onImportAttacks={handleImportAttacks}
+          />
+        </div>
       </div>
       </div>
       

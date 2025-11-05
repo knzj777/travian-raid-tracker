@@ -395,7 +395,7 @@ function App() {
           }
         />
         <Route
-          path="/time-calculator"
+          path="/attack-planner"
           element={
             <TimingTools
               settings={settings}

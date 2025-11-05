@@ -183,7 +183,6 @@ function TimeIsClock() {
       }
       
       // Check if widget has updated with new Čakovec time
-      // Since we disconnect the observer before writing, we should only see widget updates here
       const isNewWidgetUpdate = currentText !== lastCakovecTime && 
                                  currentText.match(/^\d{2}:\d{2}(:\d{2})?$/);
       
@@ -207,32 +206,26 @@ function TimeIsClock() {
         // Remove onclick attributes added by widget
         removeOnclickAttributes();
         
-        // Reconnect observer immediately - our write is done, observer won't see it
-        // Use requestAnimationFrame to ensure DOM update is complete
-        requestAnimationFrame(() => {
-          isWriting = false;
-          if (observerRef.current && spanElement) {
-            observerRef.current.observe(spanElement, {
-              childList: true,
-              characterData: true,
-              subtree: true
-            });
-            
-            // Remove onclick attributes again after reconnect
-            removeOnclickAttributes();
-            
-            // Check if widget wrote a new time while we were disconnected
-            // If so, adjust it immediately
-            const currentTextAfterReconnect = spanElement.textContent.trim();
-            if (currentTextAfterReconnect !== adjustedTime && 
-                currentTextAfterReconnect.match(/^\d{2}:\d{2}(:\d{2})?$/)) {
-              // Widget wrote a new time while we were disconnected, adjust it
-              setTimeout(() => {
-                applyAdjustment();
-              }, 10);
-            }
+        // Reconnect observer SYNCHRONOUSLY - no requestAnimationFrame delay!
+        isWriting = false;
+        if (observerRef.current && spanElement) {
+          observerRef.current.observe(spanElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+          });
+          
+          // Remove onclick attributes again after reconnect
+          removeOnclickAttributes();
+          
+          // Check if widget wrote a new time while we were disconnected
+          const currentTextAfterReconnect = spanElement.textContent.trim();
+          if (currentTextAfterReconnect !== adjustedTime && 
+              currentTextAfterReconnect.match(/^\d{2}:\d{2}(:\d{2})?$/)) {
+            // Widget wrote a new time while we were disconnected, adjust it immediately
+            applyAdjustment();
           }
-        });
+        }
       }
     };
 

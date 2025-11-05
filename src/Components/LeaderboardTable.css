@@ -18,24 +18,24 @@
   margin: 12px 0 24px 0; /* Add more margin at top and bottom */
 }
 
+
 .leaderboard-screenshot button {
-  border: 1px solid #e6b000;
-  background: linear-gradient(90deg,#cfa51a54, #a7851550 100%);
-  color: #ffd240;
+  border: 1px solid #AA771C;
+  background:linear-gradient(to right, #BF953F, #FCF6BA, #FBF5B7, #FBF5B7, #AA771C);
+  color: #AA771C;
   height: 35px;
+}
+
+.content .leaderboard-screenshot button:hover {
+  border: 1px solid #9b6508;
+  background:linear-gradient(to right, #b8790d, #ffeaa3, #ffeaa3, #ffeaa3, #b8790d);
+  color: #9b6508;
 }
 
 /* Captured state - only for Raid Tracker screenshot button */
 .leaderboard-screenshot .screenshot-btn.captured {
-  background: #e6b000;
-  border-color: #e6b000;
-  color: #000;
-}
-
-.content .leaderboard-screenshot button:hover {
-  border: 1px solid #ffd753;
-  background: linear-gradient(90deg,#ebc13860, #ffc60c50 100%);
-  color: #ffe99f;
+  color: #9b6508;
+  background:linear-gradient(to right, #b8790d, #ffeaa3, #ffeaa3, #ffeaa3, #b8790d);
 }
 
 /* Base table style pulls from app theme but refined for readability */

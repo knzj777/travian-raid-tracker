@@ -9,7 +9,7 @@ import "./TimingTools.css";
 export default function TimingTools({ settings, onSettingsOpen, timerState, darkMode, setDarkMode }) {
 
   useEffect(() => {
-    document.title = "Timing Tools - Raid Tracker";
+    document.title = "Attack Planner - Raid Tracker";
     return () => {
       document.title = "Raid Tracker";
     };

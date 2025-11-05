@@ -16,7 +16,7 @@
 }
 
 .attack-planner {
-  margin-bottom: 0;
+  margin-bottom: 30px;
   padding: 4px;
   background: rgba(40,40,40,0.7);
   border-radius: 0px 0px 4px 4px;
@@ -301,6 +301,10 @@
   white-space: nowrap;
 }
 
+.light .time-label {
+  color: rgba(0,0,0,0.8);
+}
+
 .form-group label {
   display: block;
   color: rgba(255,255,255,0.8);
@@ -405,6 +409,80 @@
   gap: 6px;
 }
 
+.server-offset-info-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+}
+
+.server-offset-info-icon {
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
+}
+
+.server-offset-info-icon:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.light .server-offset-info-icon {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.light .server-offset-info-icon:hover {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.server-offset-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.95) !important;
+  color: #fff !important;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease, transform 0.15s ease;
+  z-index: 1000;
+  margin-bottom: 8px;
+  width: 280px;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Inter', sans-serif;
+}
+
+.server-offset-info-container:hover .server-offset-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.server-offset-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.95);
+}
+
+.light .server-offset-tooltip {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.light .server-offset-tooltip::after {
+  border-top-color: rgba(255, 255, 255, 0.98);
+}
+
 .server-offset-label {
   color: rgba(255,255,255,0.8);
   font-size: 12px;
@@ -412,6 +490,15 @@
   margin-right: 6px;
   white-space: nowrap;
   font-style: italic;
+}
+
+.server-offset-input::placeholder {
+  font-size: 10px;
+}
+
+
+.light .server-offset-label {
+  color: rgba(0,0,0,0.8);
 }
 
 .server-offset-input {
@@ -865,6 +952,31 @@
 
 .attacks-table tr:last-child td {
   border-bottom: none;
+}
+
+/* Subtle hover effect on table rows */
+.attacks-table tbody tr:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.attacks-table tbody tr:hover.sent {
+  background: rgba(255,255,255,0.06);
+}
+
+.attacks-table tbody tr:hover.editing {
+  background: rgb(22, 22, 22);
+}
+
+.light .attacks-table tbody tr:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.light .attacks-table tbody tr:hover.sent {
+  background: rgba(0,0,0,0.02);
+}
+
+.light .attacks-table tbody tr:hover.editing {
+  background: rgba(0,0,0,0.12);
 }
 
 .attacks-table tr.sent {
@@ -1897,5 +2009,137 @@
   .error-modal-btn {
     padding: 8px 16px;
     font-size: 13px;
+  }
+}
+
+/* Share & Import Section */
+.share-import-section {
+  margin-top: 12px;
+  background: transparent;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.light .share-import-section {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.share-import-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  background-color: rgba(255,255,255,0.1);
+  border-bottom: none;
+  border-radius: 4px 4px 0px 0px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.share-import-header:hover {
+  background-color: rgba(255,255,255,0.15);
+}
+
+.light .share-import-header {
+  background-color: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.light .share-import-header:hover {
+  background-color: rgba(0,0,0,0.08);
+}
+
+.share-import-title {
+  margin: 0;
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  color: #fff;
+  font-size: 13px;
+}
+
+.light .share-import-title {
+  color: #000;
+}
+
+.share-import-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 0px;
+  transition: none;
+}
+
+.light .share-import-toggle {
+  color: rgba(0,0,0,0.8);
+}
+
+.light .share-import-toggle:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+.share-import-content {
+  padding: 12px 20px;
+  background: transparent;
+  border-radius: 0px 0px 4px 4px;
+}
+
+.share-import-section.collapsed .share-import-content {
+  display: none;
+}
+
+.share-import-section.collapsed {
+  border: none;
+}
+
+.share-import-section.collapsed .share-import-header {
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.light .share-import-section.collapsed .share-import-header {
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.light .share-import-content {
+  background: transparent;
+}
+
+/* Desktop font sizing for share-import title */
+@media (min-width: 769px) {
+  .share-import-title {
+    font-size: 15px;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .share-import-title {
+    font-size: 11px;
+  }
+  
+  .share-import-header {
+    padding: 4px 6px;
+  }
+  
+  .share-import-content {
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .share-import-title {
+    font-size: 10px;
+  }
+  
+  .share-import-header {
+    padding: 3px 5px;
+  }
+  
+  .share-import-content {
+    padding: 10px 12px;
   }
 }

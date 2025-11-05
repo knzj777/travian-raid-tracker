@@ -52,10 +52,10 @@ export default function Header({ darkMode, setDarkMode, onSettingsOpen, timerSta
             Timer
           </Link>
           <Link 
-            to="/time-calculator" 
-            className={`nav-link ${isActive('/time-calculator') ? 'active' : ''}`}
+            to="/attack-planner" 
+            className={`nav-link ${isActive('/attack-planner') ? 'active' : ''}`}
           >
-            Timing Tools
+            Attack Planner
           </Link>
           <Link 
             to="/history" 
@@ -144,11 +144,11 @@ export default function Header({ darkMode, setDarkMode, onSettingsOpen, timerSta
               Timer
             </Link>
             <Link 
-              to="/time-calculator" 
-              className={`mobile-link ${isActive('/time-calculator') ? 'active' : ''}`} 
+              to="/attack-planner" 
+              className={`mobile-link ${isActive('/attack-planner') ? 'active' : ''}`} 
               onClick={() => setOpen(false)}
             >
-              Timing Tools
+              Attack Planner
             </Link>
             <Link 
               to="/history" 
