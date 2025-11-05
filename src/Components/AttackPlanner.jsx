@@ -838,6 +838,7 @@ const AttackPlanner = () => {
                 min="0"
                 value={travelTime.hours}
                 onChange={(e) => { const val = parseInt(e.target.value) || 0; setTravelTime(prev => ({ ...prev, hours: val })); setIsEditDirty(true); }}
+                onFocus={(e) => { if (e.target.value === '0' || e.target.value === 0) { e.target.select(); } }}
                 placeholder="HH"
                 style={{ appearance: 'textfield' }}
                 disabled={editMode && !editingId}
@@ -854,6 +855,7 @@ const AttackPlanner = () => {
                   setTravelTime(prev => ({ ...prev, minutes: clampedVal })); 
                   setIsEditDirty(true); 
                 }}
+                onFocus={(e) => { if (e.target.value === '0' || e.target.value === 0) { e.target.select(); } }}
                 placeholder="MM"
                 style={{ appearance: 'textfield' }}
                 disabled={editMode && !editingId}
@@ -870,6 +872,7 @@ const AttackPlanner = () => {
                   setTravelTime(prev => ({ ...prev, seconds: clampedVal })); 
                   setIsEditDirty(true); 
                 }}
+                onFocus={(e) => { if (e.target.value === '0' || e.target.value === 0) { e.target.select(); } }}
                 placeholder="SS"
                 style={{ appearance: 'textfield' }}
                 disabled={editMode && !editingId}
@@ -891,6 +894,7 @@ const AttackPlanner = () => {
                    setArrivalTime(prev => ({ ...prev, hours: clampedVal })); 
                    setIsEditDirty(true); 
                  }}
+                 onFocus={(e) => { if (e.target.value === '0' || e.target.value === 0) { e.target.select(); } }}
                  placeholder="HH"
                  style={{ appearance: 'textfield' }}
                  disabled={editMode && !editingId}
@@ -907,6 +911,7 @@ const AttackPlanner = () => {
                    setArrivalTime(prev => ({ ...prev, minutes: clampedVal })); 
                    setIsEditDirty(true); 
                  }}
+                 onFocus={(e) => { if (e.target.value === '0' || e.target.value === 0) { e.target.select(); } }}
                  placeholder="MM"
                  style={{ appearance: 'textfield' }}
                  disabled={editMode && !editingId}
@@ -923,6 +928,7 @@ const AttackPlanner = () => {
                    setArrivalTime(prev => ({ ...prev, seconds: clampedVal })); 
                    setIsEditDirty(true); 
                  }}
+                 onFocus={(e) => { if (e.target.value === '0' || e.target.value === 0) { e.target.select(); } }}
                  placeholder="SS"
                  style={{ appearance: 'textfield' }}
                  disabled={editMode && !editingId}
