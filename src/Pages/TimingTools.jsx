@@ -4,6 +4,7 @@ import Footer from "../Components/Footer";
 import TimeIsClock from "../Components/TimeIsClock";
 import AttackPlanner from "../Components/AttackPlanner";
 import TimeCalculator from "../Components/TimeCalculator";
+import ExtensionInstaller from "../Components/ExtensionInstaller";
 import "./TimingTools.css";
 
 export default function TimingTools({ settings, onSettingsOpen, timerState, darkMode, setDarkMode }) {
@@ -20,6 +21,8 @@ export default function TimingTools({ settings, onSettingsOpen, timerState, dark
       <Header darkMode={darkMode} setDarkMode={setDarkMode} onSettingsOpen={onSettingsOpen} timerState={timerState} />
 
       <div className="content timecalc-content" style={{ flex: 1 }}>
+
+      <ExtensionInstaller />
 
       <TimeIsClock />
       

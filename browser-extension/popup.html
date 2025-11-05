@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 16px;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .light body {
+      background: #fff;
+      color: #000;
+    }
+    h2 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .warning {
+      background: rgba(220, 53, 69, 0.2);
+      border: 1px solid rgba(220, 53, 69, 0.5);
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .warning strong {
+      color: #ff6b6b;
+    }
+    .status {
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .status.active {
+      background: rgba(82, 114, 48, 0.3);
+      border: 1px solid rgba(82, 114, 48, 0.6);
+    }
+    .status.inactive {
+      background: rgba(108, 117, 125, 0.3);
+      border: 1px solid rgba(108, 117, 125, 0.6);
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      border: none;
+      background: #527230;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button:hover {
+      background: #5a7a35;
+    }
+    button.secondary {
+      background: rgba(108, 117, 125, 0.6);
+    }
+    button.secondary:hover {
+      background: rgba(108, 117, 125, 0.8);
+    }
+    .settings-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .setting-item {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    .sync-info {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Travian Raid Tracker</h2>
+  
+  <div class="warning">
+    <strong>⚠️ IMPORTANT DISCLAIMER:</strong><br>
+    Travian discourages browser extensions. This extension is informational only and does NOT interact with the game. Use at your own risk - may violate Travian's Terms of Service.
+  </div>
+  
+  <div id="status" class="status inactive">Checking status...</div>
+  
+  <button id="toggleOverlay">Toggle Overlay</button>
+  <button id="importData" class="secondary">Import from Web App</button>
+  
+  <div class="settings-section">
+    <div class="setting-item">
+      <label>
+        <input type="checkbox" id="darkMode">
+        Dark Mode
+      </label>
+    </div>
+    <div class="setting-item">
+      <label>
+        <input type="checkbox" id="autoSync">
+        Auto-sync from web app localStorage
+      </label>
+    </div>
+    <div class="sync-info">
+      Visit your Raid Tracker web app and click "Import" to sync data.
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
+

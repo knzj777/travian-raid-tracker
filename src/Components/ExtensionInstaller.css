@@ -1,0 +1,393 @@
+.extension-installer {
+  margin-bottom: 30px;
+  padding: 16px;
+  background: rgba(40, 40, 40, 0.7);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.light .extension-installer {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.extension-installer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.extension-installer-header h3 {
+  font-family: "New Rocker", system-ui;
+  font-weight: 400;
+  font-size: 16px;
+  margin: 0;
+  color: #fff;
+}
+
+.light .extension-installer-header h3 {
+  color: #000;
+}
+
+.extension-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.extension-status.installed {
+  background: rgba(82, 114, 48, 0.4);
+  color: #a8d18d;
+}
+
+.extension-status.not-installed {
+  background: rgba(108, 117, 125, 0.4);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.light .extension-status.not-installed {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.extension-disclaimer-box {
+  background: rgba(220, 53, 69, 0.2);
+  border: 1px solid rgba(220, 53, 69, 0.5);
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.extension-disclaimer-box strong {
+  color: #ff6b6b;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.extension-disclaimer-box p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.light .extension-disclaimer-box p {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.extension-installed-message {
+  text-align: center;
+  padding: 12px 0;
+}
+
+.extension-installed-message p {
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.light .extension-installed-message p {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.extension-install-section p {
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.light .extension-install-section p {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.extension-note {
+  background: rgba(82, 114, 48, 0.2);
+  border-left: 3px solid rgba(82, 114, 48, 0.6);
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 16px !important;
+}
+
+.light .extension-note {
+  background: rgba(82, 114, 48, 0.1);
+  border-left-color: rgba(82, 114, 48, 0.8);
+}
+
+.extension-note strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.extension-btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: none;
+  background: #527230;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.extension-btn:hover {
+  background: #5a7a35;
+}
+
+.extension-btn.secondary {
+  background: rgba(108, 117, 125, 0.6);
+}
+
+.extension-btn.secondary:hover {
+  background: rgba(108, 117, 125, 0.8);
+}
+
+.extension-instructions {
+  margin-top: 16px;
+}
+
+.extension-instructions h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-top: 16px;
+  color: #fff;
+}
+
+.extension-instructions h4:first-child {
+  margin-top: 0;
+}
+
+.light .extension-instructions h4 {
+  color: #000;
+}
+
+.extension-download-info {
+  background: rgba(82, 114, 48, 0.2);
+  border-left: 3px solid rgba(82, 114, 48, 0.6);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.light .extension-download-info {
+  background: rgba(82, 114, 48, 0.1);
+  border-left-color: rgba(82, 114, 48, 0.8);
+}
+
+.extension-download-info p {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+}
+
+.extension-file-list {
+  margin: 8px 0 0 20px;
+  padding: 0;
+  font-size: 11px;
+}
+
+.extension-file-list li {
+  margin-bottom: 4px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.light .extension-file-list li {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.extension-download-options {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.extension-download-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.light .extension-download-option {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.extension-download-option strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.extension-download-option p {
+  margin: 4px 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.extension-code-block {
+  display: block;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #a8d18d;
+  margin: 8px 0;
+  word-break: break-all;
+}
+
+.light .extension-code-block {
+  background: rgba(0, 0, 0, 0.1);
+  color: #527230;
+}
+
+.extension-instructions ol {
+  margin: 0 0 16px 0;
+  padding-left: 24px;
+  line-height: 1.8;
+}
+
+.extension-instructions li {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.light .extension-instructions li {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.extension-instructions code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #a8d18d;
+}
+
+.light .extension-instructions code {
+  background: rgba(0, 0, 0, 0.1);
+  color: #527230;
+}
+
+.extension-instructions-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.extension-instructions-note {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid rgba(82, 114, 48, 0.6);
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.light .extension-instructions-note {
+  background: rgba(0, 0, 0, 0.05);
+  border-left-color: rgba(82, 114, 48, 0.8);
+}
+
+.extension-instructions-note strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Disclaimer Modal */
+.extension-disclaimer-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.extension-disclaimer-modal {
+  background: rgba(40, 40, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.light .extension-disclaimer-modal {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.extension-disclaimer-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.light .extension-disclaimer-modal-header {
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+}
+
+.extension-disclaimer-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ff6b6b;
+}
+
+.extension-disclaimer-modal-content {
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.extension-disclaimer-modal-content p {
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.light .extension-disclaimer-modal-content p {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.extension-disclaimer-modal-content ul {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.extension-disclaimer-modal-content li {
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.light .extension-disclaimer-modal-content li {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.extension-disclaimer-modal-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.light .extension-disclaimer-modal-footer {
+  border-top-color: rgba(0, 0, 0, 0.2);
+}
+
+.extension-disclaimer-modal-footer .extension-btn {
+  min-width: 120px;
+}
+

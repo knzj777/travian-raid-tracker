@@ -1,0 +1,60 @@
+{
+  "manifest_version": 3,
+  "name": "Travian Raid Tracker Overlay",
+  "version": "1.0.0",
+  "description": "Display TimeIsClock and Attack Planner overlay on Travian pages. Informational only - does not interact with the game.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*.travian.com/*",
+    "https://*.travian.net/*",
+    "https://*.travian.us/*",
+    "https://*.travian.co.uk/*",
+    "https://*.travian.de/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.travian.com/*",
+        "https://*.travian.net/*",
+        "https://*.travian.us/*",
+        "https://*.travian.co.uk/*",
+        "https://*.travian.de/*"
+      ],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["overlay.html"],
+      "matches": [
+        "https://*.travian.com/*",
+        "https://*.travian.net/*",
+        "https://*.travian.us/*",
+        "https://*.travian.co.uk/*",
+        "https://*.travian.de/*"
+      ]
+    }
+  ]
+}
+
